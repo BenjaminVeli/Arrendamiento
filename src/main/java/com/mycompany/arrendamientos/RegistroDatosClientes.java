@@ -12,11 +12,15 @@ import Modelo.Arrendamientos;
  */
 public class RegistroDatosClientes extends javax.swing.JFrame {
 
+    private CalculoAlquiler ca;
+    
     /**
      * Creates new form datos_cl
      */
     public RegistroDatosClientes() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        this.setIconImage(null);
     }
 
     /**
@@ -53,6 +57,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         txtCelular = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JButton();
+        btnGuardar1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -100,13 +105,22 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
             }
         });
 
+        btnGuardar1.setText("Salir");
+        btnGuardar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardar1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addComponent(btnGuardar)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnGuardar)
+                    .addComponent(btnGuardar1))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -114,7 +128,9 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(97, 97, 97)
                 .addComponent(btnGuardar)
-                .addContainerGap(192, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btnGuardar1)
+                .addContainerGap(271, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -224,16 +240,26 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
                             .addComponent(jLabel11)
                             .addComponent(txtCelular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(186, Short.MAX_VALUE))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+     public void setCa(CalculoAlquiler ca) {
+        this.ca = ca;
+    }
+    
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Arrendamientos objetoArrendamientos = new Arrendamientos();
         objetoArrendamientos.InsertarCliente(txtNombre, txtDireccion, txtRuc, txtTelefono, txtContacto1, txtContacto2, txtPropietario, txtDireccion_propietario, txtTelefono_propietario, txtCelular );
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
+        // TODO add your handling code here:
+        ca.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGuardar1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -273,6 +299,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnGuardar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
