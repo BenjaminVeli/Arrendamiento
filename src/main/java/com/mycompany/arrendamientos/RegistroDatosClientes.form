@@ -85,7 +85,7 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Group type="103" groupAlignment="0" attributes="0">
                                                   <Component id="txtConyuge" max="32767" attributes="0"/>
-                                                  <Component id="txtFecha_ingreso" pref="181" max="32767" attributes="0"/>
+                                                  <Component id="txtFecha_ingreso" pref="178" max="32767" attributes="0"/>
                                                   <Component id="txtDnipropietario" alignment="0" max="32767" attributes="0"/>
                                                   <Component id="txtCiudad" alignment="0" max="32767" attributes="0"/>
                                               </Group>

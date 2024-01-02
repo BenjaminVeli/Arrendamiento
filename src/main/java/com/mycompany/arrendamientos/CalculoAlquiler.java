@@ -4,6 +4,8 @@
  */
 package com.mycompany.arrendamientos;
 
+import Conexion.CConexion;
+
 /**
  *
  * @author diego
@@ -18,6 +20,8 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     public CalculoAlquiler() {
         initComponents();
         this.setLocationRelativeTo(null);
+//        CConexion objetoConexion = new CConexion();
+//        objetoConexion.estableceConexion();
     }
 
     /**
@@ -77,7 +81,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Calculo De Alquiler");
-        setResizable(false);
 
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 

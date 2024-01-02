@@ -4,7 +4,9 @@
  */
 package com.mycompany.arrendamientos;
 
+import Conexion.CConexion;
 import Modelo.Arrendamientos;
+import DAO.ArrendamientosDAO;
 
 /**
  *
@@ -13,6 +15,7 @@ import Modelo.Arrendamientos;
 public class RegistroDatosClientes extends javax.swing.JFrame {
 
     private CalculoAlquiler ca;
+    private Arrendamientos arrendamientos;
     
     /**
      * Creates new form datos_cl
@@ -22,6 +25,9 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setIconImage(null);
         Limpiar();
+        arrendamientos = new Arrendamientos();
+//         CConexion objetoConexion = new CConexion();
+//         objetoConexion.estableceConexion();
     }
 
     /**
@@ -244,7 +250,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                     .addComponent(txtConyuge)
-                                                    .addComponent(txtFecha_ingreso, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                                                    .addComponent(txtFecha_ingreso, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
                                                     .addComponent(txtDnipropietario)
                                                     .addComponent(txtCiudad)))))))
                             .addGroup(layout.createSequentialGroup()
@@ -368,8 +374,8 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
     }
     
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Arrendamientos objetoArrendamientos = new Arrendamientos();
-        objetoArrendamientos.InsertarCliente(txtNombre, txtDireccion, txtRuc, txtTelefono, txtContacto1, txtContacto2, txtPropietario, txtDireccion_propietario,txtFecha_ingreso,txtFecha_ingreso, txtTelefono_propietario, txtCelular,txtNacimiento,txtDnipropietario, txtCorreo, txtEstadocivil, txtConyuge, txtDniconyuge, txtCiudad);
+        ArrendamientosDAO objetoArrendamientos = new ArrendamientosDAO();
+        objetoArrendamientos.InsertarCliente(arrendamientos, txtNombre, txtDireccion, txtRuc, txtTelefono, txtContacto1, txtContacto2, txtPropietario, txtDireccion_propietario, txtNacimiento, txtFecha_ingreso, txtTelefono_propietario, txtCelular, txtNacimiento, txtDnipropietario, txtCorreo, txtEstadocivil, txtConyuge, txtDniconyuge, txtCiudad);
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed

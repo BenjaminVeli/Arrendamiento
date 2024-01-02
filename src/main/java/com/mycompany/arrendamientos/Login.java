@@ -9,6 +9,7 @@ import java.awt.Image;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 public class Login extends javax.swing.JFrame {
 
@@ -18,7 +19,6 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         this.setLocationRelativeTo(this);
-        
         SetImageLabel(sidebarImg, "src/main/java/images/sidebar-bg.jpg");
 //        SetImageLabel(jLabel2, "src/main/java/com/images/user128x128.png");
     }
@@ -46,7 +46,6 @@ public class Login extends javax.swing.JFrame {
         btnLogin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
         background.setBackground(new java.awt.Color(255, 255, 255));
         background.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -118,8 +117,13 @@ public class Login extends javax.swing.JFrame {
         btnLogin.setBackground(new java.awt.Color(0, 204, 255));
         btnLogin.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnLogin.setForeground(new java.awt.Color(255, 255, 255));
-        btnLogin.setText("ENTRAR");
+        btnLogin.setText("INGRESAR");
         btnLogin.setBorder(null);
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
         background.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 140, 50));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -165,6 +169,18 @@ public class Login extends javax.swing.JFrame {
     private void passInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passInputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passInputActionPerformed
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+       DAO.LoginDAO objetoLogin = new DAO.LoginDAO();
+        if (objetoLogin.ValidarUsuario(userInput, passInput)) {
+            // Cerrar la ventana actual
+            this.dispose();
+
+            // Abrir la ventana de CalculoAlquiler
+            CalculoAlquiler ca = new CalculoAlquiler();
+            ca.setVisible(true);
+        } 
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments

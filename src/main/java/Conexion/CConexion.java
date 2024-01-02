@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 public class CConexion {
     
-    Connection conectar = null;
+    Connection conectar;
     
     String usuario = "root";
     String contrasenia = "";
@@ -22,7 +22,7 @@ public class CConexion {
         
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 conectar = DriverManager.getConnection(cadena,usuario,contrasenia);
-                /*JOptionPane.showMessageDialog(null, "La conexión se ha realizado con éxito"); */
+//                JOptionPane.showMessageDialog(null, "La conexión se ha realizado con éxito");
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,"Error al conectarse a la base de datos, error: "+ e.toString());

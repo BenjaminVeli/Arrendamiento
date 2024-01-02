@@ -1,8 +1,7 @@
 package Modelo;
 
 import Modelo.Arrendamientos;
-import com.mycompany.arrendamientos.RegistroDatosClientes;
-import com.mycompany.arrendamientos.RegistroDatosClientes;
+import com.mycompany.arrendamientos.Login;
 
 
 public class inicio {
@@ -12,7 +11,7 @@ public class inicio {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                RegistroDatosClientes formularioClientes = new RegistroDatosClientes();
+                Login formularioClientes = new Login();
                 formularioClientes.setVisible(true);
             }
         });
