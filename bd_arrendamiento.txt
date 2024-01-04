@@ -1,6 +1,14 @@
 create database arrendamientos;
 use arrendamientos;
 
+create table users (
+  id int auto_increment primary key not null,
+  user varchar(100),
+  password varchar(100)
+);
+
+INSERT INTO users (user, password) VALUES ('admin', '123');
+
 CREATE TABLE datos_cli_prov (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100),
