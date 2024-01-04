@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -339,6 +340,24 @@ public class ArrendamientosDAO {
         JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error :  " + e.toString());
     }
 }
+   
+       public ArrayList<String> obtenerNombresClientes() {
+        ArrayList<String> nombres = new ArrayList<>();
+        CConexion objetoConexion = new CConexion();
+        String sql = "SELECT nombre FROM datos_cli_prov";
 
+        try {
+            Statement st = objetoConexion.estableceConexion().createStatement();
+            ResultSet rs = st.executeQuery(sql);
 
+            while (rs.next()) {
+                nombres.add(rs.getString("nombre"));
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "No se pudo obtener los nombres de los clientes, error :  " + e.toString());
+        }
+
+        return nombres;
+    }
 }

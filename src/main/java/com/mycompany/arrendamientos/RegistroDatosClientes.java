@@ -114,11 +114,29 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Datos del cliente o proveedores");
 
+        txtId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIdActionPerformed(evt);
+            }
+        });
+
+        txtNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNombreActionPerformed(evt);
+            }
+        });
+
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Nombre:");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Dirección:");
+
+        txtDireccion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDireccionActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("RUC:");
@@ -496,6 +514,18 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         ArrendamientosDAO objetoArrendamientos = new ArrendamientosDAO();
         objetoArrendamientos.SeleccionarCliente(tbTotalClientes, txtId, txtNombre, txtDireccion, txtRuc, txtTelefono, txtContacto1, txtContacto2, txtPropietario, txtDireccion_propietario, txtNacimiento, txtFecha_ingreso, txtTelefono_propietario, txtCelular, txtNacimiento, txtDnipropietario, txtCorreo, txtEstadocivil, txtConyuge, txtDniconyuge, txtCiudad);
     }//GEN-LAST:event_tbTotalClientesMouseClicked
+
+    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombreActionPerformed
+
+    private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdActionPerformed
+
+    private void txtDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDireccionActionPerformed
     
     private void filterTable() {
     String searchText = txtSearch.getText().trim();

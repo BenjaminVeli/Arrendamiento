@@ -22,6 +22,12 @@
             <version>1.4</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>at.swimmesberger</groupId>
+            <artifactId>swingx-all</artifactId>
+            <version>1.6.7</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
