@@ -17,7 +17,8 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 public class ArrendamientosDAO {
-    public void InsertarCliente(Arrendamientos arrendamientos, JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JTextField paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
+    public void InsertarCliente(JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JTextField paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
+        Arrendamientos arrendamientos = new Arrendamientos();
         arrendamientos.setNombre(paramNombre.getText());
         arrendamientos.setDireccion(paramDireccion.getText());
         arrendamientos.setRuc(paramRuc.getText());
@@ -70,111 +71,90 @@ public class ArrendamientosDAO {
     }
     
     public void MostrarCliente(JTable paramTablaTotalClientes) {
-    
-        CConexion objetoConexion = new CConexion();
-        DefaultTableModel modelo = new DefaultTableModel();
 
-        TableRowSorter<TableModel> OrdenarTabla = new TableRowSorter<TableModel>(modelo);
-        paramTablaTotalClientes.setRowSorter(OrdenarTabla);
-        
-        String sql = "";
-        modelo.addColumn("Id");
-        modelo.addColumn("Nombre");
-        modelo.addColumn("Dirección");
-        modelo.addColumn("Ruc");
-        modelo.addColumn("Telefono");
-        modelo.addColumn("Contacto1");
-        modelo.addColumn("Contacto2");
-        modelo.addColumn("propietario");
-        modelo.addColumn("direccion_propietario");
-        modelo.addColumn("telefono_propietario");
-        modelo.addColumn("celular");
-        modelo.addColumn("nacimiento");
-        modelo.addColumn("dni_propietario");
-        modelo.addColumn("fecha_ingreso");
-        modelo.addColumn("correo");
-        modelo.addColumn("estado_civil");
-        modelo.addColumn("conyuge");
-        modelo.addColumn("dni_conyuge");
-        modelo.addColumn("ciudad");
-        
+    CConexion objetoConexion = new CConexion();
+    DefaultTableModel modelo = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; 
+        }
+    };
+
+    TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
+    paramTablaTotalClientes.setRowSorter(ordenarTabla);
+
+    String[] columnasMostradas = {"Id", "Nombre", "Dirección", "Ruc", "Telefono"};
+    String[] columnasBD = {"id", "nombre", "direccion", "ruc", "telefono", "contacto1", "contacto2", 
+                            "propietario", "direccion_propietario", "telefono_propietario", "celular", 
+                            "nacimiento", "dni_propietario", "fecha_ingreso", "correo", 
+                            "estado_civil", "conyuge", "dni_conyuge", "ciudad"};
+
+    for (int i = 0; i < columnasMostradas.length; i++) {
+        modelo.addColumn(columnasMostradas[i]);
+    }
+
+    paramTablaTotalClientes.setModel(modelo);
+
+    String sql = "select * from datos_cli_prov";
+    Statement st;
+
+    try {
+        st = objetoConexion.estableceConexion().createStatement();
+        ResultSet rs = st.executeQuery(sql);
+
+        while (rs.next()) {
+            String[] datos = new String[columnasBD.length];
+
+            for (int i = 0; i < columnasBD.length; i++) {
+                datos[i] = rs.getString(columnasBD[i]);
+            }
+
+            modelo.addRow(datos);
+        }
 
         paramTablaTotalClientes.setModel(modelo);
 
-        sql = "select * from datos_cli_prov";
-
-        String[] datos = new String[19];
-        Statement st;
-
-        try {
-
-            st = objetoConexion.estableceConexion().createStatement();
-
-            ResultSet rs = st.executeQuery(sql);
-
-            while (rs.next()) {
-
-                    datos[0] = rs.getString(1);
-                    datos[1] = rs.getString(2);
-                    datos[2] = rs.getString(3);
-                    datos[3] = rs.getString(4);
-                    datos[4] = rs.getString(4);
-                    datos[5] = rs.getString(6);
-                    datos[6] = rs.getString(7);
-                    datos[7] = rs.getString(8);
-                    datos[8] = rs.getString(9);
-                    datos[9] = rs.getString(10);
-                    datos[10] = rs.getString(11);
-                    datos[11] = rs.getString(12);
-                    datos[12] = rs.getString(13);
-                    datos[13] = rs.getString(14);
-                    datos[14] = rs.getString(15);
-                    datos[15] = rs.getString(16);
-                    datos[16] = rs.getString(17);
-                    datos[17] = rs.getString(18);
-                    datos[18] = rs.getString(19);
-
-                modelo.addRow(datos);
-            }
-
-            paramTablaTotalClientes.setModel(modelo);
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error :  " + e.toString());
-
-        }
-
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error: " + e.toString());
+    }
 }
     
     public void SeleccionarCliente(JTable paramTablaClientes, JTextField paramId, JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JTextField paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
     try {
         int fila = paramTablaClientes.getSelectedRow();
         if (fila >= 0) {
-            paramId.setText(paramTablaClientes.getValueAt(fila, 0).toString());
-            paramNombre.setText(paramTablaClientes.getValueAt(fila, 1).toString());
-            paramDireccion.setText(paramTablaClientes.getValueAt(fila, 2).toString());
-            paramRuc.setText(paramTablaClientes.getValueAt(fila, 3).toString());
-            paramTelefono.setText(paramTablaClientes.getValueAt(fila, 4).toString());
-            paramContacto1.setText(paramTablaClientes.getValueAt(fila, 5).toString());
-            paramContacto2.setText(paramTablaClientes.getValueAt(fila, 6).toString());
-            paramPropietario.setText(paramTablaClientes.getValueAt(fila, 7).toString());
-            paramDireccion_propietario.setText(paramTablaClientes.getValueAt(fila, 8).toString());
-            paramTelefono_propietario.setText(paramTablaClientes.getValueAt(fila, 9).toString());
-            paramCelular.setText(paramTablaClientes.getValueAt(fila, 10).toString());
-            String nacimientoString = paramTablaClientes.getValueAt(fila, 11).toString();
-            java.util.Date nacimientoDate = new SimpleDateFormat("yyyy-MM-dd").parse(nacimientoString);
-            paramNacimiento.setDate(nacimientoDate);
-            paramDni_propietario.setText(paramTablaClientes.getValueAt(fila, 12).toString());
-            String fechaIngresoString = paramTablaClientes.getValueAt(fila, 13).toString();
-            java.util.Date fechaIngresoDate = new SimpleDateFormat("yyyy-MM-dd").parse(fechaIngresoString);
-            paramFecha_ingreso.setDate(fechaIngresoDate);
-            paramCorreo.setText(paramTablaClientes.getValueAt(fila, 14).toString());
-            paramEstado_civil.setText(paramTablaClientes.getValueAt(fila, 15).toString());
-            paramConyuge.setText(paramTablaClientes.getValueAt(fila, 16).toString());
-            paramDni_conyuge.setText(paramTablaClientes.getValueAt(fila, 17).toString());
-            paramCiudad.setText(paramTablaClientes.getValueAt(fila, 18).toString());
+            // Obtén el ID de la fila seleccionada
+            String idSeleccionado = paramTablaClientes.getValueAt(fila, 0).toString();
 
+            // Recupera toda la información de la base de datos para el ID seleccionado
+            String sql = "SELECT * FROM datos_cli_prov WHERE id = " + idSeleccionado;
+            CConexion objetoConexion = new CConexion();
+            Statement st = objetoConexion.estableceConexion().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            if (rs.next()) {
+
+                paramId.setText(rs.getString("id"));
+                paramNombre.setText(rs.getString("nombre"));
+                paramDireccion.setText(rs.getString("direccion"));
+                paramRuc.setText(rs.getString("ruc"));
+                paramTelefono.setText(rs.getString("telefono"));
+                paramContacto1.setText(rs.getString("contacto1"));
+                paramContacto2.setText(rs.getString("contacto2"));
+                paramPropietario.setText(rs.getString("propietario"));
+                paramDireccion_propietario.setText(rs.getString("direccion_propietario"));
+                paramTelefono_propietario.setText(rs.getString("telefono_propietario"));
+                paramNacimiento.setDate(rs.getDate("nacimiento"));
+                paramFecha_ingreso.setDate(rs.getDate("fecha_ingreso"));
+                paramCelular.setText(rs.getString("celular"));
+                paramDni_propietario.setText(rs.getString("dni_propietario"));
+                paramCorreo.setText(rs.getString("correo"));
+                paramEstado_civil.setText(rs.getString("estado_civil"));
+                paramConyuge.setText(rs.getString("conyuge"));
+                paramDni_conyuge.setText(rs.getString("dni_conyuge"));
+                paramCiudad.setText(rs.getString("ciudad"));
+
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Fila no seleccionada");
         }
