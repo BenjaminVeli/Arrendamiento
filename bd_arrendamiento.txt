@@ -30,3 +30,8 @@ CREATE TABLE datos_cli_prov (
     dni_conyuge VARCHAR(8),
     ciudad VARCHAR(100)
 );
+
+create table piso (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  piso VARCHAR(100)
+);

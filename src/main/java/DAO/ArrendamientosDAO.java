@@ -145,7 +145,11 @@ public class ArrendamientosDAO {
                 paramDireccion_propietario.setText(rs.getString("direccion_propietario"));
                 paramTelefono_propietario.setText(rs.getString("telefono_propietario"));
                 paramNacimiento.setDate(rs.getDate("nacimiento"));
-                paramFecha_ingreso.setDate(rs.getDate("fecha_ingreso"));
+                Timestamp fechaIngreso = rs.getTimestamp("fecha_ingreso");
+                if (fechaIngreso != null) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    paramFecha_ingreso.setDate(fechaIngreso);
+                }
                 paramCelular.setText(rs.getString("celular"));
                 paramDni_propietario.setText(rs.getString("dni_propietario"));
                 paramCorreo.setText(rs.getString("correo"));
@@ -241,10 +245,10 @@ public class ArrendamientosDAO {
         cs.setInt(1, arrendamientos.getCodigo());
         cs.execute();
 
-        JOptionPane.showMessageDialog(null, "Se eliminó correctamente el producto");
+        JOptionPane.showMessageDialog(null, "Se eliminó correctamente el cliente");
 
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "No se pudo eliminar el producto, error: " + e.toString());
+        JOptionPane.showMessageDialog(null, "No se pudo eliminar el cliente, error: " + e.toString());
     }
 }
    
@@ -260,30 +264,17 @@ public class ArrendamientosDAO {
     modelo.addColumn("Dirección");
     modelo.addColumn("Ruc");
     modelo.addColumn("Telefono");
-    modelo.addColumn("Contacto1");
-    modelo.addColumn("Contacto2");
-    modelo.addColumn("propietario");
-    modelo.addColumn("direccion_propietario");
-    modelo.addColumn("telefono_propietario");
-    modelo.addColumn("celular");
-    modelo.addColumn("nacimiento");
-    modelo.addColumn("dni_propietario");
-    modelo.addColumn("fecha_ingreso");
-    modelo.addColumn("correo");
-    modelo.addColumn("estado_civil");
-    modelo.addColumn("conyuge");
-    modelo.addColumn("dni_conyuge");
-    modelo.addColumn("ciudad");
+
 
     paramTablaTotalClientes.setModel(modelo);
 
     if (!searchText.isEmpty()) {
-        sql = "SELECT * FROM datos_cli_prov WHERE nombre LIKE '%" + searchText + "%' OR direccion LIKE '%" + searchText + "%' OR ruc LIKE '%" + searchText + "%' OR telefono LIKE '%" + searchText + "%' OR contacto1 LIKE '%" + searchText + "%' OR contacto2 LIKE '%" + searchText + "%' OR propietario LIKE '%" + searchText + "%' OR direccion_propietario LIKE '%" + searchText + "%' OR telefono_propietario LIKE '%" + searchText + "%' OR celular LIKE '%" + searchText + "%' OR nacimiento LIKE '%" + searchText + "%' OR dni_propietario LIKE '%" + searchText + "%' OR fecha_ingreso LIKE '%" + searchText + "%' OR correo LIKE '%" + searchText + "%' OR estado_civil LIKE '%" + searchText + "%' OR conyuge LIKE '%" + searchText + "%' OR dni_conyuge LIKE '%" + searchText + "%' OR ciudad LIKE '%" + searchText + "%'";
+        sql = "SELECT * FROM datos_cli_prov WHERE nombre LIKE '%" + searchText + "%' OR direccion LIKE '%" + searchText + "%' OR ruc LIKE '%" + searchText + "%' OR telefono LIKE '%" + searchText + "%'";
     } else {
         sql = "SELECT * FROM datos_cli_prov";
     }
 
-    String[] datos = new String[19];
+    String[] datos = new String[5];
     Statement st;
 
     try {
@@ -296,20 +287,7 @@ public class ArrendamientosDAO {
             datos[2] = rs.getString(3);
             datos[3] = rs.getString(4);
             datos[4] = rs.getString(5);
-            datos[5] = rs.getString(6);
-            datos[6] = rs.getString(7);
-            datos[7] = rs.getString(8);
-            datos[8] = rs.getString(9);
-            datos[9] = rs.getString(10);
-            datos[10] = rs.getString(11);
-            datos[11] = rs.getString(12);
-            datos[12] = rs.getString(13);
-            datos[13] = rs.getString(14);
-            datos[14] = rs.getString(15);
-            datos[15] = rs.getString(16);
-            datos[16] = rs.getString(17);
-            datos[17] = rs.getString(18);
-            datos[18] = rs.getString(19);
+
 
             modelo.addRow(datos);
         }
