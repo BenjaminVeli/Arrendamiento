@@ -20,6 +20,8 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(this);
         SetImageLabel(sidebarImg, "src/main/java/images/sidebar-bg.jpg");
+        SetImageLabel(userImg, "src/main/java/images/user128x128.png");
+        SetImageLabel(example, "src/main/java/images/favicon.png");
 //        SetImageLabel(jLabel2, "src/main/java/com/images/user128x128.png");
     }
 
@@ -34,6 +36,7 @@ public class Login extends javax.swing.JFrame {
 
         background = new javax.swing.JPanel();
         userTitle = new javax.swing.JLabel();
+        example = new javax.swing.JLabel();
         userImg = new javax.swing.JLabel();
         sidebarImg = new javax.swing.JLabel();
         logoName = new javax.swing.JLabel();
@@ -55,18 +58,18 @@ public class Login extends javax.swing.JFrame {
         userTitle.setText("USUARIO");
         background.add(userTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, -1, 30));
 
-        userImg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        userImg.setIcon(new javax.swing.ImageIcon("C:\\Users\\diego\\Documents\\NetBeansProjects\\Arrendamiento\\src\\main\\java\\images\\user128x128.png")); // NOI18N
-        background.add(userImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 60, 280, -1));
+        example.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        example.setForeground(new java.awt.Color(0, 0, 0));
+        background.add(example, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 40, 40, 30));
+        background.add(userImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(564, 60, 130, 130));
 
         sidebarImg.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         background.add(sidebarImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 0, 280, 572));
 
         logoName.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         logoName.setForeground(new java.awt.Color(0, 0, 0));
-        logoName.setIcon(new javax.swing.ImageIcon("C:\\Users\\diego\\Documents\\NetBeansProjects\\Arrendamiento\\src\\main\\java\\images\\favicon.png")); // NOI18N
         logoName.setText("LOGO");
-        background.add(logoName, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, 140, 30));
+        background.add(logoName, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 70, 30));
 
         loginTitle.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         loginTitle.setForeground(new java.awt.Color(0, 0, 0));
@@ -233,6 +236,7 @@ public class Login extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
     private javax.swing.JButton btnLogin;
+    private javax.swing.JLabel example;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel loginTitle;

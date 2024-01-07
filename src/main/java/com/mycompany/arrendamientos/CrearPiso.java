@@ -8,11 +8,9 @@ public class CrearPiso extends javax.swing.JFrame {
    
     public CrearPiso() {
         initComponents();
-        
-         txtId.setEnabled(false);
-    
-         Limpiar();
-        
+        this.setLocationRelativeTo(null);
+        txtId.setEnabled(false);
+        Limpiar();
         PisoDAO objetoPisos = new PisoDAO();
         objetoPisos.MostrarPiso(tbTotalPisos);
     }
@@ -58,6 +56,11 @@ public class CrearPiso extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 14))); // NOI18N
 
         jButton5.setText("Salir");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         btnLimpiar.setText("Limpiar");
         btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
@@ -197,6 +200,12 @@ public class CrearPiso extends javax.swing.JFrame {
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         Limpiar();
     }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        CalculoAlquiler ca = new CalculoAlquiler();
+        ca.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_jButton5ActionPerformed
 
    
     public static void main(String args[]) {

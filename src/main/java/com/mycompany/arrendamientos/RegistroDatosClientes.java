@@ -13,10 +13,8 @@ import DAO.ArrendamientosDAO;
  * @author USER
  */
 public class RegistroDatosClientes extends javax.swing.JFrame {
-
-    private CalculoAlquiler ca;
-    private Arrendamientos arrendamientos;
     
+    private Arrendamientos arrendamientos;
 
     public RegistroDatosClientes() {
         initComponents();
@@ -508,9 +506,6 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-     public void setCa(CalculoAlquiler ca) {
-        this.ca = ca;
-    }
     
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         ArrendamientosDAO objetoArrendamientos = new ArrendamientosDAO();
@@ -519,7 +514,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
-
+        CalculoAlquiler ca = new CalculoAlquiler();
         ca.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnGuardar1ActionPerformed

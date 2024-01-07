@@ -1,8 +1,10 @@
 package Modelo;
 
-
 public class Piso {
 
+    int codigo;
+    String piso;
+    
     public int getCodigo() {
         return codigo;
     }
@@ -18,6 +20,4 @@ public class Piso {
     public void setPiso(String piso) {
         this.piso = piso;
     }
-    int codigo;
-    String piso;
 }

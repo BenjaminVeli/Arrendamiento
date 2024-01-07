@@ -299,7 +299,7 @@ public class ArrendamientosDAO {
     }
 }
    
-       public ArrayList<String> obtenerNombresClientes() {
+    public ArrayList<String> obtenerNombresClientes() {
         ArrayList<String> nombres = new ArrayList<>();
         CConexion objetoConexion = new CConexion();
         String sql = "SELECT nombre FROM datos_cli_prov";
