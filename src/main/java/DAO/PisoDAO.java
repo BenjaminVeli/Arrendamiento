@@ -15,7 +15,7 @@ import javax.swing.table.TableRowSorter;
 public class PisoDAO {
     public void InsertarPiso(JTextField paramPiso) {
         Piso piso = new Piso();
-        piso.setPiso(paramPiso.getText());
+         piso.setPiso(paramPiso.getText());
 
         CConexion objetoConexion = new CConexion();
         String consulta = "insert into piso (piso) values (?)";    

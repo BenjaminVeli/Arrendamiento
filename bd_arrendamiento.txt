@@ -35,3 +35,22 @@ create table piso (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   piso VARCHAR(100)
 );
+
+CREATE TABLE cuarto (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    piso_id INT,
+    numcuarto VARCHAR(100),
+    metraje VARCHAR(100),
+    FOREIGN KEY (piso_id) REFERENCES piso(id)
+);
+
+CREATE TABLE rent_calculation (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  client_id INT,
+  FOREIGN KEY (client_id) REFERENCES datos_cli_prov(id),
+  rent INT,
+  total INT,
+  total_rent INT,
+  floor_id INT,
+  FOREIGN KEY (floor_id) REFERENCES piso(id)
+);
