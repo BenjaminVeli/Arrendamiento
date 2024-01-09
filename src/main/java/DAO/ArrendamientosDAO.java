@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -17,7 +18,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 public class ArrendamientosDAO {
-    public void InsertarCliente(JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JTextField paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
+    public void InsertarCliente(JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
         Arrendamientos arrendamientos = new Arrendamientos();
         arrendamientos.setNombre(paramNombre.getText());
         arrendamientos.setDireccion(paramDireccion.getText());
@@ -32,7 +33,7 @@ public class ArrendamientosDAO {
         arrendamientos.setNacimiento(new Date(paramNacimiento.getDate().getTime()));
         arrendamientos.setDni_propietario(paramDni_propietario.getText());
         arrendamientos.setCorreo(paramCorreo.getText());
-        arrendamientos.setEstado_civil(paramEstado_civil.getText());
+        arrendamientos.setEstado_civil((String) paramEstado_civil.getSelectedItem());
         arrendamientos.setConyuge(paramConyuge.getText());
         arrendamientos.setDni_conyuge(paramDni_conyuge.getText());
         arrendamientos.setCiudad(paramCiudad.getText());
@@ -119,7 +120,7 @@ public class ArrendamientosDAO {
     }
 }
     
-    public void SeleccionarCliente(JTable paramTablaClientes, JTextField paramId, JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JTextField paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
+    public void SeleccionarCliente(JTable paramTablaClientes, JTextField paramId, JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
     try {
         int fila = paramTablaClientes.getSelectedRow();
         if (fila >= 0) {
@@ -153,7 +154,16 @@ public class ArrendamientosDAO {
                 paramCelular.setText(rs.getString("celular"));
                 paramDni_propietario.setText(rs.getString("dni_propietario"));
                 paramCorreo.setText(rs.getString("correo"));
-                paramEstado_civil.setText(rs.getString("estado_civil"));
+                String estadoCivil = rs.getString("estado_civil");
+                int index = -1;
+                
+                for (int i = 0; i < paramEstado_civil.getItemCount(); i++) {
+                    if (paramEstado_civil.getItemAt(i).equals(estadoCivil)) {
+                        index = i;
+                        break;
+                    }
+                }
+                paramEstado_civil.setSelectedIndex(index);
                 paramConyuge.setText(rs.getString("conyuge"));
                 paramDni_conyuge.setText(rs.getString("dni_conyuge"));
                 paramCiudad.setText(rs.getString("ciudad"));
@@ -167,7 +177,7 @@ public class ArrendamientosDAO {
     }
 }
     
-    public void ModificarCliente(JTextField paramCodigo, JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JTextField paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
+    public void ModificarCliente(JTextField paramCodigo, JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
     Arrendamientos arrendamientos = new Arrendamientos();
     arrendamientos.setCodigo(Integer.parseInt(paramCodigo.getText()));
     arrendamientos.setNombre(paramNombre.getText());
@@ -183,7 +193,7 @@ public class ArrendamientosDAO {
     arrendamientos.setNacimiento(new java.sql.Date(paramNacimiento.getDate().getTime()));
     arrendamientos.setDni_propietario(paramDni_propietario.getText());
     arrendamientos.setCorreo(paramCorreo.getText());
-    arrendamientos.setEstado_civil(paramEstado_civil.getText());
+    arrendamientos.setEstado_civil((String) paramEstado_civil.getSelectedItem());
     arrendamientos.setConyuge(paramConyuge.getText());
     arrendamientos.setDni_conyuge(paramDni_conyuge.getText());
     arrendamientos.setCiudad(paramCiudad.getText());
