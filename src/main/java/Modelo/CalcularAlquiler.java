@@ -8,7 +8,13 @@ public class CalcularAlquiler {
     int total;
     int totalRent;
     Piso piso;
+    String cuarto;
 
+    public CalcularAlquiler() {
+        // Inicializa el objeto cliente en el constructor
+        this.cliente = new Arrendamientos();
+    }
+    
     public int getId() {
         return id;
     }
@@ -45,8 +51,8 @@ public class CalcularAlquiler {
         return totalRent;
     }
 
-    public void setTotalRent(int totalRent) {
-        this.totalRent = totalRent;
+    public void setTotalRent() {
+        this.totalRent =  this.rent * this.total;
     }
 
     public Piso getPiso() {
@@ -55,5 +61,13 @@ public class CalcularAlquiler {
 
     public void setPiso(Piso piso) {
         this.piso = piso;
+    }
+    
+    public String getCuarto() {
+        return cuarto;
+    }
+
+    public void setCuarto(String cuarto) {
+        this.cuarto = cuarto;
     }
 }

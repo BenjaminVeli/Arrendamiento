@@ -1,6 +1,5 @@
 package Conexion;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import javax.swing.JOptionPane;
@@ -30,14 +29,4 @@ public class CConexion {
         return conectar;
     }
     
-    public void cerrarConexion() {
-    try {
-        if (conectar != null && !conectar.isClosed()) {
-            conectar.close();
-            JOptionPane.showMessageDialog(null, "Conexion Cerrada");
-        }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "No se pudo cerrar la conexion");
-    }
-}
 }

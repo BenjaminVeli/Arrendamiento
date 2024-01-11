@@ -1,6 +1,5 @@
 package Modelo;
 
-import Modelo.Arrendamientos;
 import com.mycompany.arrendamientos.Login;
 
 

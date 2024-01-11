@@ -14,17 +14,11 @@ public class CrearCuarto extends javax.swing.JFrame {
 
     public CrearCuarto() {
          initComponents();
+         this.setLocationRelativeTo(null);
          txtId.setEnabled(false);
-        
          CuartoDAO objetoCuartos = new CuartoDAO();
          objetoCuartos.MostrarPisoCombo(cbpiso);
          objetoCuartos.MostrarCuartos(tbTotalCuartos);
-         
-        
- 
-         
-         
-         
     }
 
    
@@ -45,7 +39,7 @@ public class CrearCuarto extends javax.swing.JFrame {
         btnModificar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbTotalCuartos = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
@@ -90,7 +84,12 @@ public class CrearCuarto extends javax.swing.JFrame {
 
         btnLimpiar.setText("Limpiar");
 
-        jButton2.setText("Salir");
+        btnSalir.setText("Salir");
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -116,7 +115,7 @@ public class CrearCuarto extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -151,7 +150,7 @@ public class CrearCuarto extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnLimpiar)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
+                .addComponent(btnSalir)
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -232,6 +231,12 @@ public class CrearCuarto extends javax.swing.JFrame {
        objetoCuartos.EliminarCuartos(txtId);
        objetoCuartos.MostrarCuartos(tbTotalCuartos);
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        CalculoAlquiler ca = new CalculoAlquiler();
+        ca.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnSalirActionPerformed
     
 
   
@@ -249,8 +254,8 @@ public class CrearCuarto extends javax.swing.JFrame {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox<String> cbpiso;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

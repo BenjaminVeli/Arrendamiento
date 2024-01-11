@@ -41,6 +41,7 @@ CREATE TABLE cuarto (
     piso_id INT,
     numcuarto VARCHAR(100),
     metraje VARCHAR(100),
+    ocupado BOOLEAN DEFAULT false,
     FOREIGN KEY (piso_id) REFERENCES piso(id)
 );
 
@@ -52,5 +53,7 @@ CREATE TABLE rent_calculation (
   total INT,
   total_rent INT,
   floor_id INT,
-  FOREIGN KEY (floor_id) REFERENCES piso(id)
+  FOREIGN KEY (floor_id) REFERENCES piso(id),
+  room_id INT,
+  FOREIGN KEY (room_id) REFERENCES cuarto(id)
 );

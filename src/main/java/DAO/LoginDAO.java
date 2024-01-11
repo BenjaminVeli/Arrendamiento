@@ -13,7 +13,6 @@ public class LoginDAO {
         try {
             ResultSet rs = null;
             PreparedStatement ps = null;
-
             Conexion.CConexion objetoCConexion = new Conexion.CConexion();
 
             String consulta="select * from users where users.user =(?) and users.password=(?);";

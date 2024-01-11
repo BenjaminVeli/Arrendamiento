@@ -72,7 +72,7 @@ public class CuartoDAO {
         }
 }
          
-         public void MostrarCuartos(JTable tbTotalCuartos) {
+    public void MostrarCuartos(JTable tbTotalCuartos) {
     CConexion objetoConexion = new CConexion();
     
     DefaultTableModel modelo = new DefaultTableModel();

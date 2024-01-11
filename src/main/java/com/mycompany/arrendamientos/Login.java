@@ -10,6 +10,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import DAO.LoginDAO;
 
 public class Login extends javax.swing.JFrame {
 
@@ -18,7 +19,7 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
-        this.setLocationRelativeTo(this);
+        this.setLocationRelativeTo(null);
         SetImageLabel(sidebarImg, "src/main/java/images/sidebar-bg.jpg");
         SetImageLabel(userImg, "src/main/java/images/user128x128.png");
         SetImageLabel(example, "src/main/java/images/favicon.png");
@@ -174,7 +175,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_passInputActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-       DAO.LoginDAO objetoLogin = new DAO.LoginDAO();
+       LoginDAO objetoLogin = new LoginDAO();
         if (objetoLogin.ValidarUsuario(userInput, passInput)) {
             // Cerrar la ventana actual
             this.dispose();
