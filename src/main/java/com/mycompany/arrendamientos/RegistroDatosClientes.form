@@ -127,8 +127,8 @@
                                   </Group>
                               </Group>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="txtDniconyuge" max="32767" attributes="0"/>
-                                  <Component id="txtEstadocivil" pref="125" max="32767" attributes="0"/>
+                                  <Component id="txtDniconyuge" pref="125" max="32767" attributes="0"/>
+                                  <Component id="txtEstadocivil" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -244,9 +244,9 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtEstadocivil" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="txtConyuge" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtEstadocivil" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -525,8 +525,6 @@
         <Property name="text" type="java.lang.String" value="Estado civil :"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtEstadocivil">
-    </Component>
     <Component class="javax.swing.JLabel" name="jLabel16">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -635,6 +633,22 @@
       </SubComponents>
     </Container>
     <Component class="javax.swing.JSeparator" name="jSeparator2">
+    </Component>
+    <Component class="javax.swing.JComboBox" name="txtEstadocivil">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="5">
+            <StringItem index="0" value="Soltero/a"/>
+            <StringItem index="1" value="Casado/a"/>
+            <StringItem index="2" value="Seperado/a"/>
+            <StringItem index="3" value="Divorciado/a"/>
+            <StringItem index="4" value="Viudo/a"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

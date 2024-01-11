@@ -91,7 +91,6 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         txtFecha_ingreso = new com.toedter.calendar.JDateChooser();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        txtEstadocivil = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         txtDniconyuge = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
@@ -105,6 +104,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbTotalClientes = new javax.swing.JTable();
         jSeparator2 = new javax.swing.JSeparator();
+        txtEstadocivil = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -315,6 +315,8 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tbTotalClientes);
 
+        txtEstadocivil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Soltero/a", "Casado/a", "Seperado/a", "Divorciado/a", "Viudo/a" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -399,8 +401,8 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
                                         .addComponent(jLabel16)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtDniconyuge)
-                                    .addComponent(txtEstadocivil, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
+                                    .addComponent(txtDniconyuge, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                                    .addComponent(txtEstadocivil, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(12, 12, 12)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel18)
@@ -489,9 +491,9 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel15)
-                            .addComponent(txtEstadocivil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel18)
-                            .addComponent(txtConyuge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtConyuge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtEstadocivil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel16)
@@ -632,7 +634,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
     private javax.swing.JTextField txtDireccion_propietario;
     private javax.swing.JTextField txtDniconyuge;
     private javax.swing.JTextField txtDnipropietario;
-    private javax.swing.JTextField txtEstadocivil;
+    private javax.swing.JComboBox<String> txtEstadocivil;
     private com.toedter.calendar.JDateChooser txtFecha_ingreso;
     private javax.swing.JTextField txtId;
     private com.toedter.calendar.JDateChooser txtNacimiento;
@@ -659,7 +661,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
     txtFecha_ingreso.setDate(null);
     txtDnipropietario.setText("");
     txtCorreo.setText("");
-    txtEstadocivil.setText("");
+    txtEstadocivil.setSelectedIndex(-1);
     txtConyuge.setText("");
     txtDniconyuge.setText("");
     txtCiudad.setText("");

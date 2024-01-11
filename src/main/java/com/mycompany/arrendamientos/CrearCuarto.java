@@ -19,6 +19,8 @@ public class CrearCuarto extends javax.swing.JFrame {
          CuartoDAO objetoCuartos = new CuartoDAO();
          objetoCuartos.MostrarPisoCombo(cbpiso);
          objetoCuartos.MostrarCuartos(tbTotalCuartos);
+         Limpiar();
+
     }
 
    
@@ -83,6 +85,11 @@ public class CrearCuarto extends javax.swing.JFrame {
         });
 
         btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
 
         btnSalir.setText("Salir");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
@@ -188,9 +195,9 @@ public class CrearCuarto extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                        .addGap(26, 26, 26)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,14 +239,17 @@ public class CrearCuarto extends javax.swing.JFrame {
        objetoCuartos.MostrarCuartos(tbTotalCuartos);
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         CalculoAlquiler ca = new CalculoAlquiler();
         ca.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnSalirActionPerformed
-    
 
-  
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+       Limpiar();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
     public static void main(String args[]) {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -269,4 +279,11 @@ public class CrearCuarto extends javax.swing.JFrame {
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtMetraje;
     // End of variables declaration//GEN-END:variables
+
+    private void Limpiar() {
+        txtId.setText("");
+        cbpiso.setSelectedIndex(-1);
+        txtCuarto.setText("");
+        txtMetraje.setText("");
+    }
 }
