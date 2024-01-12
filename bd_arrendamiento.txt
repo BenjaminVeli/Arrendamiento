@@ -48,7 +48,7 @@ CREATE TABLE cuarto (
 CREATE TABLE rent_calculation (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   client_id INT,
-  FOREIGN KEY (client_id) REFERENCES datos_cli_prov(id),
+  FOREIGN KEY (client_id) REFERENCES datos_cli_prov(id) ON DELETE CASCADE,
   rent INT,
   total INT,
   total_rent INT,
