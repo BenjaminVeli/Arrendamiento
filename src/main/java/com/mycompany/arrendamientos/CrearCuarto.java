@@ -6,12 +6,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
-
-
-
 public class CrearCuarto extends javax.swing.JFrame {
-
-
     public CrearCuarto() {
          initComponents();
          this.setLocationRelativeTo(null);
@@ -22,7 +17,6 @@ public class CrearCuarto extends javax.swing.JFrame {
          Limpiar();
 
     }
-
    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

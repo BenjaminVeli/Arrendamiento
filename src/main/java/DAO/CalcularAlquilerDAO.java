@@ -3,7 +3,6 @@ package DAO;
 import Conexion.CConexion;
 import java.sql.PreparedStatement;
 import Modelo.CalcularAlquiler;
-import Modelo.Arrendamientos;
 import Modelo.Piso;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -87,17 +86,16 @@ public class CalcularAlquilerDAO {
         String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
         int room_id = obtenerIdCuartoPorPiso(nombreCuarto, floorId);
 
-        // Configurar el objeto CalcularAlquiler con los datos obtenidos
-        ca.getCliente().setCodigo(clientId);
-        
         // Verificar si getPiso() devuelve null y crear un nuevo objeto Piso si es necesario
         if (ca.getPiso() == null) {
             ca.setPiso(new Piso());
         }
         
+        // Configurar el objeto CalcularAlquiler con los datos obtenidos
+        ca.getCliente().setCodigo(clientId);
         ca.setRent(Integer.parseInt(paramRent.getText()));
         ca.setTotal(Integer.parseInt(paramTotal.getText()));
-        ca.setTotalRent();// Ajusta cómo calculas totalRent en tu clase CalcularAlquiler
+        ca.setTotalRent();
         ca.getPiso().setCodigo(floorId);
         ca.setCuarto((String) paramNombreCuarto.getSelectedItem());
 
