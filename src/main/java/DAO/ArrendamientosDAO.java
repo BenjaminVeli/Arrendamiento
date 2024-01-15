@@ -246,16 +246,15 @@ public class ArrendamientosDAO {
         Arrendamientos arrendamientos = new Arrendamientos();
         arrendamientos.setCodigo(Integer.parseInt(paramCodigo.getText()));
 
-        CConexion objetoConexion = new CConexion(); 
-
-        try {
-            // Obtener el id del piso y cuarto asociado al cliente_proveedor a eliminar
+        CConexion objetoConexion = new CConexion();
+try {
+            // Obtener los cuartos asociados al cliente_proveedor a eliminar
             String consultaCuarto = "SELECT floor_id, room_id FROM rent_calculation WHERE client_id=?";
             java.sql.CallableStatement csCuarto = objetoConexion.estableceConexion().prepareCall(consultaCuarto);
             csCuarto.setInt(1, arrendamientos.getCodigo());
             ResultSet rsCuarto = csCuarto.executeQuery();
 
-            if (rsCuarto.next()) {
+            while (rsCuarto.next()) {
                 int floorId = rsCuarto.getInt("floor_id");
                 int roomId = rsCuarto.getInt("room_id");
 
@@ -270,17 +269,9 @@ public class ArrendamientosDAO {
                 java.sql.CallableStatement csActualizarCuarto = objetoConexion.estableceConexion().prepareCall(consultaActualizarCuarto);
                 csActualizarCuarto.setInt(1, roomId);
                 csActualizarCuarto.execute();
-
-                JOptionPane.showMessageDialog(null, "Se eliminó correctamente el cliente y se marcó el cuarto como desocupado");
-            } else {
-                // Si el cliente no tiene cuardo o piso, se elimina al cliente, asi de pepa :v
-                String consultaEliminarCliente = "DELETE FROM datos_cli_prov WHERE id=?";
-                java.sql.CallableStatement csEliminarCliente = objetoConexion.estableceConexion().prepareCall(consultaEliminarCliente);
-                csEliminarCliente.setInt(1, arrendamientos.getCodigo());
-                csEliminarCliente.execute();
-
-                JOptionPane.showMessageDialog(null, "Se eliminó correctamente el cliente");
             }
+
+            JOptionPane.showMessageDialog(null, "Se eliminó correctamente el cliente y se marcaron los cuartos como desocupados");
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "No se pudo eliminar el cliente, error: " + e.toString());

@@ -5,6 +5,7 @@ public class CalcularAlquiler {
     int id;
     Arrendamientos cliente;
     int rent;
+    int garantia;
     int total;
     int totalRent;
     Piso piso;
@@ -37,6 +38,14 @@ public class CalcularAlquiler {
 
     public void setRent(int rent) {
         this.rent = rent;
+    }
+    
+    public int getGarantia() {
+        return garantia;
+    }
+
+    public void setGarantia(int garantia) {
+        this.garantia = garantia;
     }
 
     public int getTotal() {

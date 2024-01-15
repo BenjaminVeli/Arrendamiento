@@ -50,6 +50,7 @@ CREATE TABLE rent_calculation (
   client_id INT,
   FOREIGN KEY (client_id) REFERENCES datos_cli_prov(id) ON DELETE CASCADE,
   rent INT,
+  garantia INT,
   total INT,
   total_rent INT,
   floor_id INT,
