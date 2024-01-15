@@ -12,7 +12,6 @@ public class CalcularAlquiler {
     String cuarto;
 
     public CalcularAlquiler() {
-        // Inicializa el objeto cliente en el constructor
         this.cliente = new Arrendamientos();
     }
     

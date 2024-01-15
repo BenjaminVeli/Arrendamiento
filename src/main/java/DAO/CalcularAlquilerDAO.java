@@ -74,27 +74,43 @@ public class CalcularAlquilerDAO {
         return cuartos;
     }
     
+    public ArrayList<String> obtenerClientesDeRentCalculation() {
+    ArrayList<String> nombresClientes = new ArrayList<>();
+    CConexion objetoConexion = new CConexion();
+
+    String sql = "SELECT datos_cli_prov.nombre FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+
+        while (rs.next()) {
+            String nombreCliente = rs.getString("nombre");
+            nombresClientes.add(nombreCliente);
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener los nombres de los clientes de rent_calculation: " + e.toString());
+    }
+
+    return nombresClientes;
+    }
+
     public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent,JTextField paramGarantia, JTextField paramTotal, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto) {
         CalcularAlquiler ca = new CalcularAlquiler();
        
-        // Obtener el ID del cliente seleccionado
         String nombreCliente = (String) paramNombreCliente.getSelectedItem();
         int clientId = obtenerIdNombre(nombreCliente);
 
-        // Obtener el ID del piso seleccionado
         String nombrePiso = (String) paramNombrePiso.getSelectedItem();
         int floorId = obtenerIdPiso(nombrePiso);
         
-        // Obtener el ID del cuarto seleccionado
         String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
         int room_id = obtenerIdCuartoPorPiso(nombreCuarto, floorId);
 
-        // Verificar si getPiso() devuelve null y crear un nuevo objeto Piso si es necesario
         if (ca.getPiso() == null) {
             ca.setPiso(new Piso());
         }
         
-        // Configurar el objeto CalcularAlquiler con los datos obtenidos
         ca.getCliente().setCodigo(clientId);
         ca.setRent(Integer.parseInt(paramRent.getText()));
         ca.setGarantia(Integer.parseInt(paramGarantia.getText()));
@@ -120,9 +136,12 @@ public class CalcularAlquilerDAO {
             cs.execute();
             JOptionPane.showMessageDialog(null, "Cálculo de alquiler insertado exitosamente");
             
+            
+            
             refrescarComboBoxPisos(paramNombrePiso);   
             // Actualizar el estado del cuarto seleccionado
             actualizarEstadoCuarto(room_id);
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error al insertar el cálculo de alquiler: " + e.toString());
         }
@@ -168,10 +187,7 @@ public class CalcularAlquilerDAO {
         e.printStackTrace(); // Imprimir la pila de excepciones para obtener más detalles
     } 
 }
-
-
-
-    
+   
     private void refrescarComboBoxPisos(JComboBox<String> paramNombrePiso) {
         var nombresPisos = obtenerPisos();
 
@@ -206,7 +222,7 @@ public class CalcularAlquilerDAO {
 
         return clientId;
     }
-
+    
     private int obtenerIdPiso(String nombrePiso) {
         int floorId = -1;
         CConexion objetoConexion = new CConexion();
