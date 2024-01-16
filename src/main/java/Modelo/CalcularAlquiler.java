@@ -1,5 +1,5 @@
 package Modelo;
-
+import java.sql.Date;
 
 public class CalcularAlquiler {
     int id;
@@ -10,6 +10,33 @@ public class CalcularAlquiler {
     int totalRent;
     Piso piso;
     String cuarto;
+    int cuotas;
+    Date fecha;
+    Date fechaIngreso;
+
+    public int getCuotas() {
+        return cuotas;
+    }
+
+    public void setCuotas(int cuotas) {
+        this.cuotas = cuotas;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public Date getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public void setFechaIngreso(Date fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
+    }
 
     public CalcularAlquiler() {
         this.cliente = new Arrendamientos();

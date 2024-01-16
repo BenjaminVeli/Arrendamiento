@@ -280,6 +280,12 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Búsqueda", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 14))); // NOI18N
 
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -577,12 +583,16 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
             evt.consume();
         }
     }//GEN-LAST:event_txtRucKeyTyped
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchActionPerformed
     
-    private void filterTable() {
+   private void filterTable() {
     String searchText = txtSearch.getText().trim();
     ArrendamientosDAO objetoArrendamientos = new ArrendamientosDAO();
     objetoArrendamientos.FiltrarClientes(tbTotalClientes, searchText);
-}
+    }
 
     public static void main(String args[]) {
 

@@ -177,9 +177,5 @@ public class Arrendamientos {
     public void setCiudad(String ciudad) {
         this.ciudad = ciudad;
     }
-
-    public void ModificarCliente(JTextField txtId, JTextField txtNombre, JTextField txtDireccion, JTextField txtRuc, JTextField txtTelefono, JTextField txtContacto1, JTextField txtContacto2, JTextField txtPropietario, JTextField txtDireccion_propietario, JDateChooser txtNacimiento, JDateChooser txtFecha_ingreso, JTextField txtTelefono_propietario, JTextField txtCelular, JDateChooser txtNacimiento0, JTextField txtDnipropietario, JTextField txtCorreo, JTextField txtEstadocivil, JTextField txtConyuge, JTextField txtDniconyuge, JTextField txtCiudad) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
 }

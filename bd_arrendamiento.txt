@@ -54,7 +54,10 @@ CREATE TABLE rent_calculation (
   total INT,
   total_rent INT,
   floor_id INT,
-  FOREIGN KEY (floor_id) REFERENCES piso(id),
   room_id INT,
+  cuotas INT,
+  fecha DATE,
+  fecha_ingreso DATE,
+  FOREIGN KEY (floor_id) REFERENCES piso(id),
   FOREIGN KEY (room_id) REFERENCES cuarto(id)
 );
