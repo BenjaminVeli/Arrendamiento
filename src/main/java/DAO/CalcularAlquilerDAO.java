@@ -78,9 +78,6 @@ public class CalcularAlquilerDAO {
         return cuartos;
     }
     
-    
-    
-    
     public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JTextField paramCuotas, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
         CalcularAlquiler ca = new CalcularAlquiler();
        
@@ -182,18 +179,19 @@ public class CalcularAlquilerDAO {
     }
 }
 
-    
-    
-    
-    
-    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JTextField paramRent, JTextField paramGarantia, JTextField paramCuotas, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
+    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JTextField paramCuotas, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
             // Obtén el ID de la fila seleccionada
             String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
 
-            String sql = "SELECT * FROM rent_calculation WHERE id = " + idSeleccionado;
+            String sql = "SELECT * FROM rent_calculation " +
+                         "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                         "INNER JOIN piso ON rent_calculation.floor_id = piso.id " +
+                         "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+                         "WHERE rent_calculation.id = " + idSeleccionado;
+
             CConexion objetoConexion = new CConexion();
             Statement st = objetoConexion.estableceConexion().createStatement();
             ResultSet rs = st.executeQuery(sql);
@@ -204,6 +202,18 @@ public class CalcularAlquilerDAO {
                 paramGarantia.setText(rs.getString("garantia"));
                 paramCuotas.setText(rs.getString("cuotas"));
                 paramTotal.setText(rs.getString("total"));
+
+                // Obtener el nombre del cliente y establecerlo en el JComboBox
+                String nombreCliente = rs.getString("nombre");
+                paramNombreCliente.setSelectedItem(nombreCliente);
+
+                // Obtener el nombre del piso y establecerlo en el JComboBox
+                String nombrePiso = rs.getString("piso");
+                paramNombrePiso.setSelectedItem(nombrePiso);
+
+                // Obtener el nombre del cuarto y establecerlo en el JComboBox
+                String nombreCuarto = rs.getString("numcuarto");
+                paramNombreCuarto.setSelectedItem(nombreCuarto);
 
                 // Manejo de fechas
                 java.util.Date fecha = rs.getDate("fecha");
@@ -220,20 +230,6 @@ public class CalcularAlquilerDAO {
 }
 
 
-     private int obtenerIndiceNombreCliente(String nombreCliente) {
-        ArrayList<String> nombresClientes = obtenerNombresClientes();
-        return nombresClientes.indexOf(nombreCliente);
-    }
-
-    private int obtenerIndiceNombrePiso(String nombrePiso) {
-        ArrayList<String> nombresPisos = obtenerPisos();
-        return nombresPisos.indexOf(nombrePiso);
-    }
-    
-    
-    
-    
-    
     private void refrescarComboBoxPisos(JComboBox<String> paramNombrePiso) {
         var nombresPisos = obtenerPisos();
 
