@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import Modelo.CalcularAlquiler;
 import Modelo.Piso;
 import com.toedter.calendar.JDateChooser;
+import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -77,6 +78,11 @@ public class CalcularAlquilerDAO {
         }
         return cuartos;
     }
+    
+    
+    
+    
+    
     
     public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JTextField paramCuotas, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
         CalcularAlquiler ca = new CalcularAlquiler();
@@ -229,7 +235,47 @@ public class CalcularAlquilerDAO {
     }
 }
 
+    public void EliminarCalculoAlquiler(JTextField id) {
+    CConexion objetoConexion = new CConexion();
+    String obtenerDatosCuarto = "SELECT floor_id, room_id FROM rent_calculation WHERE id=?";
+    
+    try {
+        // Obtener los datos del cuarto asociado al cálculo
+        PreparedStatement psDatosCuarto = objetoConexion.estableceConexion().prepareStatement(obtenerDatosCuarto);
+        psDatosCuarto.setInt(1, Integer.parseInt(id.getText()));
+        ResultSet rsDatosCuarto = psDatosCuarto.executeQuery();
 
+        int floorId = 0;
+        int roomId = 0;
+
+        if (rsDatosCuarto.next()) {
+            floorId = rsDatosCuarto.getInt("floor_id");
+            roomId = rsDatosCuarto.getInt("room_id");
+        }
+
+        // Eliminar el cálculo de alquiler
+        String eliminarCalculo = "DELETE FROM rent_calculation WHERE id=?";
+        PreparedStatement psEliminarCalculo = objetoConexion.estableceConexion().prepareStatement(eliminarCalculo);
+        psEliminarCalculo.setInt(1, Integer.parseInt(id.getText()));
+        psEliminarCalculo.executeUpdate();
+
+        // Liberar el cuarto asociado (marcar como desocupado)
+        String liberarCuarto = "UPDATE cuarto SET ocupado=false WHERE id=?";
+        PreparedStatement psLiberarCuarto = objetoConexion.estableceConexion().prepareStatement(liberarCuarto);
+        psLiberarCuarto.setInt(1, roomId);
+        psLiberarCuarto.executeUpdate();
+
+        JOptionPane.showMessageDialog(null, "Se eliminó correctamente el cálculo de alquiler y se liberó el cuarto asociado.");
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al eliminar el cálculo de alquiler: " + e.toString());
+    }
+}
+
+    
+    
+    
+    
     private void refrescarComboBoxPisos(JComboBox<String> paramNombrePiso) {
         var nombresPisos = obtenerPisos();
 

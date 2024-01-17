@@ -73,7 +73,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         Grabarbtn = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         txtSearch = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbTotalCalculo = new javax.swing.JTable();
@@ -167,11 +167,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             }
         });
 
-        jButton6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton6.setText("Eliminar");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnEliminarActionPerformed(evt);
             }
         });
 
@@ -211,7 +211,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnModificar)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton6)))
+                        .addComponent(btnEliminar)))
                 .addGap(26, 26, 26))
         );
         jPanel5Layout.setVerticalGroup(
@@ -219,7 +219,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6)
+                    .addComponent(btnEliminar)
                     .addComponent(btnModificar)
                     .addComponent(btnLimpiar)
                     .addComponent(Grabarbtn)
@@ -639,9 +639,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
     }//GEN-LAST:event_GrabarbtnActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
+        dao.EliminarCalculoAlquiler(idtxt);
+        dao.MostrarAlquiler(tbTotalCalculo);
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
         // La funcion del buscador esta en el metodo CargarNombres, si falta algo agregalo
@@ -756,6 +758,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Grabarbtn;
     private javax.swing.JTextField alquilertxt;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton crearCuartobtn;
@@ -766,7 +769,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser fechatxt;
     private javax.swing.JTextField garantiatxt;
     private javax.swing.JTextField idtxt;
-    private javax.swing.JButton jButton6;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
