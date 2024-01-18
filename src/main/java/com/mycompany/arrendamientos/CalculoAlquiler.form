@@ -96,7 +96,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jScrollPane1" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="txtSearch" pref="284" max="32767" attributes="0"/>
+                          <Component id="txtSearch" pref="288" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
                           <Component id="Grabarbtn" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -259,11 +259,11 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="cuartostxt" pref="78" max="32767" attributes="0"/>
+                              <Component id="cuartostxt" pref="81" max="32767" attributes="0"/>
                               <Component id="jTextField8" alignment="0" max="32767" attributes="0"/>
                               <Component id="cuotastxt" alignment="0" max="32767" attributes="0"/>
-                              <Component id="jTextField6" alignment="0" max="32767" attributes="0"/>
                               <Component id="fechatxt" pref="0" max="32767" attributes="0"/>
+                              <Component id="interesestxt" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
@@ -320,7 +320,7 @@
                           <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="alquilertxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel7" alignment="3" max="-2" attributes="0"/>
-                          <Component id="jTextField6" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="interesestxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel11" alignment="3" max="-2" attributes="0"/>
                           <Component id="jLabel15" alignment="3" max="-2" attributes="0"/>
                           <Component id="jTextField14" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -484,10 +484,10 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Alquiler(i)"/>
+            <Property name="text" type="java.lang.String" value="Intereses(i)"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="jTextField6">
+        <Component class="javax.swing.JTextField" name="interesestxt">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="0"/>

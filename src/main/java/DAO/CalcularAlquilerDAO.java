@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import Modelo.CalcularAlquiler;
 import Modelo.Piso;
 import com.toedter.calendar.JDateChooser;
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -82,9 +83,7 @@ public class CalcularAlquilerDAO {
     
     
     
-    
-    
-    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JTextField paramCuotas, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
+    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JTextField paramCuotas, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
         CalcularAlquiler ca = new CalcularAlquiler();
        
         String nombreCliente = (String) paramNombreCliente.getSelectedItem();
@@ -104,6 +103,7 @@ public class CalcularAlquilerDAO {
         ca.setRent(Integer.parseInt(paramRent.getText()));
         ca.setGarantia(Integer.parseInt(paramGarantia.getText()));
         ca.setCuotas(Integer.parseInt(paramCuotas.getText()));
+        ca.setInteres(new BigDecimal(paramInteres.getText()));
         ca.setTotal(Integer.parseInt(paramTotal.getText()));
         ca.setTotalRent();
         ca.getPiso().setCodigo(floorId);
@@ -112,7 +112,7 @@ public class CalcularAlquilerDAO {
         ca.setFechaIngreso(new Date(paramFechaIngreso.getDate().getTime()));
 
         CConexion objetoConexion = new CConexion();
-        String consulta = "INSERT INTO rent_calculation (client_id, rent, garantia, total, total_rent, floor_id, room_id, cuotas, fecha, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)";
+        String consulta = "INSERT INTO rent_calculation (client_id, rent, garantia, total, total_rent, floor_id, room_id, cuotas,interes, fecha, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?,?)";
 
         try {
             java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
@@ -124,15 +124,15 @@ public class CalcularAlquilerDAO {
             cs.setInt(5, ca.getTotalRent()); //rent * total
             cs.setInt(6, ca.getPiso().getCodigo());
             cs.setInt(7, room_id);
-            cs.setInt(8, ca.getCuotas());           
-            cs.setDate( 9, ca.getFecha());
-            cs.setDate( 10, ca.getFechaIngreso());
+            cs.setInt(8, ca.getCuotas());   
+            cs.setBigDecimal(9, ca.getInteres());
+            cs.setDate( 10, ca.getFecha());
+            cs.setDate( 11, ca.getFechaIngreso());
 
             cs.execute();
             JOptionPane.showMessageDialog(null, "Cálculo de alquiler insertado exitosamente");
             
             refrescarComboBoxPisos(paramNombrePiso);   
-            // Actualizar el estado del cuarto seleccionado
             actualizarEstadoCuarto(room_id);
             
         } catch (Exception e) {
@@ -154,7 +154,7 @@ public class CalcularAlquilerDAO {
     tbTotalCalculo.setRowSorter(ordenarTabla);
 
     String[] columnasMostradas = {"Id", "Cliente", "Rent", "Garantía", "Total", "Total Rent", "Piso", "Cuarto"};
-    String[] columnasBD = {"id", "nombre_cliente", "rent", "garantia", "total", "total_rent", "nombre_piso", "numcuarto", "cuotas", "fecha", "fecha_ingreso"};
+    String[] columnasBD = {"id", "nombre_cliente", "rent", "garantia", "total", "total_rent", "nombre_piso", "numcuarto", "cuotas", "interes", "fecha", "fecha_ingreso"};
 
     for (int i = 0; i < columnasMostradas.length; i++) {
         modelo.addColumn(columnasMostradas[i]);
@@ -162,7 +162,7 @@ public class CalcularAlquilerDAO {
 
     tbTotalCalculo.setModel(modelo);
 
-    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia, cuotas, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
+    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia, cuotas,interes, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
 
     try (Statement st = objetoConexion.estableceConexion().createStatement();
          ResultSet rs = st.executeQuery(sql)) {
@@ -185,7 +185,7 @@ public class CalcularAlquilerDAO {
     }
 }
 
-    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JTextField paramCuotas, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
+    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JTextField paramCuotas, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
@@ -207,6 +207,7 @@ public class CalcularAlquilerDAO {
                 paramRent.setText(rs.getString("rent"));
                 paramGarantia.setText(rs.getString("garantia"));
                 paramCuotas.setText(rs.getString("cuotas"));
+                paramInteres.setText(rs.getString("interes"));
                 paramTotal.setText(rs.getString("total"));
 
                 // Obtener el nombre del cliente y establecerlo en el JComboBox
@@ -273,7 +274,48 @@ public class CalcularAlquilerDAO {
 }
 
     
-    
+    public void FiltrarRentCalculation(JTable paramTablaTotalClientes, String searchText) {
+    CConexion objetoConexion = new CConexion();
+    DefaultTableModel modelo = new DefaultTableModel();
+    TableRowSorter<TableModel> OrdenarTabla = new TableRowSorter<TableModel>(modelo);
+    paramTablaTotalClientes.setRowSorter(OrdenarTabla);
+
+    String sql = "";
+    String[] columnasMostradas = {"Id", "Cliente", "Rent", "Garantía", "Total", "Total Rent", "Piso", "Cuarto"};
+    String[] columnasBD = {"id", "nombre_cliente", "rent", "garantia", "total", "total_rent", "nombre_piso", "numcuarto"};
+
+    for (int i = 0; i < columnasMostradas.length; i++) {
+        modelo.addColumn(columnasMostradas[i]);
+    }
+
+    paramTablaTotalClientes.setModel(modelo);
+
+    if (!searchText.isEmpty()) {
+        sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id WHERE nombre_cliente LIKE '%" + searchText + "%' OR rent LIKE '%" + searchText + "%' OR garantia LIKE '%" + searchText + "%' OR total LIKE '%" + searchText + "%' OR total_rent LIKE '%" + searchText + "%' OR nombre_piso LIKE '%" + searchText + "%'";
+    } else {
+        sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
+    }
+
+    try (Statement st = objetoConexion.estableceConexion().createStatement();
+         ResultSet rs = st.executeQuery(sql)) {
+
+        while (rs.next()) {
+            String[] datos = new String[columnasBD.length];
+
+            for (int i = 0; i < columnasBD.length; i++) {
+                datos[i] = rs.getString(columnasBD[i]);
+            }
+
+            modelo.addRow(datos);
+        }
+
+        paramTablaTotalClientes.setModel(modelo);
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error: " + e.toString());
+    }
+}
+
     
     
     private void refrescarComboBoxPisos(JComboBox<String> paramNombrePiso) {

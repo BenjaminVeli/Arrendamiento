@@ -1,4 +1,5 @@
 package Modelo;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 public class CalcularAlquiler {
@@ -11,9 +12,10 @@ public class CalcularAlquiler {
     Piso piso;
     String cuarto;
     int cuotas;
+    BigDecimal interes;
     Date fecha;
     Date fechaIngreso;
-
+    
     public int getCuotas() {
         return cuotas;
     }
@@ -22,6 +24,14 @@ public class CalcularAlquiler {
         this.cuotas = cuotas;
     }
 
+    public BigDecimal getInteres() {
+        return interes;
+    }
+
+    public void setInteres(BigDecimal interes) {
+        this.interes = interes;
+    }
+    
     public Date getFecha() {
         return fecha;
     }
@@ -81,7 +91,7 @@ public class CalcularAlquiler {
     public void setTotal(int total) {
         this.total = total;
     }
-
+    
     public int getTotalRent() {
         return totalRent;
     }

@@ -12,6 +12,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         cargarNombres();
         cargarPisos();
+        filterTable();
         Limpiar();
          idtxt.setEnabled(false);
         
@@ -88,7 +89,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         totaltxt = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
+        interesestxt = new javax.swing.JTextField();
         cuotastxt = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -203,7 +204,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(txtSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                         .addGap(68, 68, 68)
                         .addComponent(Grabarbtn)
                         .addGap(18, 18, 18)
@@ -284,10 +285,10 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         jLabel6.setText("Pisos");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setText("Alquiler(i)");
+        jLabel7.setText("Intereses(i)");
 
-        jTextField6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField6.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        interesestxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        interesestxt.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         cuotastxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cuotastxt.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
@@ -429,11 +430,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                         .addComponent(registroClientebtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cuartostxt, 0, 78, Short.MAX_VALUE)
+                            .addComponent(cuartostxt, 0, 81, Short.MAX_VALUE)
                             .addComponent(jTextField8)
                             .addComponent(cuotastxt)
-                            .addComponent(jTextField6)
-                            .addComponent(fechatxt, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addComponent(fechatxt, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(interesestxt))
                         .addGap(32, 32, 32)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel14)
@@ -478,7 +479,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addComponent(alquilertxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7)
-                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(interesestxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel11)
                         .addComponent(jLabel15)
                         .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -628,8 +629,8 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Debes rellenar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-           
-            dao.insertarCalculoAlquiler(search, alquilertxt,garantiatxt, totaltxt, pisostxt, cuartostxt,cuotastxt,fechatxt,fechaingresotxt);
+            
+            dao.insertarCalculoAlquiler(search, alquilertxt,garantiatxt,cuotastxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt);
             dao.MostrarAlquiler(tbTotalCalculo);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Los campos de alquiler y total deben contener valores numéricos", "Error", JOptionPane.ERROR_MESSAGE);
@@ -697,7 +698,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void tbTotalCalculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCalculoMouseClicked
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.SeleccionarCalculoAlquiler(tbTotalCalculo, idtxt, search,alquilertxt,garantiatxt,cuotastxt,pisostxt,cuartostxt,totaltxt,fechatxt,fechaingresotxt);
+       dao.SeleccionarCalculoAlquiler(tbTotalCalculo, idtxt, search, alquilertxt,garantiatxt,cuotastxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt);
 
     }//GEN-LAST:event_tbTotalCalculoMouseClicked
 
@@ -716,6 +717,13 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         // Actualizar el campo totalAlquilertxt
         totalAlquilertxt.setText(String.valueOf(totalAlquiler));
     }
+    
+    private void filterTable() {
+    String searchText = txtSearch.getText().trim();
+    CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
+    dao.FiltrarRentCalculation(tbTotalCalculo, searchText);
+    }
+
     
     /**
      * @param args the command line arguments
@@ -769,6 +777,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser fechatxt;
     private javax.swing.JTextField garantiatxt;
     private javax.swing.JTextField idtxt;
+    private javax.swing.JTextField interesestxt;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
@@ -803,7 +812,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField13;
     private javax.swing.JTextField jTextField14;
     private javax.swing.JTextField jTextField17;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JComboBox<String> pisostxt;
     private javax.swing.JButton registroClientebtn;
@@ -823,5 +831,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         fechaingresotxt.setDate(null); 
         totalAlquilertxt.setText("");
         totaltxt.setText("");
+        interesestxt.setText("");
     }
 }
