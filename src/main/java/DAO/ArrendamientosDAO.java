@@ -247,14 +247,18 @@ public class ArrendamientosDAO {
         arrendamientos.setCodigo(Integer.parseInt(paramCodigo.getText()));
 
         CConexion objetoConexion = new CConexion();
-try {
+        
+        try {
             // Obtener los cuartos asociados al cliente_proveedor a eliminar
             String consultaCuarto = "SELECT floor_id, room_id FROM rent_calculation WHERE client_id=?";
             java.sql.CallableStatement csCuarto = objetoConexion.estableceConexion().prepareCall(consultaCuarto);
             csCuarto.setInt(1, arrendamientos.getCodigo());
             ResultSet rsCuarto = csCuarto.executeQuery();
+            
+            boolean clienteTieneCuartos = false;
 
             while (rsCuarto.next()) {
+                clienteTieneCuartos = true;
                 int floorId = rsCuarto.getInt("floor_id");
                 int roomId = rsCuarto.getInt("room_id");
 
@@ -270,10 +274,18 @@ try {
                 csActualizarCuarto.setInt(1, roomId);
                 csActualizarCuarto.execute();
             }
-
+            
+            if (!clienteTieneCuartos) {
+                // Si el cliente no tiene cuartos, eliminar directamente
+                String consultaEliminarCliente = "DELETE FROM datos_cli_prov WHERE id=?";
+                java.sql.CallableStatement csEliminarCliente = objetoConexion.estableceConexion().prepareCall(consultaEliminarCliente);
+                csEliminarCliente.setInt(1, arrendamientos.getCodigo());
+                csEliminarCliente.execute();
+            }
+                
             JOptionPane.showMessageDialog(null, "Se eliminó correctamente el cliente y se marcaron los cuartos como desocupados");
-
-        } catch (Exception e) {
+                
+        }catch (Exception e) {
             JOptionPane.showMessageDialog(null, "No se pudo eliminar el cliente, error: " + e.toString());
         }
     }

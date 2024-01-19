@@ -55,7 +55,6 @@ CREATE TABLE rent_calculation (
   total_rent INT,
   floor_id INT,
   room_id INT,
-  cuotas INT,
   interes DECIMAL(10,2),
   fecha DATE,
   fecha_ingreso DATE,

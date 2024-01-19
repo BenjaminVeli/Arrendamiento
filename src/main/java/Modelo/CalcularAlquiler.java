@@ -11,18 +11,9 @@ public class CalcularAlquiler {
     int totalRent;
     Piso piso;
     String cuarto;
-    int cuotas;
     BigDecimal interes;
     Date fecha;
     Date fechaIngreso;
-    
-    public int getCuotas() {
-        return cuotas;
-    }
-
-    public void setCuotas(int cuotas) {
-        this.cuotas = cuotas;
-    }
 
     public BigDecimal getInteres() {
         return interes;
