@@ -56,6 +56,7 @@ CREATE TABLE rent_calculation (
   floor_id INT,
   room_id INT,
   interes DECIMAL(10,2),
+  mensual DECIMAL(10,2),
   fecha DATE,
   fecha_ingreso DATE,
   FOREIGN KEY (floor_id) REFERENCES piso(id),

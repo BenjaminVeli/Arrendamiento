@@ -12,6 +12,7 @@ public class CalcularAlquiler {
     Piso piso;
     String cuarto;
     BigDecimal interes;
+    BigDecimal mensual;
     Date fecha;
     Date fechaIngreso;
 
@@ -105,5 +106,13 @@ public class CalcularAlquiler {
 
     public void setCuarto(String cuarto) {
         this.cuarto = cuarto;
+    }
+    
+    public BigDecimal getMensual() {
+        return mensual;
+    }
+
+    public void setMensual(BigDecimal mensual) {
+        this.mensual = mensual;
     }
 }

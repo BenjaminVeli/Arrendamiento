@@ -83,7 +83,7 @@ public class CalcularAlquilerDAO {
     
     
     
-    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
+    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
         CalcularAlquiler ca = new CalcularAlquiler();
        
         String nombreCliente = (String) paramNombreCliente.getSelectedItem();
@@ -109,9 +109,10 @@ public class CalcularAlquilerDAO {
         ca.setCuarto((String) paramNombreCuarto.getSelectedItem());
         ca.setFecha(new Date(paramFecha.getDate().getTime()));
         ca.setFechaIngreso(new Date(paramFechaIngreso.getDate().getTime()));
+        ca.setMensual(new BigDecimal(paramMensual.getText()));
 
         CConexion objetoConexion = new CConexion();
-        String consulta = "INSERT INTO rent_calculation (client_id, rent, garantia, total, total_rent, floor_id, room_id,interes, fecha, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?)";
+        String consulta = "INSERT INTO rent_calculation (client_id, rent, garantia, total, total_rent, floor_id, room_id,interes,mensual, fecha, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?,?)";
 
         try {
             java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
@@ -124,8 +125,9 @@ public class CalcularAlquilerDAO {
             cs.setInt(6, ca.getPiso().getCodigo());
             cs.setInt(7, room_id);
             cs.setBigDecimal(8, ca.getInteres());
-            cs.setDate( 9, ca.getFecha());
-            cs.setDate( 10, ca.getFechaIngreso());
+            cs.setBigDecimal(9, ca.getMensual());
+            cs.setDate( 10, ca.getFecha());
+            cs.setDate( 11, ca.getFechaIngreso());
 
             cs.execute();
             JOptionPane.showMessageDialog(null, "Cálculo de alquiler insertado exitosamente");
@@ -151,8 +153,8 @@ public class CalcularAlquilerDAO {
     TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
     tbTotalCalculo.setRowSorter(ordenarTabla);
 
-    String[] columnasMostradas = {"Id", "Cliente", "Rent", "Garantía", "Total", "Total Rent", "Piso", "Cuarto"};
-    String[] columnasBD = {"id", "nombre_cliente", "rent", "garantia", "total", "total_rent", "nombre_piso", "numcuarto", "interes", "fecha", "fecha_ingreso"};
+    String[] columnasMostradas = {"Id", "Cliente", "Alquiler", "Garantía", "Cuotas", "Total Rent", "Piso", "Cuarto"};
+    String[] columnasBD = {"id", "nombre_cliente", "rent", "garantia", "total", "total_rent", "nombre_piso", "numcuarto", "interes","mensual", "fecha", "fecha_ingreso"};
 
     for (int i = 0; i < columnasMostradas.length; i++) {
         modelo.addColumn(columnasMostradas[i]);
@@ -160,7 +162,7 @@ public class CalcularAlquilerDAO {
 
     tbTotalCalculo.setModel(modelo);
 
-    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia,interes, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
+    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia,interes,mensual, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
 
     try (Statement st = objetoConexion.estableceConexion().createStatement();
          ResultSet rs = st.executeQuery(sql)) {
@@ -183,7 +185,7 @@ public class CalcularAlquilerDAO {
     }
 }
 
-    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso) {
+    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
@@ -218,7 +220,9 @@ public class CalcularAlquilerDAO {
                 // Obtener el nombre del cuarto y establecerlo en el JComboBox
                 String nombreCuarto = rs.getString("numcuarto");
                 paramNombreCuarto.setSelectedItem(nombreCuarto);
-
+                
+                paramMensual.setText(rs.getString("mensual"));
+                
                 // Manejo de fechas
                 java.util.Date fecha = rs.getDate("fecha");
                 java.util.Date fechaIngreso = rs.getDate("fecha_ingreso");
@@ -270,49 +274,95 @@ public class CalcularAlquilerDAO {
     }
 }
 
-    
-    public void FiltrarRentCalculation(JTable paramTablaTotalClientes, String searchText) {
-    CConexion objetoConexion = new CConexion();
-    DefaultTableModel modelo = new DefaultTableModel();
-    TableRowSorter<TableModel> OrdenarTabla = new TableRowSorter<TableModel>(modelo);
-    paramTablaTotalClientes.setRowSorter(OrdenarTabla);
+    public void ModificarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
+    try {
+        int fila = paramTablaCalculosAlquiler.getSelectedRow();
+        if (fila >= 0) {
+            // Obtén el ID de la fila seleccionada
+            String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
 
-    String sql = "";
-    String[] columnasMostradas = {"Id", "Cliente", "Rent", "Garantía", "Total", "Total Rent", "Piso", "Cuarto"};
-    String[] columnasBD = {"id", "nombre_cliente", "rent", "garantia", "total", "total_rent", "nombre_piso", "numcuarto"};
+            // Obtén el ID del cuarto actualmente ocupado
+            int room_id_actual = obtenerIdCuartoPorCalculoAlquiler(Integer.parseInt(idSeleccionado));
 
-    for (int i = 0; i < columnasMostradas.length; i++) {
-        modelo.addColumn(columnasMostradas[i]);
-    }
+            // Actualizar el cálculo de alquiler
+            CConexion objetoConexion = new CConexion();
+            String actualizarCalculo = "UPDATE rent_calculation SET client_id=?, rent=?, garantia=?, total=?, total_rent=?, floor_id=?, room_id=?, interes=?, mensual=?, fecha=?, fecha_ingreso=? WHERE id=?";
 
-    paramTablaTotalClientes.setModel(modelo);
+            PreparedStatement psActualizarCalculo = objetoConexion.estableceConexion().prepareStatement(actualizarCalculo);
 
-    if (!searchText.isEmpty()) {
-        sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id WHERE nombre_cliente LIKE '%" + searchText + "%' OR rent LIKE '%" + searchText + "%' OR garantia LIKE '%" + searchText + "%' OR total LIKE '%" + searchText + "%' OR total_rent LIKE '%" + searchText + "%' OR nombre_piso LIKE '%" + searchText + "%'";
-    } else {
-        sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
-    }
+            psActualizarCalculo.setInt(1, obtenerIdNombre((String) paramNombreCliente.getSelectedItem()));
+            psActualizarCalculo.setInt(2, Integer.parseInt(paramRent.getText()));
+            psActualizarCalculo.setInt(3, Integer.parseInt(paramGarantia.getText()));
+            psActualizarCalculo.setInt(4, Integer.parseInt(paramTotal.getText()));
+            psActualizarCalculo.setInt(5, Integer.parseInt(paramTotal.getText())); // Supongo que total_rent se actualiza de manera similar a total
+            psActualizarCalculo.setInt(6, obtenerIdPiso((String) paramNombrePiso.getSelectedItem()));
+            psActualizarCalculo.setInt(7, obtenerIdCuartoPorPiso((String) paramNombreCuarto.getSelectedItem(), obtenerIdPiso((String) paramNombrePiso.getSelectedItem())));
+            psActualizarCalculo.setBigDecimal(8, new BigDecimal(paramInteres.getText()));
+            psActualizarCalculo.setBigDecimal(9, new BigDecimal(paramMensual.getText()));
+            psActualizarCalculo.setDate(10, new Date(paramFecha.getDate().getTime()));
+            psActualizarCalculo.setDate(11, new Date(paramFechaIngreso.getDate().getTime()));
+            psActualizarCalculo.setInt(12, Integer.parseInt(idSeleccionado));
 
-    try (Statement st = objetoConexion.estableceConexion().createStatement();
-         ResultSet rs = st.executeQuery(sql)) {
+            psActualizarCalculo.executeUpdate();
 
-        while (rs.next()) {
-            String[] datos = new String[columnasBD.length];
+            // Liberar el cuarto actualmente ocupado (marcar como desocupado)
+            liberarCuarto(room_id_actual);
 
-            for (int i = 0; i < columnasBD.length; i++) {
-                datos[i] = rs.getString(columnasBD[i]);
-            }
+            // Obtener el ID del nuevo cuarto
+            int room_id_nuevo = obtenerIdCuartoPorPiso((String) paramNombreCuarto.getSelectedItem(), obtenerIdPiso((String) paramNombrePiso.getSelectedItem()));
 
-            modelo.addRow(datos);
+            // Actualizar el estado del nuevo cuarto (marcar como ocupado)
+            actualizarEstadoCuarto(room_id_nuevo);
+            
+            
+            JOptionPane.showMessageDialog(null, "Cálculo de alquiler actualizado exitosamente");
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Fila no seleccionada");
         }
-
-        paramTablaTotalClientes.setModel(modelo);
-
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error: " + e.toString());
+        JOptionPane.showMessageDialog(null, "Error al modificar el cálculo de alquiler: " + e.toString());
     }
 }
 
+    private int obtenerIdCuartoPorCalculoAlquiler(int idCalculoAlquiler) {
+        CConexion objetoConexion = new CConexion();
+        String sql = "SELECT room_id FROM rent_calculation WHERE id=?";
+
+        try {
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setInt(1, idCalculoAlquiler);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("room_id");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener el ID del cuarto por cálculo de alquiler: " + e.toString());
+        }
+
+        return -1; // Retorno por defecto en caso de error
+    }
+
+    private void liberarCuarto(int room_id) {
+        CConexion objetoConexion = new CConexion();
+        String liberarCuarto = "UPDATE cuarto SET ocupado=false WHERE id=?";
+
+        try {
+            java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(liberarCuarto);
+            cs.setInt(1, room_id);
+            cs.execute();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al liberar el cuarto: " + e.toString());
+        }
+    }
+
+    
+    
+    
+    
+    
     
     
     private void refrescarComboBoxPisos(JComboBox<String> paramNombrePiso) {
