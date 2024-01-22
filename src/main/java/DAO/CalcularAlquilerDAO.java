@@ -6,7 +6,6 @@ import Modelo.CalcularAlquiler;
 import Modelo.Piso;
 import com.toedter.calendar.JDateChooser;
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -83,6 +82,8 @@ public class CalcularAlquilerDAO {
     
     
     
+    
+    /********************************** OPERACIONES CRUD **********************************/
     public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
         CalcularAlquiler ca = new CalcularAlquiler();
        
@@ -98,6 +99,11 @@ public class CalcularAlquilerDAO {
         if (ca.getPiso() == null) {
             ca.setPiso(new Piso());
         }
+        
+        if (cuartoEstaOcupado(room_id)) {
+        JOptionPane.showMessageDialog(null, "Error: El cuarto seleccionado ya está ocupado.", "Error", JOptionPane.ERROR_MESSAGE);
+        return; // No se permite la inserción
+    }
         
         ca.getCliente().setCodigo(clientId);
         ca.setRent(Integer.parseInt(paramRent.getText()));
@@ -153,8 +159,8 @@ public class CalcularAlquilerDAO {
     TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
     tbTotalCalculo.setRowSorter(ordenarTabla);
 
-    String[] columnasMostradas = {"Id", "Cliente", "Alquiler", "Garantía", "Cuotas", "Total Rent", "Piso", "Cuarto"};
-    String[] columnasBD = {"id", "nombre_cliente", "rent", "garantia", "total", "total_rent", "nombre_piso", "numcuarto", "interes","mensual", "fecha", "fecha_ingreso"};
+    String[] columnasMostradas = {"Id", "Cliente", "Alquiler","Cuotas", "Piso", "Cuarto"};
+    String[] columnasBD = {"id", "nombre_cliente", "rent", "total",  "nombre_piso", "numcuarto", "interes","mensual", "fecha", "fecha_ingreso" ,"total_rent",  "garantia"};
 
     for (int i = 0; i < columnasMostradas.length; i++) {
         modelo.addColumn(columnasMostradas[i]);
@@ -324,7 +330,58 @@ public class CalcularAlquilerDAO {
         JOptionPane.showMessageDialog(null, "Error al modificar el cálculo de alquiler: " + e.toString());
     }
 }
+    
+    public void FiltrarRentCalculation(JTable paramtbTotalCalculo, String searchText){
+         CConexion objetoConexion = new CConexion();
+        DefaultTableModel modelo = new DefaultTableModel();
+        TableRowSorter<TableModel> OrdenarTabla = new TableRowSorter<TableModel>(modelo);
+        paramtbTotalCalculo.setRowSorter(OrdenarTabla);
 
+        String sql = "";
+        modelo.addColumn("Id");
+        modelo.addColumn("Cliente");
+        modelo.addColumn("Alquiler");
+        modelo.addColumn("Cuotas");
+        modelo.addColumn("Piso");
+        modelo.addColumn("Cuarto");
+
+
+        paramtbTotalCalculo.setModel(modelo);
+
+        if (!searchText.isEmpty()) {
+            sql = "SELECT * FROM rent_calculation WHERE client_id LIKE '%" + searchText + "%' OR rent LIKE '%" + searchText  + "%' OR total LIKE '%" + searchText +   "%' OR floor_id LIKE '%" + searchText +  "%' OR room_id LIKE '%" + searchText +"%'";
+        } else {
+            sql = "SELECT * FROM rent_calculation";
+        }
+
+        String[] datos = new String[6];
+        Statement st;
+
+        try {
+            st = objetoConexion.estableceConexion().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                datos[0] = rs.getString(1);
+                datos[1] = rs.getString(2);
+                datos[2] = rs.getString(3);
+                datos[3] = rs.getString(4);
+                datos[4] = rs.getString(5);
+                datos[5] = rs.getString(6);
+
+
+                modelo.addRow(datos);
+            }
+
+            paramtbTotalCalculo.setModel(modelo);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error :  " + e.toString());
+        }
+    }
+
+    /******************************************************************************************************/
+    
     private int obtenerIdCuartoPorCalculoAlquiler(int idCalculoAlquiler) {
         CConexion objetoConexion = new CConexion();
         String sql = "SELECT room_id FROM rent_calculation WHERE id=?";
@@ -358,12 +415,25 @@ public class CalcularAlquilerDAO {
         }
     }
 
-    
-    
-    
-    
-    
-    
+    private boolean cuartoEstaOcupado(int room_id) {
+    CConexion objetoConexion = new CConexion();
+    String consulta = "SELECT ocupado FROM cuarto WHERE id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(consulta);
+        pst.setInt(1, room_id);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBoolean("ocupado");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al verificar si el cuarto está ocupado: " + e.toString());
+    }
+
+    return true; // Retorno por defecto en caso de error
+}
     
     private void refrescarComboBoxPisos(JComboBox<String> paramNombrePiso) {
         var nombresPisos = obtenerPisos();

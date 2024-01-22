@@ -8,7 +8,26 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class CalculoAlquiler extends javax.swing.JFrame {
     
     public CalculoAlquiler() {
-        initComponents();
+         initComponents();
+         
+         txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+         @Override
+         public void insertUpdate(javax.swing.event.DocumentEvent e) {
+            filterTable();
+         }
+
+        @Override
+        public void removeUpdate(javax.swing.event.DocumentEvent e) {
+            filterTable();
+        }
+
+        @Override
+        public void changedUpdate(javax.swing.event.DocumentEvent e) {
+            filterTable();
+        }
+
+    });
+
         this.setLocationRelativeTo(null);
         cargarNombres();
         cargarPisos();
@@ -177,10 +196,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
         tbTotalCalculo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {}
+
             },
             new String [] {
 
@@ -734,7 +750,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     }
 
  
-    
+     private void filterTable() {
+    String searchText = txtSearch.getText().trim();
+    CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
+    dao.FiltrarRentCalculation(tbTotalCalculo, searchText);
+    }
 
     
     /**
