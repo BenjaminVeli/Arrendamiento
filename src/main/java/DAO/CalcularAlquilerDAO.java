@@ -79,10 +79,6 @@ public class CalcularAlquilerDAO {
         return cuartos;
     }
     
-    
-    
-    
-    
     /********************************** OPERACIONES CRUD **********************************/
     public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
         CalcularAlquiler ca = new CalcularAlquiler();
@@ -190,6 +186,21 @@ public class CalcularAlquilerDAO {
         e.printStackTrace(); // Imprimir la pila de excepciones para obtener más detalles
     }
 }
+    
+    public void MostrarCalculos(JTable tbCalculoAlquiler){
+        CConexion objetoConexion = new CConexion();
+        
+        DefaultTableModel modelo = new DefaultTableModel();
+        
+        modelo.addColumn("Ord");
+        modelo.addColumn("Fecha");
+        modelo.addColumn("Saldo");
+        modelo.addColumn("Capital");
+        modelo.addColumn("Interes");
+        modelo.addColumn("Por Pagar");
+        
+        tbCalculoAlquiler.setModel(modelo);
+    }
 
     public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
     try {
@@ -331,56 +342,51 @@ public class CalcularAlquilerDAO {
     }
 }
     
-    public void FiltrarRentCalculation(JTable paramtbTotalCalculo, String searchText){
-         CConexion objetoConexion = new CConexion();
-        DefaultTableModel modelo = new DefaultTableModel();
-        TableRowSorter<TableModel> OrdenarTabla = new TableRowSorter<TableModel>(modelo);
-        paramtbTotalCalculo.setRowSorter(OrdenarTabla);
+        public void FiltrarRentCalculation(JTable paramtbTotalCalculo, String searchText) {
+            CConexion objetoConexion = new CConexion();
+            DefaultTableModel modelo = (DefaultTableModel) paramtbTotalCalculo.getModel();
+            TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
+            paramtbTotalCalculo.setRowSorter(ordenarTabla);
 
-        String sql = "";
-        modelo.addColumn("Id");
-        modelo.addColumn("Cliente");
-        modelo.addColumn("Alquiler");
-        modelo.addColumn("Cuotas");
-        modelo.addColumn("Piso");
-        modelo.addColumn("Cuarto");
+            String sql = "";
+            modelo.setRowCount(0); // Limpiar filas existentes en el modelo
 
-
-        paramtbTotalCalculo.setModel(modelo);
-
-        if (!searchText.isEmpty()) {
-            sql = "SELECT * FROM rent_calculation WHERE client_id LIKE '%" + searchText + "%' OR rent LIKE '%" + searchText  + "%' OR total LIKE '%" + searchText +   "%' OR floor_id LIKE '%" + searchText +  "%' OR room_id LIKE '%" + searchText +"%'";
-        } else {
-            sql = "SELECT * FROM rent_calculation";
-        }
-
-        String[] datos = new String[6];
-        Statement st;
-
-        try {
-            st = objetoConexion.estableceConexion().createStatement();
-            ResultSet rs = st.executeQuery(sql);
-
-            while (rs.next()) {
-                datos[0] = rs.getString(1);
-                datos[1] = rs.getString(2);
-                datos[2] = rs.getString(3);
-                datos[3] = rs.getString(4);
-                datos[4] = rs.getString(5);
-                datos[5] = rs.getString(6);
-
-
-                modelo.addRow(datos);
+            if (!searchText.isEmpty()) {
+                sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, total, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation " +
+                      "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                      "INNER JOIN piso ON rent_calculation.floor_id = piso.id " +
+                      "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+                      "WHERE datos_cli_prov.nombre LIKE '%" + searchText + "%'";
+            } else {
+                sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, total, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation " +
+                      "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                      "INNER JOIN piso ON rent_calculation.floor_id = piso.id " +
+                      "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
             }
 
-            paramtbTotalCalculo.setModel(modelo);
+            try (Statement st = objetoConexion.estableceConexion().createStatement();
+                 ResultSet rs = st.executeQuery(sql)) {
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error :  " + e.toString());
-        }
+                while (rs.next()) {
+                    String[] datos = new String[6];
+                    datos[0] = rs.getString(1);
+                    datos[1] = rs.getString(2);
+                    datos[2] = rs.getString(3);
+                    datos[3] = rs.getString(4);
+                    datos[4] = rs.getString(5);
+                    datos[5] = rs.getString(6);
+
+                    modelo.addRow(datos);
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error: " + e.toString());
+            }
     }
 
     /******************************************************************************************************/
+        
+  
     
     private int obtenerIdCuartoPorCalculoAlquiler(int idCalculoAlquiler) {
         CConexion objetoConexion = new CConexion();
