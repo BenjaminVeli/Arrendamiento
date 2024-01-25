@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -17,6 +18,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class CalcularAlquilerDAO {
 
@@ -187,8 +190,7 @@ public class CalcularAlquilerDAO {
     }
 }
     
-    public void MostrarCalculos(JTable tbCalculoAlquiler){
-        CConexion objetoConexion = new CConexion();
+    public void MostrarCalculos(JTable tbCalculoAlquiler, int cuotas, Date fechaInicio, double montoAlquiler){
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -199,6 +201,33 @@ public class CalcularAlquilerDAO {
         modelo.addColumn("Interes");
         modelo.addColumn("Por Pagar");
         
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaInicio);
+        
+        for (int i = 1; i <= cuotas; i++) {
+            
+            //Esto avanza al mes siguiente la fecha
+            calendar.add(Calendar.MONTH, 1);
+            
+            // Calcular el monto restante por pagar en cada cuota
+            double saldo = montoAlquiler - ((montoAlquiler / cuotas) * (i - 1));
+            
+            // Formatear el saldo para mostrar solo dos decimales
+            DecimalFormat df = new DecimalFormat("#.##");
+            saldo = Double.parseDouble(df.format(saldo));
+            
+            //Formatear la fecha en 
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            
+            modelo.addRow(new Object[] { 
+                i, 
+                dateFormat.format(calendar.getTime()), 
+                saldo, 
+                "", 
+                "", 
+                "" 
+            });
+        }
         tbCalculoAlquiler.setModel(modelo);
     }
 
@@ -385,9 +414,18 @@ public class CalcularAlquilerDAO {
     }
 
     /******************************************************************************************************/
-        
-  
     
+       public int obtenerNumeroCuotas(String totalText) {
+           int cuotas = 0;
+           try {
+               cuotas = Integer.parseInt( totalText);
+           } catch (NumberFormatException e) {
+            // Manejar el caso en el que el texto no sea un número
+            e.printStackTrace();
+            }
+           return cuotas;
+    }
+        
     private int obtenerIdCuartoPorCalculoAlquiler(int idCalculoAlquiler) {
         CConexion objetoConexion = new CConexion();
         String sql = "SELECT room_id FROM rent_calculation WHERE id=?";

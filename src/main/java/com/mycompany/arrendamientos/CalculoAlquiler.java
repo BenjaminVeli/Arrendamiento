@@ -1,10 +1,10 @@
 package com.mycompany.arrendamientos;
 
 import DAO.CalcularAlquilerDAO;
+import java.util.Date;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-
 public class CalculoAlquiler extends javax.swing.JFrame {
     
     public CalculoAlquiler() {
@@ -31,11 +31,27 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         cargarPisos();
         Limpiar();
          idtxt.setEnabled(false);
-         
-        
          CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
          dao.MostrarAlquiler(tbTotalCalculo);
-         dao.MostrarCalculos(tbCalculoAlquiler);
+    }
+    
+    private void mostrarCalculos() {
+        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
+        
+        // Obtener los campos del formulario
+         int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
+        java.util.Date utilFechaInicio = fechaingresotxt.getDate();
+        double montoAlquiler = Double.parseDouble(alquilertxt.getText());
+        
+        if (utilFechaInicio == null) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar una fecha de inicio.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Convertir java.util.Date a java.sql.Date
+        java.sql.Date fechaInicio = new java.sql.Date(utilFechaInicio.getTime());
+        
+        dao.MostrarCalculos(tbCalculoAlquiler, cuotas, fechaInicio, montoAlquiler);
     }
     
     private void cargarNombres() {
@@ -316,6 +332,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
         mensualtxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         mensualtxt.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        mensualtxt.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mensualtxtMouseClicked(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setText("Fecha");
@@ -785,6 +806,10 @@ public class CalculoAlquiler extends javax.swing.JFrame {
        dao.MostrarAlquiler(tbTotalCalculo);
     }//GEN-LAST:event_btnModificarActionPerformed
 
+    private void mensualtxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mensualtxtMouseClicked
+        mostrarCalculos();
+    }//GEN-LAST:event_mensualtxtMouseClicked
+    
     private void calcularYActualizarTotal() {
         // Obtener valores de los campos
         int alquiler = Integer.parseInt(alquilertxt.getText());
@@ -796,8 +821,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         // Actualizar el campo totalAlquilertxt
         totalAlquilertxt.setText(String.valueOf(totalAlquiler));
     }
-
- 
+    
      private void filterTable() {
     String searchText = txtSearch.getText().trim();
     CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
