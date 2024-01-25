@@ -105,8 +105,8 @@ public class CalcularAlquilerDAO {
     }
         
         ca.getCliente().setCodigo(clientId);
-        ca.setRent(Integer.parseInt(paramRent.getText()));
-        ca.setGarantia(Integer.parseInt(paramGarantia.getText()));
+        ca.setRent(new BigDecimal(paramRent.getText()));
+        ca.setGarantia(new BigDecimal(paramGarantia.getText()));
         ca.setInteres(new BigDecimal(paramInteres.getText()));
         ca.setTotal(Integer.parseInt(paramTotal.getText()));
         ca.setTotalRent();
@@ -123,10 +123,10 @@ public class CalcularAlquilerDAO {
             java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
             cs.setInt(1, ca.getCliente().getCodigo());
-            cs.setInt(2, ca.getRent());
-            cs.setInt(3, ca.getGarantia());
+            cs.setBigDecimal(2, ca.getRent());
+            cs.setBigDecimal(3, ca.getGarantia());
             cs.setInt(4, ca.getTotal());
-            cs.setInt(5, ca.getTotalRent()); //rent * total
+            cs.setBigDecimal(5, ca.getTotalRent()); //rent * total
             cs.setInt(6, ca.getPiso().getCodigo());
             cs.setInt(7, room_id);
             cs.setBigDecimal(8, ca.getInteres());
@@ -337,10 +337,10 @@ public class CalcularAlquilerDAO {
             PreparedStatement psActualizarCalculo = objetoConexion.estableceConexion().prepareStatement(actualizarCalculo);
 
             psActualizarCalculo.setInt(1, obtenerIdNombre((String) paramNombreCliente.getSelectedItem()));
-            psActualizarCalculo.setInt(2, Integer.parseInt(paramRent.getText()));
-            psActualizarCalculo.setInt(3, Integer.parseInt(paramGarantia.getText()));
+            psActualizarCalculo.setBigDecimal(2, new BigDecimal(paramRent.getText()));
+            psActualizarCalculo.setBigDecimal(3, new BigDecimal(paramGarantia.getText()));
             psActualizarCalculo.setInt(4, Integer.parseInt(paramTotal.getText()));
-            psActualizarCalculo.setInt(5, Integer.parseInt(paramTotal.getText())); // Supongo que total_rent se actualiza de manera similar a total
+            psActualizarCalculo.setBigDecimal(5, new BigDecimal(paramTotal.getText())); // Supongo que total_rent se actualiza de manera similar a total
             psActualizarCalculo.setInt(6, obtenerIdPiso((String) paramNombrePiso.getSelectedItem()));
             psActualizarCalculo.setInt(7, obtenerIdCuartoPorPiso((String) paramNombreCuarto.getSelectedItem(), obtenerIdPiso((String) paramNombrePiso.getSelectedItem())));
             psActualizarCalculo.setBigDecimal(8, new BigDecimal(paramInteres.getText()));

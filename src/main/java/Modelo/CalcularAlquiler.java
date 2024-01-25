@@ -5,16 +5,40 @@ import java.sql.Date;
 public class CalcularAlquiler {
     int id;
     Arrendamientos cliente;
-    int rent;
-    int garantia;
+    BigDecimal rent;
+    BigDecimal garantia;
     int total;
-    int totalRent;
+    BigDecimal totalRent;
     Piso piso;
     String cuarto;
     BigDecimal interes;
     BigDecimal mensual;
     Date fecha;
     Date fechaIngreso;
+
+    public BigDecimal getRent() {
+        return rent;
+    }
+
+    public void setRent(BigDecimal rent) {
+        this.rent = rent;
+    }
+
+    public BigDecimal getGarantia() {
+        return garantia;
+    }
+
+    public void setGarantia(BigDecimal garantia) {
+        this.garantia = garantia;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
 
     public BigDecimal getInteres() {
         return interes;
@@ -59,38 +83,15 @@ public class CalcularAlquiler {
     public void setCliente(Arrendamientos cliente) {
         this.cliente = cliente;
     }
-
-    public int getRent() {
-        return rent;
-    }
-
-    public void setRent(int rent) {
-        this.rent = rent;
-    }
     
-    public int getGarantia() {
-        return garantia;
-    }
-
-    public void setGarantia(int garantia) {
-        this.garantia = garantia;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-    
-    public int getTotalRent() {
+    public BigDecimal getTotalRent() {
         return totalRent;
     }
 
     public void setTotalRent() {
-        this.totalRent =  this.rent * this.total;
-    }
+    BigDecimal totalBigDecimal = BigDecimal.valueOf(this.total);
+    this.totalRent = this.rent.multiply(totalBigDecimal);
+}
 
     public Piso getPiso() {
         return piso;

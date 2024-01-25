@@ -1,6 +1,7 @@
 package com.mycompany.arrendamientos;
 
 import DAO.CalcularAlquilerDAO;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -812,11 +813,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     
     private void calcularYActualizarTotal() {
         // Obtener valores de los campos
-        int alquiler = Integer.parseInt(alquilertxt.getText());
+        BigDecimal alquiler = new BigDecimal(alquilertxt.getText().trim());
         int total = Integer.parseInt(totaltxt.getText());
 
         // Calcular la multiplicación
-        int totalAlquiler = alquiler * total;
+        BigDecimal totalAlquiler = alquiler.multiply(BigDecimal.valueOf(total));
 
         // Actualizar el campo totalAlquilertxt
         totalAlquilertxt.setText(String.valueOf(totalAlquiler));
