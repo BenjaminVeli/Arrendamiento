@@ -22,7 +22,23 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class CalcularAlquilerDAO {
-
+    
+     // Para la suma de las filas de la columna Interes:
+    private double sumaInteresAcumulativa = 0;
+    
+    public double obtenerSumaInteresAcumulativa() {
+        return sumaInteresAcumulativa;
+    }
+    
+    public double calcularPorPagar(double montoAlquiler, int cuotas) {
+        // Calcular el Por Pagar usando el montoAlquiler y cuotas
+        return  (sumaInteresAcumulativa + montoAlquiler) / cuotas;
+    }
+    
+    public double calcularSumaMensual(double porPagar, int cuotas) {
+        return porPagar * cuotas;
+    }
+    
     public ArrayList<String> obtenerNombresClientes() {
         ArrayList<String> clientes = new ArrayList<>();
         CConexion objetoConexion = new CConexion();
@@ -190,7 +206,7 @@ public class CalcularAlquilerDAO {
     }
 }
     
-    public void MostrarCalculos(JTable tbCalculoAlquiler, int cuotas, Date fechaInicio, double montoAlquiler){
+    public void MostrarCalculos(JTable tbCalculoAlquiler, int cuotas, Date fecha, double montoAlquiler, double interes  ){
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -202,7 +218,9 @@ public class CalcularAlquilerDAO {
         modelo.addColumn("Por Pagar");
         
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(fechaInicio);
+        calendar.setTime(fecha);
+        
+        sumaInteresAcumulativa = 0;
         
         for (int i = 1; i <= cuotas; i++) {
             
@@ -212,9 +230,17 @@ public class CalcularAlquilerDAO {
             // Calcular el monto restante por pagar en cada cuota
             double saldo = montoAlquiler - ((montoAlquiler / cuotas) * (i - 1));
             
-            // Formatear el saldo para mostrar solo dos decimales
+            // Calcular el Interes multiplicando el saldo por el Interes (dividido por 100)
+            double interesCalculado = saldo * (interes / 100);
+            
+            // Actualizar la suma acumulativa del interés
+            sumaInteresAcumulativa += interesCalculado;
+            
+            // Formatear el saldo y el interes para mostrar solo dos decimales
             DecimalFormat df = new DecimalFormat("#.##");
             saldo = Double.parseDouble(df.format(saldo));
+            interesCalculado = Double.parseDouble(df.format(interesCalculado));
+            sumaInteresAcumulativa = Double.parseDouble(df.format(sumaInteresAcumulativa));
             
             //Formatear la fecha en 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
@@ -224,10 +250,24 @@ public class CalcularAlquilerDAO {
                 dateFormat.format(calendar.getTime()), 
                 saldo, 
                 "", 
-                "", 
-                "" 
+                interesCalculado, 
+                ""
             });
         }
+        
+        // Calcular porPagar después de haber acumulado todos los intereses
+        DecimalFormat df = new DecimalFormat("#.##");
+        
+        double porPagar = calcularPorPagar(montoAlquiler, cuotas);
+        porPagar = Double.parseDouble(df.format(porPagar));
+
+        // Actualizar la columna "Por Pagar" en cada fila
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            modelo.setValueAt(porPagar, i, 5); // 5 es el índice de la columna "Por Pagar"
+        }
+        
+        // System.out.println("Suma de Intereses Acumulativa: " + sumaInteresAcumulativa);
+        // System.out.println("Por Pagar: " + porPagar);
         tbCalculoAlquiler.setModel(modelo);
     }
 
@@ -371,7 +411,7 @@ public class CalcularAlquilerDAO {
     }
 }
     
-        public void FiltrarRentCalculation(JTable paramtbTotalCalculo, String searchText) {
+    public void FiltrarRentCalculation(JTable paramtbTotalCalculo, String searchText) {
             CConexion objetoConexion = new CConexion();
             DefaultTableModel modelo = (DefaultTableModel) paramtbTotalCalculo.getModel();
             TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
@@ -415,17 +455,17 @@ public class CalcularAlquilerDAO {
 
     /******************************************************************************************************/
     
-       public int obtenerNumeroCuotas(String totalText) {
-           int cuotas = 0;
-           try {
-               cuotas = Integer.parseInt( totalText);
-           } catch (NumberFormatException e) {
-            // Manejar el caso en el que el texto no sea un número
-            e.printStackTrace();
-            }
-           return cuotas;
+    public int obtenerNumeroCuotas(String totalText) {
+        int cuotas = 0;
+        try {
+            cuotas = Integer.parseInt( totalText);
+        } catch (NumberFormatException e) {
+         // Manejar el caso en el que el texto no sea un número
+         e.printStackTrace();
+         }
+        return cuotas;
     }
-        
+    
     private int obtenerIdCuartoPorCalculoAlquiler(int idCalculoAlquiler) {
         CConexion objetoConexion = new CConexion();
         String sql = "SELECT room_id FROM rent_calculation WHERE id=?";

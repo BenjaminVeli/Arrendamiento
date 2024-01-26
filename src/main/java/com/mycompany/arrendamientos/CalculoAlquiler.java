@@ -2,6 +2,7 @@ package com.mycompany.arrendamientos;
 
 import DAO.CalcularAlquilerDAO;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -36,23 +37,36 @@ public class CalculoAlquiler extends javax.swing.JFrame {
          dao.MostrarAlquiler(tbTotalCalculo);
     }
     
-    private void mostrarCalculos() {
+ private void mostrarCalculos() {
         CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
+        DecimalFormat df = new DecimalFormat("#.##");
         
         // Obtener los campos del formulario
          int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
-        java.util.Date utilFechaInicio = fechaingresotxt.getDate();
+        java.util.Date utilFecha = fechatxt.getDate();
         double montoAlquiler = Double.parseDouble(alquilertxt.getText());
+        double interes = Double.parseDouble(interesestxt.getText());
         
-        if (utilFechaInicio == null) {
-            JOptionPane.showMessageDialog(this, "Debes seleccionar una fecha de inicio.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (utilFecha == null) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar una fecha.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         // Convertir java.util.Date a java.sql.Date
-        java.sql.Date fechaInicio = new java.sql.Date(utilFechaInicio.getTime());
+        java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
         
-        dao.MostrarCalculos(tbCalculoAlquiler, cuotas, fechaInicio, montoAlquiler);
+        dao.MostrarCalculos(tbCalculoAlquiler, cuotas, fecha, montoAlquiler, interes);
+        
+        double interesAcumulativa = dao.obtenerSumaInteresAcumulativa();
+        txtSumInteres.setText(String.valueOf(interesAcumulativa));
+        
+        double porPagar = dao.calcularPorPagar(montoAlquiler, cuotas);
+        porPagar = Double.parseDouble(df.format(porPagar));
+        mensualtxt.setText(String.valueOf(porPagar));
+        
+        double sumaMensual = dao.calcularSumaMensual(porPagar, cuotas);
+        sumaMensual = Double.parseDouble(df.format(sumaMensual));
+        txtSumMensual.setText(String.valueOf(sumaMensual));
     }
     
     private void cargarNombres() {
@@ -157,9 +171,9 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tbCalculoAlquiler = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        txtSumCapital = new javax.swing.JTextField();
+        txtSumInteres = new javax.swing.JTextField();
+        txtSumMensual = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         crearPisotxt = new javax.swing.JButton();
         crearCuartobtn = new javax.swing.JButton();
@@ -336,6 +350,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         mensualtxt.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 mensualtxtMouseClicked(evt);
+            }
+        });
+        mensualtxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mensualtxtActionPerformed(evt);
             }
         });
 
@@ -600,14 +619,14 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         jLabel8.setText("Totales");
         jLabel8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtSumCapital.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSumCapital.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTextField2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtSumInteres.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSumInteres.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtSumMensual.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSumMensual.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -620,11 +639,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtSumCapital, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtSumInteres, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtSumMensual, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -636,9 +655,9 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(txtSumCapital, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtSumInteres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtSumMensual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -810,6 +829,10 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     private void mensualtxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mensualtxtMouseClicked
         mostrarCalculos();
     }//GEN-LAST:event_mensualtxtMouseClicked
+
+    private void mensualtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mensualtxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mensualtxtActionPerformed
     
     private void calcularYActualizarTotal() {
         // Obtener valores de los campos
@@ -913,13 +936,10 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField12;
     private javax.swing.JTextField jTextField13;
     private javax.swing.JTextField jTextField14;
     private javax.swing.JTextField jTextField17;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField mensualtxt;
     private javax.swing.JComboBox<String> pisostxt;
     private javax.swing.JButton registroClientebtn;
@@ -929,6 +949,9 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     private javax.swing.JTextField totalAlquilertxt;
     private javax.swing.JTextField totaltxt;
     private javax.swing.JTextField txtSearch;
+    private javax.swing.JTextField txtSumCapital;
+    private javax.swing.JTextField txtSumInteres;
+    private javax.swing.JTextField txtSumMensual;
     // End of variables declaration//GEN-END:variables
 
     private void Limpiar() {
