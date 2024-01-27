@@ -1,11 +1,21 @@
 package com.mycompany.arrendamientos;
 
 import DAO.CalcularAlquilerDAO;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.Date;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class CalculoAlquiler extends javax.swing.JFrame {
     
@@ -35,6 +45,13 @@ public class CalculoAlquiler extends javax.swing.JFrame {
          idtxt.setEnabled(false);
          CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
          dao.MostrarAlquiler(tbTotalCalculo);
+         
+         
+         btnExportar.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent evt) {
+                exportarAExcel();
+            }
+        });
     }
     
  private void mostrarCalculos() {
@@ -182,6 +199,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         crearPisotxt = new javax.swing.JButton();
         crearCuartobtn = new javax.swing.JButton();
+        btnExportar = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -687,24 +705,30 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             }
         });
 
+        btnExportar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnExportar.setText("Exportar");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(586, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnExportar)
+                .addGap(30, 30, 30)
                 .addComponent(crearCuartobtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23)
+                .addGap(30, 30, 30)
                 .addComponent(crearPisotxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(crearPisotxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(crearCuartobtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(crearCuartobtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExportar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -856,7 +880,110 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
     dao.FiltrarRentCalculation(tbTotalCalculo, searchText);
     }
+     
+private void exportarAExcel() {
+    try {
+        DefaultTableModel modelo = (DefaultTableModel) tbCalculoAlquiler.getModel();
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Detalle de la renta");
 
+        // Crear estilo de celda con bordes y tamaño de letra 12
+        XSSFCellStyle estiloCelda = workbook.createCellStyle();
+        estiloCelda.setBorderBottom(BorderStyle.THIN);
+        estiloCelda.setBorderTop(BorderStyle.THIN);
+        estiloCelda.setBorderRight(BorderStyle.THIN);
+        estiloCelda.setBorderLeft(BorderStyle.THIN);
+
+        XSSFFont font = workbook.createFont();
+        font.setFontHeightInPoints((short) 12);
+        estiloCelda.setFont(font);
+
+        // Crear fila de encabezado
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < modelo.getColumnCount(); i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(modelo.getColumnName(i));
+            cell.setCellStyle(estiloCelda); // Aplicar estilo de borde y tamaño de letra al encabezado
+        }
+
+        // Llenar la hoja de cálculo con los datos y aplicar estilo
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            Row row = sheet.createRow(i + 1);
+            for (int j = 0; j < modelo.getColumnCount(); j++) {
+                Cell cell = row.createCell(j);
+                cell.setCellValue(modelo.getValueAt(i, j).toString());
+                cell.setCellStyle(estiloCelda); // Aplicar estilo de borde y tamaño de letra a las celdas de datos
+            }
+        }
+
+        // Crear fila adicional para los totales
+        int numRows = modelo.getRowCount();
+        Row totalRow = sheet.createRow(numRows + 1);
+
+        // Espacio en blanco en las tres primeras columnas
+        for (int i = 0; i < 3; i++) {
+            totalRow.createCell(i);
+        }
+
+        // Totales
+        Cell totalCell = totalRow.createCell(2);
+        totalCell.setCellValue("Totales");
+        totalCell.setCellStyle(estiloCelda);
+
+        Cell sumCapitalValueCell = totalRow.createCell(3);
+        sumCapitalValueCell.setCellValue(txtSumCapital.getText());
+        sumCapitalValueCell.setCellStyle(estiloCelda);
+
+        Cell sumInteresValueCell = totalRow.createCell(4);
+        sumInteresValueCell.setCellValue(txtSumInteres.getText());
+        sumInteresValueCell.setCellStyle(estiloCelda);
+
+        Cell sumMensualValueCell = totalRow.createCell(5);
+        sumMensualValueCell.setCellValue(txtSumMensual.getText());
+        sumMensualValueCell.setCellStyle(estiloCelda);
+
+        // Ajustar automáticamente el ancho de las columnas al contenido
+        for (int i = 0; i < modelo.getColumnCount(); i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Crear fila para el JComboBox 'search'
+        Row searchRow = sheet.createRow(numRows + 2);
+
+        // Espacio en blanco en las tres primeras columnas
+        for (int i = 0; i < 3; i++) {
+            searchRow.createCell(i);
+        }
+
+        // Etiqueta para la variable 'search'
+        Cell searchLabelCell = searchRow.createCell(2);
+        searchLabelCell.setCellValue("Nombre :");
+        searchLabelCell.setCellStyle(estiloCelda);
+
+        // Contenido de 'search' (asumiendo que es un JComboBox)
+        Cell searchContentCell = searchRow.createCell(3);
+        searchContentCell.setCellValue(search.getSelectedItem().toString()); // Obtener el elemento seleccionado del JComboBox
+        searchContentCell.setCellStyle(estiloCelda);
+
+        // Ajustar automáticamente el ancho de las columnas al contenido
+        for (int i = 0; i < modelo.getColumnCount(); i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Guardar el libro en un archivo
+        String desktopPath = System.getProperty("user.home") + "/Desktop/";
+        try (FileOutputStream fileOut = new FileOutputStream(desktopPath + "detalle.xlsx")) {
+            workbook.write(fileOut);
+            JOptionPane.showMessageDialog(null, "Datos exportados correctamente a Excel.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error: " + e.toString());
+    }
+}
+
+     
     
     /**
      * @param args the command line arguments
@@ -900,6 +1027,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     private javax.swing.JButton Grabarbtn;
     private javax.swing.JTextField alquilertxt;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnExportar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton crearCuartobtn;
