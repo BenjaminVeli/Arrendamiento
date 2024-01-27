@@ -22,16 +22,20 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class CalcularAlquilerDAO {
-    
-     // Para la suma de las filas de la columna Interes:
+   
     private double sumaInteresAcumulativa = 0;
+    
+    private double sumaCapitalAcumulativa = 0;
     
     public double obtenerSumaInteresAcumulativa() {
         return sumaInteresAcumulativa;
     }
     
+    public double obtenerSumaCapitalAcumulativa() {
+        return sumaCapitalAcumulativa;
+    }
+    
     public double calcularPorPagar(double montoAlquiler, int cuotas) {
-        // Calcular el Por Pagar usando el montoAlquiler y cuotas
         return  (sumaInteresAcumulativa + montoAlquiler) / cuotas;
     }
     
@@ -220,54 +224,61 @@ public class CalcularAlquilerDAO {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(fecha);
         
-        sumaInteresAcumulativa = 0;
-        
         for (int i = 1; i <= cuotas; i++) {
             
             //Esto avanza al mes siguiente la fecha
             calendar.add(Calendar.MONTH, 1);
             
+            double cociente = (montoAlquiler / cuotas) * (i - 1);
+            double cocienteRedondeado = Math.round(cociente * 100.0) / 100.0;
+            
             // Calcular el monto restante por pagar en cada cuota
-            double saldo = montoAlquiler - ((montoAlquiler / cuotas) * (i - 1));
+            double saldo = montoAlquiler - cocienteRedondeado;
+            double saldoRedondeado = Math.round(saldo * 100.0) / 100.0;
             
             // Calcular el Interes multiplicando el saldo por el Interes (dividido por 100)
-            double interesCalculado = saldo * (interes / 100);
+            double interesCalculado = saldoRedondeado * (interes / 100);
+            double interesCalculadoRedondeado = Math.round(interesCalculado * 100.0) / 100.0;
             
-            // Actualizar la suma acumulativa del interés
-            sumaInteresAcumulativa += interesCalculado;
+            sumaInteresAcumulativa += interesCalculadoRedondeado;
+            sumaInteresAcumulativa = Math.round(sumaInteresAcumulativa * 100.0) / 100.0;
             
-            // Formatear el saldo y el interes para mostrar solo dos decimales
-            DecimalFormat df = new DecimalFormat("#.##");
-            saldo = Double.parseDouble(df.format(saldo));
-            interesCalculado = Double.parseDouble(df.format(interesCalculado));
-            sumaInteresAcumulativa = Double.parseDouble(df.format(sumaInteresAcumulativa));
-            
-            //Formatear la fecha en 
+            //Formatear la fecha en dia mes año
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
             
             modelo.addRow(new Object[] { 
                 i, 
                 dateFormat.format(calendar.getTime()), 
-                saldo, 
-                "", 
-                interesCalculado, 
+                saldoRedondeado, 
+                "",
+                interesCalculadoRedondeado, 
                 ""
             });
         }
         
-        // Calcular porPagar después de haber acumulado todos los intereses
-        DecimalFormat df = new DecimalFormat("#.##");
-        
         double porPagar = calcularPorPagar(montoAlquiler, cuotas);
-        porPagar = Double.parseDouble(df.format(porPagar));
-
+        porPagar = Math.round(porPagar * 100.0) / 100.0;
+        
         // Actualizar la columna "Por Pagar" en cada fila
         for (int i = 0; i < modelo.getRowCount(); i++) {
             modelo.setValueAt(porPagar, i, 5); // 5 es el índice de la columna "Por Pagar"
         }
         
-        // System.out.println("Suma de Intereses Acumulativa: " + sumaInteresAcumulativa);
-        // System.out.println("Por Pagar: " + porPagar);
+        // Bucle para calcular y actualizar la columna "Capital"
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            
+            double porPagarActual = (double) modelo.getValueAt(i, 5); // 5 es el índice de la columna "Por Pagar"
+            double interesActual = (double) modelo.getValueAt(i, 4); // 4 es el índice de la columna "Interes"
+
+            // Calcular el valor de la columna "Capital"
+            double capital = porPagarActual - interesActual;
+            capital = Math.round(capital * 100.0) / 100.0;
+            sumaCapitalAcumulativa += capital;
+            sumaCapitalAcumulativa = Math.round(sumaCapitalAcumulativa * 100.0) / 100.0;
+            
+            modelo.setValueAt(capital, i, 3); // 3 es el índice de la columna "Capital"
+        }
+        
         tbCalculoAlquiler.setModel(modelo);
     }
 

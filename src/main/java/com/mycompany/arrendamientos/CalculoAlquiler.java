@@ -58,15 +58,20 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         dao.MostrarCalculos(tbCalculoAlquiler, cuotas, fecha, montoAlquiler, interes);
         
         double interesAcumulativa = dao.obtenerSumaInteresAcumulativa();
+        interesAcumulativa = Math.round(interesAcumulativa * 100.0) / 100.0;
         txtSumInteres.setText(String.valueOf(interesAcumulativa));
         
         double porPagar = dao.calcularPorPagar(montoAlquiler, cuotas);
-        porPagar = Double.parseDouble(df.format(porPagar));
+        porPagar = Math.round(porPagar * 100.0) / 100.0;
         mensualtxt.setText(String.valueOf(porPagar));
         
         double sumaMensual = dao.calcularSumaMensual(porPagar, cuotas);
-        sumaMensual = Double.parseDouble(df.format(sumaMensual));
+        sumaMensual = Math.round(sumaMensual * 100.0) / 100.0;
         txtSumMensual.setText(String.valueOf(sumaMensual));
+        
+        double sumaCapital = dao.obtenerSumaCapitalAcumulativa();
+        sumaCapital = Math.round(sumaCapital * 100.0) / 100.0;
+        txtSumCapital.setText(String.valueOf(sumaCapital));
     }
     
     private void cargarNombres() {
