@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -282,6 +281,17 @@ public class CalcularAlquilerDAO {
         tbCalculoAlquiler.setModel(modelo);
     }
 
+    public void MostrarImporte(JTable tbCalculoImporte) {
+        
+        DefaultTableModel modelo = new DefaultTableModel();
+        
+        modelo.addColumn("Orden");
+        modelo.addColumn("Fecha");
+        modelo.addColumn("Importe");
+        
+        tbCalculoImporte.setModel(modelo);
+    }
+    
     public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
