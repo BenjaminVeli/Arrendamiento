@@ -34,8 +34,8 @@ public class CalcularAlquilerDAO {
         return sumaCapitalAcumulativa;
     }
     
-    public double calcularPorPagar(double montoAlquiler, int cuotas) {
-        return  (sumaInteresAcumulativa + montoAlquiler) / cuotas;
+    public double calcularPorPagar(double total_rent, int cuotas) {
+        return  (sumaInteresAcumulativa + total_rent) / cuotas;
     }
     
     public double calcularSumaMensual(double porPagar, int cuotas) {
@@ -209,7 +209,7 @@ public class CalcularAlquilerDAO {
     }
 }
     
-    public void MostrarCalculos(JTable tbCalculoAlquiler, int cuotas, Date fecha, double montoAlquiler, double interes  ){
+    public void MostrarCalculos(JTable tbCalculoAlquiler, int cuotas, Date fecha, double total_rent, double interes  ){
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -220,19 +220,25 @@ public class CalcularAlquilerDAO {
         modelo.addColumn("Interes");
         modelo.addColumn("Por Pagar");
         
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(fecha);
-        
         for (int i = 1; i <= cuotas; i++) {
             
-            //Esto avanza al mes siguiente la fecha
-            calendar.add(Calendar.MONTH, 1);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(fecha);
             
-            double cociente = (montoAlquiler / cuotas) * (i - 1);
+            //Esto avanza al mes siguiente la fecha
+            calendar.add(Calendar.MONTH, i);
+            
+            // Esto ajustar el día al último día del mes
+            int ultimoDiaMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            int diaSeleccionado = calendar.get(Calendar.DAY_OF_MONTH);
+            int diaAjustado = Math.min(ultimoDiaMes, diaSeleccionado);
+            calendar.set(Calendar.DAY_OF_MONTH, diaAjustado);
+            
+            double cociente = (total_rent / cuotas) * (i - 1);
             double cocienteRedondeado = Math.round(cociente * 100.0) / 100.0;
             
             // Calcular el monto restante por pagar en cada cuota
-            double saldo = montoAlquiler - cocienteRedondeado;
+            double saldo = total_rent - cocienteRedondeado;
             double saldoRedondeado = Math.round(saldo * 100.0) / 100.0;
             
             // Calcular el Interes multiplicando el saldo por el Interes (dividido por 100)
@@ -255,7 +261,7 @@ public class CalcularAlquilerDAO {
             });
         }
         
-        double porPagar = calcularPorPagar(montoAlquiler, cuotas);
+        double porPagar = calcularPorPagar(total_rent, cuotas);
         porPagar = Math.round(porPagar * 100.0) / 100.0;
         
         // Actualizar la columna "Por Pagar" en cada fila
