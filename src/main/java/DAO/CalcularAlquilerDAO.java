@@ -298,7 +298,7 @@ public class CalcularAlquilerDAO {
         tbCalculoImporte.setModel(modelo);
     }
     
-    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
+    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
@@ -321,6 +321,7 @@ public class CalcularAlquilerDAO {
                 paramGarantia.setText(rs.getString("garantia"));
                 paramInteres.setText(rs.getString("interes"));
                 paramTotal.setText(rs.getString("total"));
+                paramTotalAlquiler.setText(rs.getString("total_rent"));
 
                 // Obtener el nombre del cliente y establecerlo en el JComboBox
                 String nombreCliente = rs.getString("nombre");
@@ -387,7 +388,7 @@ public class CalcularAlquilerDAO {
     }
 }
 
-    public void ModificarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
+    public void ModificarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
@@ -407,7 +408,7 @@ public class CalcularAlquilerDAO {
             psActualizarCalculo.setBigDecimal(2, new BigDecimal(paramRent.getText()));
             psActualizarCalculo.setBigDecimal(3, new BigDecimal(paramGarantia.getText()));
             psActualizarCalculo.setInt(4, Integer.parseInt(paramTotal.getText()));
-            psActualizarCalculo.setBigDecimal(5, new BigDecimal(paramTotal.getText())); // Supongo que total_rent se actualiza de manera similar a total
+            psActualizarCalculo.setBigDecimal(5, new BigDecimal(paramTotalAlquiler.getText())); 
             psActualizarCalculo.setInt(6, obtenerIdPiso((String) paramNombrePiso.getSelectedItem()));
             psActualizarCalculo.setInt(7, obtenerIdCuartoPorPiso((String) paramNombreCuarto.getSelectedItem(), obtenerIdPiso((String) paramNombrePiso.getSelectedItem())));
             psActualizarCalculo.setBigDecimal(8, new BigDecimal(paramInteres.getText()));

@@ -902,13 +902,13 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void tbTotalCalculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCalculoMouseClicked
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.SeleccionarCalculoAlquiler(tbTotalCalculo, idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt,mensualtxt);
+       dao.SeleccionarCalculoAlquiler(tbTotalCalculo, idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt);
 
     }//GEN-LAST:event_tbTotalCalculoMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.ModificarCalculoAlquiler(tbTotalCalculo, idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt,mensualtxt);
+       dao.ModificarCalculoAlquiler(tbTotalCalculo, idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt);
        dao.MostrarAlquiler(tbTotalCalculo);
     }//GEN-LAST:event_btnModificarActionPerformed
 
