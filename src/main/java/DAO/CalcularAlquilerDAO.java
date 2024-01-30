@@ -42,6 +42,22 @@ public class CalcularAlquilerDAO {
         return porPagar * cuotas;
     }
     
+    public double calcularImporteDiario(double total_rent, int cuotas) {
+        return total_rent / (cuotas * 30);
+    }
+    
+    public double calcularImporteSemanal(double total_rent, int cuotas) {
+        return total_rent / (cuotas * 4);
+    }
+    
+    public double calcularImporteQuincenal(double total_rent, int cuotas) {
+        return total_rent / (cuotas * 2);
+    }
+    
+    public double calcularImporteMensual(double total_rent, int cuotas) {
+        return total_rent / cuotas;
+    }
+    
     public ArrayList<String> obtenerNombresClientes() {
         ArrayList<String> clientes = new ArrayList<>();
         CConexion objetoConexion = new CConexion();
@@ -287,13 +303,175 @@ public class CalcularAlquilerDAO {
         tbCalculoAlquiler.setModel(modelo);
     }
 
-    public void MostrarImporte(JTable tbCalculoImporte) {
+    public void MostrarImporteDiario(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
         modelo.addColumn("Orden");
         modelo.addColumn("Fecha");
         modelo.addColumn("Importe");
+        
+        double totalCuotas = cuotas * 30;
+        
+        for (int i = 0; i <= totalCuotas; i++) {
+            
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(fecha);
+            
+            //Esto avanza al mes siguiente la fecha
+            calendar.add(Calendar.DAY_OF_YEAR, i);
+            
+            //Formatear la fecha en dia mes año
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            
+            modelo.addRow(new Object[] { 
+                i, 
+                dateFormat.format(calendar.getTime()), 
+                "",
+            });
+            
+        }
+        
+        double importeDiario = calcularImporteDiario(total_rent, cuotas);
+        importeDiario = Math.round(importeDiario * 100.0) / 100.0;
+        
+        // Actualizar la columna "Por Pagar" en cada fila
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            modelo.setValueAt(importeDiario, i, 2); // 2 es el índice de la columna "importe"
+        }
+        
+        System.out.println("importeDiario :" + importeDiario);
+        
+        tbCalculoImporte.setModel(modelo);
+    }
+    
+    public void MostrarImporteSemanal(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent) {
+        
+        DefaultTableModel modelo = new DefaultTableModel();
+        
+        modelo.addColumn("Orden");
+        modelo.addColumn("Fecha");
+        modelo.addColumn("Importe");
+        
+        double totalCuotas = cuotas * 4;
+        
+        for (int i = 0; i <= totalCuotas; i++) {
+            
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(fecha);
+            
+            //Esto avanza de semana a semana
+            calendar.add(Calendar.WEEK_OF_YEAR, i);
+            
+            //Formatear la fecha en dia mes año
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            
+            modelo.addRow(new Object[] { 
+                i, 
+                dateFormat.format(calendar.getTime()), 
+                "",
+            });
+            
+        }
+        
+        double importeSemanal = calcularImporteSemanal(total_rent, cuotas);
+        importeSemanal = Math.round(importeSemanal * 100.0) / 100.0;
+        
+        // Actualizar la columna "Por Pagar" en cada fila
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            modelo.setValueAt(importeSemanal, i, 2); // 2 es el índice de la columna "importe"
+        }
+        
+        System.out.println("importeSemanal :" + importeSemanal);
+        
+        tbCalculoImporte.setModel(modelo);
+    }
+        
+    public void MostrarImporteQuincenal(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent) {
+        
+        DefaultTableModel modelo = new DefaultTableModel();
+        
+        modelo.addColumn("Orden");
+        modelo.addColumn("Fecha");
+        modelo.addColumn("Importe");
+        
+        double totalCuotas = cuotas * 2;
+        
+         for (int i = 0; i <= totalCuotas; i++) {
+            
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(fecha);
+            
+            // Esto avanza de 15 en 15 días
+            int diasAgregados = i * 15;
+            calendar.add(Calendar.DAY_OF_YEAR, diasAgregados);
+            
+            //Formatear la fecha en dia mes año
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            
+            modelo.addRow(new Object[] { 
+                i, 
+                dateFormat.format(calendar.getTime()), 
+                "",
+            });
+            
+        }
+        
+        double importeQuincenal = calcularImporteQuincenal(total_rent, cuotas);
+        importeQuincenal = Math.round(importeQuincenal * 100.0) / 100.0;
+        
+        // Actualizar la columna "Por Pagar" en cada fila
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            modelo.setValueAt(importeQuincenal, i, 2); // 2 es el índice de la columna "importe"
+        }
+        
+        System.out.println("importeQuincenal :" + importeQuincenal);
+        
+        tbCalculoImporte.setModel(modelo);
+    }
+    
+     public void MostrarImporteMensual(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent) {
+        
+        DefaultTableModel modelo = new DefaultTableModel();
+        
+        modelo.addColumn("Orden");
+        modelo.addColumn("Fecha");
+        modelo.addColumn("Importe");
+        
+         for (int i = 0; i <= cuotas; i++) {
+            
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(fecha);
+            
+            //Esto avanza al mes siguiente la fecha
+            calendar.add(Calendar.MONTH, i);
+            
+            // Esto ajustar el día al último día del mes
+            int ultimoDiaMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            int diaSeleccionado = calendar.get(Calendar.DAY_OF_MONTH);
+            int diaAjustado = Math.min(ultimoDiaMes, diaSeleccionado);
+            calendar.set(Calendar.DAY_OF_MONTH, diaAjustado);
+            
+            //Formatear la fecha en dia mes año
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            
+            modelo.addRow(new Object[] { 
+                i, 
+                dateFormat.format(calendar.getTime()), 
+                "",
+            });
+            
+        }
+        
+        double importeMensual = calcularImporteMensual(total_rent, cuotas);
+        importeMensual = Math.round(importeMensual * 100.0) / 100.0;
+        
+        // Actualizar la columna "Por Pagar" en cada fila
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            modelo.setValueAt(importeMensual, i, 2); // 2 es el índice de la columna "importe"
+        }
+        
+        System.out.println("importeMensual :" + importeMensual);
         
         tbCalculoImporte.setModel(modelo);
     }
