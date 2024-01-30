@@ -1,17 +1,20 @@
 package DAO;
 
 import Conexion.CConexion;
+import java.awt.Image;
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 
 public class CuartoDAO {
          
@@ -44,12 +47,13 @@ public class CuartoDAO {
             } 
         }
         
-         public void InsertarCuarto(JComboBox comboPiso, JTextField numcuarto, JTextField metraje) {
+         public void InsertarCuarto(JComboBox comboPiso, JTextField numcuarto, JTextField metraje, File foto) {
          CConexion objetoConexion = new CConexion();
 
-         String consulta = "INSERT INTO cuarto (piso_id, numcuarto, metraje) VALUES (?, ?, ?)";
+         String consulta = "INSERT INTO cuarto (piso_id, numcuarto, metraje, foto) VALUES (?, ?, ?, ?)";
 
          try {
+             FileInputStream fis = new FileInputStream(foto);
             CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
             int selectedIndex = comboPiso.getSelectedIndex();
@@ -59,6 +63,7 @@ public class CuartoDAO {
                 cs.setInt(1, idPiso);
                 cs.setString(2, numcuarto.getText());
                 cs.setString(3, metraje.getText());
+                cs.setBinaryStream(4, fis, (int)foto.length());
                 cs.execute();
 
                 JOptionPane.showMessageDialog(null, "Cuarto insertado exitosamente");
@@ -73,39 +78,53 @@ public class CuartoDAO {
 }
          
          public void MostrarCuartos(JTable tbTotalCuartos) {
-    CConexion objetoConexion = new CConexion();
-    
-    DefaultTableModel modelo = new DefaultTableModel();
-    String sql = "";
-    modelo.addColumn("id");
-    modelo.addColumn("Piso");
-    modelo.addColumn("Cuarto");
-    modelo.addColumn("Metraje");
+        CConexion objetoConexion = new CConexion();
 
-    tbTotalCuartos.setModel(modelo);
-    
-    sql = "SELECT cuarto.id, piso.piso as nombre_piso, numcuarto, metraje FROM cuarto INNER JOIN piso ON cuarto.piso_id = piso.id";
-
-    try {
-        Statement st = objetoConexion.estableceConexion().createStatement();
-        ResultSet rs = st.executeQuery(sql);
-
-        while (rs.next()) {
-            String id = rs.getString("id");
-            String nombre_piso = rs.getString("nombre_piso");
-            String numcuarto = rs.getString("numcuarto");
-            String metraje = rs.getString("metraje");
-
-            modelo.addRow(new Object[]{id, nombre_piso, numcuarto, metraje});
-        }
+        DefaultTableModel modelo = new DefaultTableModel();
+        String sql = "";
+        modelo.addColumn("id");
+        modelo.addColumn("Piso");
+        modelo.addColumn("Cuarto");
+        modelo.addColumn("Metraje");
+        modelo.addColumn("Foto");
 
         tbTotalCuartos.setModel(modelo);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Error al mostrar cuartos, error: " + e.toString());
-    }
-}
 
-         public void SeleccionarCuartos(JTable tbTotalCuartos, JTextField id, JComboBox comboPiso, JTextField numcuarto, JTextField metraje){
+        sql = "SELECT cuarto.id, piso.piso as nombre_piso, numcuarto, metraje , foto FROM cuarto INNER JOIN piso ON cuarto.piso_id = piso.id";
+
+        try {
+            Statement st = objetoConexion.estableceConexion().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String nombre_piso = rs.getString("nombre_piso");
+                String numcuarto = rs.getString("numcuarto");
+                String metraje = rs.getString("metraje");
+
+                byte [] imageBytes = rs.getBytes("foto");
+                Image foto = null;
+                if (imageBytes !=null) {
+                    try{
+                        ImageIcon imageIcon = new ImageIcon(imageBytes);
+                        foto = imageIcon.getImage();
+                    } catch (Exception e ) {
+
+                        JOptionPane.showMessageDialog(null,"Error:"+e.toString());
+
+                    }
+                }
+
+                modelo.addRow(new Object[]{id, nombre_piso, numcuarto, metraje});
+            }
+
+            tbTotalCuartos.setModel(modelo);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar cuartos, error: " + e.toString());
+        }
+    }
+
+         public void SeleccionarCuartos(JTable tbTotalCuartos, JTextField id, JComboBox comboPiso, JTextField numcuarto, JTextField metraje, JLabel foto){
                   int fila=  tbTotalCuartos.getSelectedRow();
                   
                   if (fila>=0) {
@@ -113,6 +132,13 @@ public class CuartoDAO {
                          comboPiso.setSelectedItem(tbTotalCuartos.getValueAt(fila, 1).toString());
                         numcuarto.setText(tbTotalCuartos.getValueAt(fila,2).toString());
                         metraje.setText(tbTotalCuartos.getValueAt(fila,3).toString());
+                        Image imagen = (Image) tbTotalCuartos.getValueAt(fila, 4);
+                        ImageIcon originalIcon = new ImageIcon(imagen);
+                        int lblanchura = foto.getWidth();
+                        int lblaltura = foto.getHeight();
+                        
+                        Image ImagenEscalada= originalIcon.getImage().getScaledInstance(lblanchura, lblaltura, Image.SCALE_SMOOTH);
+                        foto.setIcon(new ImageIcon(ImagenEscalada));
                   }
                   
                   try {

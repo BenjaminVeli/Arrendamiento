@@ -8,6 +8,7 @@ com\mycompany\arrendamientos\RegistroDatosClientes$16.class
 com\mycompany\arrendamientos\CalculoAlquiler$14.class
 com\mycompany\arrendamientos\CalculoAlquiler$2.class
 com\mycompany\arrendamientos\CrearPiso.class
+com\mycompany\arrendamientos\CrearCuarto$8.class
 com\mycompany\arrendamientos\Login$2.class
 com\mycompany\arrendamientos\CalculoAlquiler$8.class
 com\mycompany\arrendamientos\CrearPiso$2.class
@@ -52,7 +53,6 @@ com\mycompany\arrendamientos\CalculoAlquiler$3.class
 com\mycompany\arrendamientos\RegistroDatosClientes$6.class
 com\mycompany\arrendamientos\Contrato$1.class
 DAO\ArrendamientosDAO.class
-.netbeans_automatic_build
 com\mycompany\arrendamientos\CrearCuarto$3.class
 DAO\CalcularAlquilerDAO.class
 com\mycompany\arrendamientos\RegistroDatosClientes$2.class

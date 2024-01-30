@@ -11,10 +11,12 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FontUnderline;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class CalculoAlquiler extends javax.swing.JFrame {
@@ -959,8 +961,28 @@ private void exportarAExcel() {
         font.setFontHeightInPoints((short) 12);
         estiloCelda.setFont(font);
 
+        // Crear estilo para el texto "Proforma"
+        XSSFCellStyle estiloProforma = workbook.createCellStyle();
+        XSSFFont fontProforma = workbook.createFont();
+        fontProforma.setFontHeightInPoints((short) 20);
+        fontProforma.setBold(true);
+        fontProforma.setUnderline(FontUnderline.SINGLE);
+        estiloProforma.setFont(fontProforma);
+
+        // Crear fila para "Proforma" combinando las celdas C1 y D1
+        Row proformaRow = sheet.createRow(0);
+        Cell proformaCellC = proformaRow.createCell(2);
+        proformaCellC.setCellValue("PROFORMA");
+        Cell proformaCellD = proformaRow.createCell(3);
+        proformaCellD.setCellValue(""); // Dejar la celda D1 vacía
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 2, 3)); // Combinar las celdas C1 y D1
+        proformaCellC.setCellStyle(estiloProforma);
+
+        // Agregar salto de línea (fila en blanco)
+        sheet.createRow(1);
+
         // Crear fila de encabezado
-        Row headerRow = sheet.createRow(0);
+        Row headerRow = sheet.createRow(2);
         for (int i = 0; i < modelo.getColumnCount(); i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(modelo.getColumnName(i));
@@ -969,7 +991,7 @@ private void exportarAExcel() {
 
         // Llenar la hoja de cálculo con los datos y aplicar estilo
         for (int i = 0; i < modelo.getRowCount(); i++) {
-            Row row = sheet.createRow(i + 1);
+            Row row = sheet.createRow(i + 1); // Ajustar la posición para dejar espacio para "Proforma" y espacio en blanco
             for (int j = 0; j < modelo.getColumnCount(); j++) {
                 Cell cell = row.createCell(j);
                 cell.setCellValue(modelo.getValueAt(i, j).toString());
