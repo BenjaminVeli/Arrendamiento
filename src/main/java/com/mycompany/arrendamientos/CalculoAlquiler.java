@@ -1078,7 +1078,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.ModificarCalculoAlquiler(tbTotalCalculo, idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt);
+       dao.ModificarCalculoAlquiler(tbTotalCalculo, idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
        dao.MostrarAlquiler(tbTotalCalculo);
     }//GEN-LAST:event_btnModificarActionPerformed
 
@@ -1365,5 +1365,8 @@ private void exportarAExcel() {
         totaltxt.setText("");
         interesestxt.setText("");
         mensualtxt.setText("");
+        pagoDiariotxt.setText("");
+        pagoSemtxt.setText("");
+        pagoQuincenaltxt.setText("");
     }
 }

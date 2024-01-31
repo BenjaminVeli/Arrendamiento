@@ -553,6 +553,61 @@ public class CalcularAlquilerDAO {
     }
 }
 
+    public void ModificarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal) {
+    try {
+        int fila = paramTablaCalculosAlquiler.getSelectedRow();
+        if (fila >= 0) {
+            // Obtén el ID de la fila seleccionada
+            String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
+
+            // Obtén el ID del cuarto actualmente ocupado
+            int room_id_actual = obtenerIdCuartoPorCalculoAlquiler(Integer.parseInt(idSeleccionado));
+
+            // Actualizar el cálculo de alquiler
+            CConexion objetoConexion = new CConexion();
+            String actualizarCalculo = "UPDATE rent_calculation SET client_id=?, rent=?, garantia=?, total=?, total_rent=?, floor_id=?, room_id=?, interes=?, mensual=?, fecha=?, fecha_ingreso=?, tipo_pago=?, pago_diario=?, pago_sem=?, quincenal=? WHERE id=?";
+
+            PreparedStatement psActualizarCalculo = objetoConexion.estableceConexion().prepareStatement(actualizarCalculo);
+
+            psActualizarCalculo.setInt(1, obtenerIdNombre((String) paramNombreCliente.getSelectedItem()));
+            psActualizarCalculo.setBigDecimal(2, new BigDecimal(paramRent.getText()));
+            psActualizarCalculo.setBigDecimal(3, new BigDecimal(paramGarantia.getText()));
+            psActualizarCalculo.setInt(4, Integer.parseInt(paramTotal.getText()));
+            psActualizarCalculo.setBigDecimal(5, new BigDecimal(paramTotalAlquiler.getText())); 
+            psActualizarCalculo.setInt(6, obtenerIdPiso((String) paramNombrePiso.getSelectedItem()));
+            psActualizarCalculo.setInt(7, obtenerIdCuartoPorPiso((String) paramNombreCuarto.getSelectedItem(), obtenerIdPiso((String) paramNombrePiso.getSelectedItem())));
+            psActualizarCalculo.setBigDecimal(8, new BigDecimal(paramInteres.getText()));
+            psActualizarCalculo.setBigDecimal(9, new BigDecimal(paramMensual.getText()));
+            psActualizarCalculo.setDate(10, new Date(paramFecha.getDate().getTime()));
+            psActualizarCalculo.setDate(11, new Date(paramFechaIngreso.getDate().getTime()));
+            psActualizarCalculo.setString(12, (String) paramtipoPago.getSelectedItem());
+            psActualizarCalculo.setBigDecimal(13, new BigDecimal(parampagoDiario.getText()));
+            psActualizarCalculo.setBigDecimal(14, new BigDecimal(parampagoSem.getText()));
+            psActualizarCalculo.setBigDecimal(15, new BigDecimal(paramQuincenal.getText()));
+            psActualizarCalculo.setInt(16, Integer.parseInt(idSeleccionado));
+
+            psActualizarCalculo.executeUpdate();
+
+            // Liberar el cuarto actualmente ocupado (marcar como desocupado)
+            liberarCuarto(room_id_actual);
+
+            // Obtener el ID del nuevo cuarto
+            int room_id_nuevo = obtenerIdCuartoPorPiso((String) paramNombreCuarto.getSelectedItem(), obtenerIdPiso((String) paramNombrePiso.getSelectedItem()));
+
+            // Actualizar el estado del nuevo cuarto (marcar como ocupado)
+            actualizarEstadoCuarto(room_id_nuevo);
+            
+            
+            JOptionPane.showMessageDialog(null, "Cálculo de alquiler actualizado exitosamente");
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al modificar el cálculo de alquiler: " + e.toString());
+    }
+}
+    
     public void EliminarCalculoAlquiler(JTextField id) {
     CConexion objetoConexion = new CConexion();
     String obtenerDatosCuarto = "SELECT floor_id, room_id FROM rent_calculation WHERE id=?";
@@ -587,57 +642,6 @@ public class CalcularAlquilerDAO {
 
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "Error al eliminar el cálculo de alquiler: " + e.toString());
-    }
-}
-
-    public void ModificarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
-    try {
-        int fila = paramTablaCalculosAlquiler.getSelectedRow();
-        if (fila >= 0) {
-            // Obtén el ID de la fila seleccionada
-            String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
-
-            // Obtén el ID del cuarto actualmente ocupado
-            int room_id_actual = obtenerIdCuartoPorCalculoAlquiler(Integer.parseInt(idSeleccionado));
-
-            // Actualizar el cálculo de alquiler
-            CConexion objetoConexion = new CConexion();
-            String actualizarCalculo = "UPDATE rent_calculation SET client_id=?, rent=?, garantia=?, total=?, total_rent=?, floor_id=?, room_id=?, interes=?, mensual=?, fecha=?, fecha_ingreso=? WHERE id=?";
-
-            PreparedStatement psActualizarCalculo = objetoConexion.estableceConexion().prepareStatement(actualizarCalculo);
-
-            psActualizarCalculo.setInt(1, obtenerIdNombre((String) paramNombreCliente.getSelectedItem()));
-            psActualizarCalculo.setBigDecimal(2, new BigDecimal(paramRent.getText()));
-            psActualizarCalculo.setBigDecimal(3, new BigDecimal(paramGarantia.getText()));
-            psActualizarCalculo.setInt(4, Integer.parseInt(paramTotal.getText()));
-            psActualizarCalculo.setBigDecimal(5, new BigDecimal(paramTotalAlquiler.getText())); 
-            psActualizarCalculo.setInt(6, obtenerIdPiso((String) paramNombrePiso.getSelectedItem()));
-            psActualizarCalculo.setInt(7, obtenerIdCuartoPorPiso((String) paramNombreCuarto.getSelectedItem(), obtenerIdPiso((String) paramNombrePiso.getSelectedItem())));
-            psActualizarCalculo.setBigDecimal(8, new BigDecimal(paramInteres.getText()));
-            psActualizarCalculo.setBigDecimal(9, new BigDecimal(paramMensual.getText()));
-            psActualizarCalculo.setDate(10, new Date(paramFecha.getDate().getTime()));
-            psActualizarCalculo.setDate(11, new Date(paramFechaIngreso.getDate().getTime()));
-            psActualizarCalculo.setInt(12, Integer.parseInt(idSeleccionado));
-
-            psActualizarCalculo.executeUpdate();
-
-            // Liberar el cuarto actualmente ocupado (marcar como desocupado)
-            liberarCuarto(room_id_actual);
-
-            // Obtener el ID del nuevo cuarto
-            int room_id_nuevo = obtenerIdCuartoPorPiso((String) paramNombreCuarto.getSelectedItem(), obtenerIdPiso((String) paramNombrePiso.getSelectedItem()));
-
-            // Actualizar el estado del nuevo cuarto (marcar como ocupado)
-            actualizarEstadoCuarto(room_id_nuevo);
-            
-            
-            JOptionPane.showMessageDialog(null, "Cálculo de alquiler actualizado exitosamente");
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Fila no seleccionada");
-        }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Error al modificar el cálculo de alquiler: " + e.toString());
     }
 }
     
