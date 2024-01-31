@@ -118,7 +118,7 @@ public class CalcularAlquilerDAO {
     }
     
     /********************************** OPERACIONES CRUD **********************************/
-    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
+    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual, JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal) {
         CalcularAlquiler ca = new CalcularAlquiler();
        
         String nombreCliente = (String) paramNombreCliente.getSelectedItem();
@@ -150,9 +150,14 @@ public class CalcularAlquilerDAO {
         ca.setFecha(new Date(paramFecha.getDate().getTime()));
         ca.setFechaIngreso(new Date(paramFechaIngreso.getDate().getTime()));
         ca.setMensual(new BigDecimal(paramMensual.getText()));
+        ca.setTipoPago((String) paramtipoPago.getSelectedItem());
+        
+        ca.setPagoDiario(new BigDecimal(parampagoDiario.getText()));
+        ca.setPagoSem(new BigDecimal(parampagoSem.getText()));
+        ca.setQuincenal(new BigDecimal(paramQuincenal.getText()));
 
         CConexion objetoConexion = new CConexion();
-        String consulta = "INSERT INTO rent_calculation (client_id, rent, garantia, total, total_rent, floor_id, room_id,interes,mensual, fecha, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?,?)";
+        String consulta = "INSERT INTO rent_calculation (client_id, rent, garantia, total, total_rent, floor_id, room_id,interes,mensual, fecha, fecha_ingreso, tipo_pago, pago_diario, pago_sem, quincenal) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?)";
 
         try {
             java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
@@ -168,6 +173,10 @@ public class CalcularAlquilerDAO {
             cs.setBigDecimal(9, ca.getMensual());
             cs.setDate( 10, ca.getFecha());
             cs.setDate( 11, ca.getFechaIngreso());
+            cs.setString( 12, ca.getTipoPago());
+            cs.setBigDecimal(13, ca.getPagoDiario());
+            cs.setBigDecimal(14, ca.getPagoSem());
+            cs.setBigDecimal(15, ca.getQuincenal());
 
             cs.execute();
             JOptionPane.showMessageDialog(null, "Cálculo de alquiler insertado exitosamente");
@@ -194,7 +203,7 @@ public class CalcularAlquilerDAO {
     tbTotalCalculo.setRowSorter(ordenarTabla);
 
     String[] columnasMostradas = {"Id", "Cliente", "Alquiler","Cuotas", "Piso", "Cuarto"};
-    String[] columnasBD = {"id", "nombre_cliente", "rent", "total",  "nombre_piso", "numcuarto", "interes","mensual", "fecha", "fecha_ingreso" ,"total_rent",  "garantia"};
+    String[] columnasBD = {"id", "nombre_cliente", "rent", "total",  "nombre_piso", "numcuarto", "interes","mensual", "fecha", "fecha_ingreso" ,"total_rent",  "garantia" ,  "tipo_pago" , "pago_diario" , "pago_sem" , "quincenal"};
 
     for (int i = 0; i < columnasMostradas.length; i++) {
         modelo.addColumn(columnasMostradas[i]);
@@ -202,7 +211,7 @@ public class CalcularAlquilerDAO {
 
     tbTotalCalculo.setModel(modelo);
 
-    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia,interes,mensual, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
+    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia,interes,mensual, pago_diario, tipo_pago, pago_sem, quincenal, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
 
     try (Statement st = objetoConexion.estableceConexion().createStatement();
          ResultSet rs = st.executeQuery(sql)) {
@@ -476,7 +485,7 @@ public class CalcularAlquilerDAO {
         tbCalculoImporte.setModel(modelo);
     }
     
-    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual) {
+    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
@@ -514,6 +523,21 @@ public class CalcularAlquilerDAO {
                 paramNombreCuarto.setSelectedItem(nombreCuarto);
                 
                 paramMensual.setText(rs.getString("mensual"));
+                
+                String tipoPago = rs.getString("tipo_pago");
+                int index = -1;
+                
+                for (int i = 0; i < paramtipoPago.getItemCount(); i++) {
+                    if (paramtipoPago.getItemAt(i).equals(tipoPago)) {
+                        index = i;
+                        break;
+                    }
+                }
+                paramtipoPago.setSelectedIndex(index);
+                
+                parampagoDiario.setText( rs.getString("pago_diario"));
+                parampagoSem.setText( rs.getString("pago_sem"));
+                paramQuincenal.setText( rs.getString("quincenal"));
                 
                 // Manejo de fechas
                 java.util.Date fecha = rs.getDate("fecha");

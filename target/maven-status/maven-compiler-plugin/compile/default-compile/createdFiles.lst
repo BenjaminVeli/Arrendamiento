@@ -6,6 +6,7 @@ com\mycompany\arrendamientos\CalculoAlquiler$11.class
 com\mycompany\arrendamientos\RegistroDatosClientes$1.class
 com\mycompany\arrendamientos\RegistroDatosClientes$16.class
 com\mycompany\arrendamientos\CalculoAlquiler$14.class
+com\mycompany\arrendamientos\CalculoAlquiler$24.class
 com\mycompany\arrendamientos\CalculoAlquiler$2.class
 com\mycompany\arrendamientos\CrearPiso.class
 com\mycompany\arrendamientos\CrearCuarto$8.class
@@ -19,6 +20,7 @@ com\mycompany\arrendamientos\CrearPiso$5.class
 com\mycompany\arrendamientos\Login.class
 com\mycompany\arrendamientos\CalculoAlquiler$6.class
 com\mycompany\arrendamientos\CalculoAlquiler$15.class
+com\mycompany\arrendamientos\RegistroDatosClientes$17.class
 DAO\ArrendamientosDAO$1.class
 com\mycompany\arrendamientos\RegistroDatosClientes.class
 com\mycompany\arrendamientos\CrearCuarto$6.class

@@ -1004,7 +1004,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 return;
             }
             
-            dao.insertarCalculoAlquiler(search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt,mensualtxt);
+            dao.insertarCalculoAlquiler(search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
             dao.MostrarAlquiler(tbTotalCalculo);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Los campos de alquiler y total deben contener valores numéricos", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1072,7 +1072,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void tbTotalCalculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCalculoMouseClicked
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.SeleccionarCalculoAlquiler(tbTotalCalculo, idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt);
+       dao.SeleccionarCalculoAlquiler(tbTotalCalculo, idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
 
     }//GEN-LAST:event_tbTotalCalculoMouseClicked
 

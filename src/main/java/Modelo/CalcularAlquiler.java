@@ -15,6 +15,42 @@ public class CalcularAlquiler {
     BigDecimal mensual;
     Date fecha;
     Date fechaIngreso;
+    String tipoPago;
+    BigDecimal pagoDiario;
+    BigDecimal pagoSem;
+    BigDecimal Quincenal;
+    
+    public String getTipoPago() {
+        return tipoPago;
+    }
+
+    public void setTipoPago(String tipoPago) {
+        this.tipoPago = tipoPago;
+    }
+
+    public BigDecimal getPagoDiario() {
+        return pagoDiario;
+    }
+
+    public void setPagoDiario(BigDecimal pagoDiario) {
+        this.pagoDiario = pagoDiario;
+    }
+
+    public BigDecimal getPagoSem() {
+        return pagoSem;
+    }
+
+    public void setPagoSem(BigDecimal pagoSem) {
+        this.pagoSem = pagoSem;
+    }
+
+    public BigDecimal getQuincenal() {
+        return Quincenal;
+    }
+
+    public void setQuincenal(BigDecimal Quincenal) {
+        this.Quincenal = Quincenal;
+    }
 
     public BigDecimal getRent() {
         return rent;
