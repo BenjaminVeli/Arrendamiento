@@ -73,7 +73,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
         // Verificar que todos los campos estén completos antes de continuar
         if (cuotas <= 0 || utilFecha == null || interes < 0 || total_rent <= 0) {
-            JOptionPane.showMessageDialog(this, "Completa todos los campos correctamente.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Completa todos los campos correctamente pi :'v.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
@@ -88,10 +88,12 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
         double porPagar = dao.calcularPorPagar(total_rent, cuotas);
         porPagar = Math.round(porPagar * 100.0) / 100.0;
+        System.out.println("porPagar en el JFRAME de mostrarCalculo: " + porPagar);
         mensualtxt.setText(String.valueOf(porPagar));
         
         double sumaMensual = dao.calcularSumaMensual(porPagar, cuotas);
         sumaMensual = Math.round(sumaMensual * 100.0) / 100.0;
+        System.out.println("sumaMensual en el JFRAME: " + sumaMensual);
         txtSumMensual.setText(String.valueOf(sumaMensual));
         
         double sumaCapital = dao.obtenerSumaCapitalAcumulativa();
@@ -113,81 +115,75 @@ public class CalculoAlquiler extends javax.swing.JFrame {
          int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
         java.util.Date utilFecha = fechaingresotxt.getDate();
         double total_rent = Double.parseDouble(totalAlquilertxt.getText());
+        double interes = Double.parseDouble(interesestxt.getText());
+        double sumaCapital = Double.parseDouble(txtSumCapital.getText());
+        double sumaInteres = Double.parseDouble(txtSumInteres.getText());
         
-         if (utilFecha == null) {
-            JOptionPane.showMessageDialog(this, "Debes seleccionar una fecha.", "Error", JOptionPane.ERROR_MESSAGE);
+        // Verificar que todos los campos estén completos antes de continuar
+        if (cuotas <= 0 || utilFecha == null || total_rent <= 0) {
+            JOptionPane.showMessageDialog(this, "Completa todos los campos correctamente diario.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         // Convertir java.util.Date a java.sql.Date
         java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
         
-        dao.MostrarImporteDiario(tbCalculoImporte, cuotas, fecha, total_rent);
+        dao.MostrarImporteDiario(tbCalculoImporte, cuotas, fecha, total_rent, sumaCapital, sumaInteres);
         
-        double porPagar = dao.calcularPorPagar(total_rent, cuotas);
-        porPagar = Math.round(porPagar * 100.0) / 100.0;
-        
-        double importeDiario = dao.calcularSumaMensual(porPagar, cuotas);
+        double importeDiario = dao.Importe(sumaCapital, sumaInteres);
         importeDiario = Math.round(importeDiario * 100.0) / 100.0;
+        System.out.println("importeDiario en el JFRAME: " + importeDiario);
         importe.setText(String.valueOf(importeDiario));
         
-        double pagoDiario = dao.calcularImporteDiario(total_rent, cuotas);
+        double pagoDiario = dao.calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
         pagoDiario = Math.round(pagoDiario * 100.0) / 100.0;
         pagoDiariotxt.setText(String.valueOf(pagoDiario));
         
-        double pagoSemanal = dao.calcularImporteSemanal(total_rent, cuotas);
+        double pagoSemanal = dao.calcularImporteSemanal(sumaCapital, sumaInteres, cuotas);
         pagoSemanal = Math.round(pagoSemanal * 100.0) / 100.0;
         pagoSemtxt.setText(String.valueOf(pagoSemanal));
         
-        double pagoQuincenal = dao.calcularImporteQuincenal(total_rent, cuotas);
+        double pagoQuincenal = dao.calcularImporteQuincenal(sumaCapital, sumaInteres, cuotas);
         pagoQuincenal = Math.round(pagoQuincenal * 100.0) / 100.0;
         pagoQuincenaltxt.setText(String.valueOf(pagoQuincenal));
-        
-        double pagoMensual = dao.calcularImporteMensual(total_rent, cuotas);
-        pagoMensual = Math.round(pagoMensual * 100.0) / 100.0;
-        pagoQuincenaltxt.setText(String.valueOf(pagoMensual));
     }
     
-    private void mostrarImporteDiarioSemanal() {
+    private void mostrarImporteSemanal() {
         CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
         
         // Obtener los campos del formulario
          int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
         java.util.Date utilFecha = fechaingresotxt.getDate();
         double total_rent = Double.parseDouble(totalAlquilertxt.getText());
+        double sumaCapital = Double.parseDouble(txtSumCapital.getText());
+        double sumaInteres = Double.parseDouble(txtSumInteres.getText());
         
-         if (utilFecha == null) {
-            JOptionPane.showMessageDialog(this, "Debes seleccionar una fecha.", "Error", JOptionPane.ERROR_MESSAGE);
+         // Verificar que todos los campos estén completos antes de continuar
+        if (cuotas <= 0 || utilFecha == null || total_rent <= 0) {
+            JOptionPane.showMessageDialog(this, "Completa todos los campos correctamente semanal.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         // Convertir java.util.Date a java.sql.Date
         java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
         
-        dao.MostrarImporteSemanal(tbCalculoImporte, cuotas, fecha, total_rent);
+        dao.MostrarImporteSemanal(tbCalculoImporte, cuotas, fecha, total_rent, sumaCapital, sumaInteres);
         
-        double porPagar = dao.calcularPorPagar(total_rent, cuotas);
-        porPagar = Math.round(porPagar * 100.0) / 100.0;
-        
-        double importeSemanal = dao.calcularSumaMensual(porPagar, cuotas);
+        double importeSemanal = dao.Importe(sumaCapital, sumaInteres);
         importeSemanal = Math.round(importeSemanal * 100.0) / 100.0;
         importe.setText(String.valueOf(importeSemanal));
         
-        double pagoDiario = dao.calcularImporteDiario(total_rent, cuotas);
+        double pagoDiario = dao.calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
         pagoDiario = Math.round(pagoDiario * 100.0) / 100.0;
         pagoDiariotxt.setText(String.valueOf(pagoDiario));
         
-        double pagoSemanal = dao.calcularImporteSemanal(total_rent, cuotas);
+        double pagoSemanal = dao.calcularImporteSemanal(sumaCapital, sumaInteres, cuotas);
         pagoSemanal = Math.round(pagoSemanal * 100.0) / 100.0;
         pagoSemtxt.setText(String.valueOf(pagoSemanal));
         
-        double pagoQuincenal = dao.calcularImporteQuincenal(total_rent, cuotas);
+        double pagoQuincenal = dao.calcularImporteQuincenal(sumaCapital, sumaInteres, cuotas);
         pagoQuincenal = Math.round(pagoQuincenal * 100.0) / 100.0;
         pagoQuincenaltxt.setText(String.valueOf(pagoQuincenal));
-        
-        double pagoMensual = dao.calcularImporteMensual(total_rent, cuotas);
-        pagoMensual = Math.round(pagoMensual * 100.0) / 100.0;
-        pagoQuincenaltxt.setText(String.valueOf(pagoMensual));
     }
 
     private void mostrarImporteQuincenal() {
@@ -197,39 +193,42 @@ public class CalculoAlquiler extends javax.swing.JFrame {
          int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
         java.util.Date utilFecha = fechaingresotxt.getDate();
         double total_rent = Double.parseDouble(totalAlquilertxt.getText());
+        double sumaCapital = Double.parseDouble(txtSumCapital.getText());
+        double sumaInteres = Double.parseDouble(txtSumInteres.getText());
         
-         if (utilFecha == null) {
-            JOptionPane.showMessageDialog(this, "Debes seleccionar una fecha.", "Error", JOptionPane.ERROR_MESSAGE);
+         // Verificar que todos los campos estén completos antes de continuar
+        if (cuotas <= 0 || utilFecha == null || total_rent <= 0) {
+            JOptionPane.showMessageDialog(this, "Completa todos los campos correctamente quincenal.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         // Convertir java.util.Date a java.sql.Date
         java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
         
-        dao.MostrarImporteQuincenal(tbCalculoImporte, cuotas, fecha, total_rent);
+        dao.MostrarImporteQuincenal(tbCalculoImporte, cuotas, fecha, total_rent, sumaCapital, sumaInteres);
         
         double porPagar = dao.calcularPorPagar(total_rent, cuotas);
         porPagar = Math.round(porPagar * 100.0) / 100.0;
         
-        double importeSemanal = dao.calcularSumaMensual(porPagar, cuotas);
-        importeSemanal = Math.round(importeSemanal * 100.0) / 100.0;
-        importe.setText(String.valueOf(importeSemanal));
+        double importeQuincenal = dao.Importe(sumaCapital, sumaInteres);
+        importeQuincenal = Math.round(importeQuincenal * 100.0) / 100.0;
+        importe.setText(String.valueOf(importeQuincenal));
         
-        double pagoDiario = dao.calcularImporteDiario(total_rent, cuotas);
+        double pagoDiario = dao.calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
         pagoDiario = Math.round(pagoDiario * 100.0) / 100.0;
         pagoDiariotxt.setText(String.valueOf(pagoDiario));
         
-        double pagoSemanal = dao.calcularImporteSemanal(total_rent, cuotas);
+        double pagoSemanal = dao.calcularImporteSemanal(sumaCapital, sumaInteres, cuotas);
         pagoSemanal = Math.round(pagoSemanal * 100.0) / 100.0;
         pagoSemtxt.setText(String.valueOf(pagoSemanal));
         
-        double pagoQuincenal = dao.calcularImporteQuincenal(total_rent, cuotas);
+        double pagoQuincenal = dao.calcularImporteQuincenal(sumaCapital, sumaInteres, cuotas);
         pagoQuincenal = Math.round(pagoQuincenal * 100.0) / 100.0;
         pagoQuincenaltxt.setText(String.valueOf(pagoQuincenal));
         
-        double pagoMensual = dao.calcularImporteMensual(total_rent, cuotas);
-        pagoMensual = Math.round(pagoMensual * 100.0) / 100.0;
-        pagoQuincenaltxt.setText(String.valueOf(pagoMensual));
+        // double pagoMensual = dao.calcularImporteMensual(total_rent, cuotas);
+        // pagoMensual = Math.round(pagoMensual * 100.0) / 100.0;
+        // pagoQuincenaltxt.setText(String.valueOf(pagoMensual));
     }    
     
     private void mostrarImporteMensual() {
@@ -239,39 +238,35 @@ public class CalculoAlquiler extends javax.swing.JFrame {
          int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
         java.util.Date utilFecha = fechaingresotxt.getDate();
         double total_rent = Double.parseDouble(totalAlquilertxt.getText());
+        double sumaCapital = Double.parseDouble(txtSumCapital.getText());
+        double sumaInteres = Double.parseDouble(txtSumInteres.getText());
         
-         if (utilFecha == null) {
-            JOptionPane.showMessageDialog(this, "Debes seleccionar una fecha.", "Error", JOptionPane.ERROR_MESSAGE);
+         // Verificar que todos los campos estén completos antes de continuar
+        if (cuotas <= 0 || utilFecha == null || total_rent <= 0) {
+            JOptionPane.showMessageDialog(this, "Completa todos los campos correctamente mensual.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         // Convertir java.util.Date a java.sql.Date
         java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
         
-        dao.MostrarImporteMensual(tbCalculoImporte, cuotas, fecha, total_rent);
+        dao.MostrarImporteMensual(tbCalculoImporte, cuotas, fecha, total_rent, sumaCapital, sumaInteres);
         
-        double porPagar = dao.calcularPorPagar(total_rent, cuotas);
-        porPagar = Math.round(porPagar * 100.0) / 100.0;
+        double importeMensual = dao.Importe(sumaCapital, sumaInteres);
+        importeMensual = Math.round(importeMensual * 100.0) / 100.0;
+        importe.setText(String.valueOf(importeMensual));
         
-        double importeSemanal = dao.calcularSumaMensual(porPagar, cuotas);
-        importeSemanal = Math.round(importeSemanal * 100.0) / 100.0;
-        importe.setText(String.valueOf(importeSemanal));
-        
-        double pagoDiario = dao.calcularImporteDiario(total_rent, cuotas);
+        double pagoDiario = dao.calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
         pagoDiario = Math.round(pagoDiario * 100.0) / 100.0;
         pagoDiariotxt.setText(String.valueOf(pagoDiario));
         
-        double pagoSemanal = dao.calcularImporteSemanal(total_rent, cuotas);
+        double pagoSemanal = dao.calcularImporteSemanal(sumaCapital, sumaInteres, cuotas);
         pagoSemanal = Math.round(pagoSemanal * 100.0) / 100.0;
         pagoSemtxt.setText(String.valueOf(pagoSemanal));
         
-        double pagoQuincenal = dao.calcularImporteQuincenal(total_rent, cuotas);
+        double pagoQuincenal = dao.calcularImporteQuincenal(sumaCapital, sumaInteres, cuotas);
         pagoQuincenal = Math.round(pagoQuincenal * 100.0) / 100.0;
         pagoQuincenaltxt.setText(String.valueOf(pagoQuincenal));
-        
-        double pagoMensual = dao.calcularImporteMensual(total_rent, cuotas);
-        pagoMensual = Math.round(pagoMensual * 100.0) / 100.0;
-        pagoQuincenaltxt.setText(String.valueOf(pagoMensual));
     }    
     
     private void cargarNombres() {
@@ -1101,7 +1096,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             mostrarImporteDiario();
         }
         if(tiposPago.equals("Semanal")) {
-            mostrarImporteDiarioSemanal();
+            mostrarImporteSemanal();
         }
         if(tiposPago.equals("Quincenal")) {
             mostrarImporteQuincenal();

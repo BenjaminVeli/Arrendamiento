@@ -34,28 +34,34 @@ public class CalcularAlquilerDAO {
         return sumaCapitalAcumulativa;
     }
     
+    // Este es para las filas de Por Pagar
     public double calcularPorPagar(double total_rent, int cuotas) {
         return  (sumaInteresAcumulativa + total_rent) / cuotas;
     }
     
+    //Este es la suma de esas filas de Por Pagar
     public double calcularSumaMensual(double porPagar, int cuotas) {
         return porPagar * cuotas;
     }
     
-    public double calcularImporteDiario(double total_rent, int cuotas) {
-        return total_rent / (cuotas * 30);
+    public double Importe(double sumaCapital, double sumaInteres){
+        return sumaCapital + sumaInteres;
     }
     
-    public double calcularImporteSemanal(double total_rent, int cuotas) {
-        return total_rent / (cuotas * 4);
+    public double calcularImporteDiario(double sumaCapital, double sumaInteres, int cuotas) {
+        return (sumaCapital + sumaInteres) / (cuotas * 30);
     }
     
-    public double calcularImporteQuincenal(double total_rent, int cuotas) {
-        return total_rent / (cuotas * 2);
+    public double calcularImporteSemanal(double sumaCapital, double sumaInteres, int cuotas) {
+        return  (sumaCapital + sumaInteres) / (cuotas * 4);
     }
     
-    public double calcularImporteMensual(double total_rent, int cuotas) {
-        return total_rent / cuotas;
+    public double calcularImporteQuincenal(double sumaCapital, double sumaInteres, int cuotas) {
+        return (sumaCapital + sumaInteres) / (cuotas * 2);
+    }
+    
+    public double calcularImporteMensual(double sumaCapital, double sumaInteres, int cuotas) {
+        return  (sumaCapital + sumaInteres) / cuotas;
     }
     
     public ArrayList<String> obtenerNombresClientes() {
@@ -312,7 +318,7 @@ public class CalcularAlquilerDAO {
         tbCalculoAlquiler.setModel(modelo);
     }
 
-    public void MostrarImporteDiario(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent) {
+    public void MostrarImporteDiario(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -327,7 +333,7 @@ public class CalcularAlquilerDAO {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(fecha);
             
-            //Esto avanza al mes siguiente la fecha
+            //Esto avanza dia a dia  siguiente la fecha
             calendar.add(Calendar.DAY_OF_YEAR, i);
             
             //Formatear la fecha en dia mes año
@@ -341,7 +347,7 @@ public class CalcularAlquilerDAO {
             
         }
         
-        double importeDiario = calcularImporteDiario(total_rent, cuotas);
+        double importeDiario = calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
         importeDiario = Math.round(importeDiario * 100.0) / 100.0;
         
         // Actualizar la columna "Por Pagar" en cada fila
@@ -354,7 +360,7 @@ public class CalcularAlquilerDAO {
         tbCalculoImporte.setModel(modelo);
     }
     
-    public void MostrarImporteSemanal(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent) {
+    public void MostrarImporteSemanal(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -383,7 +389,7 @@ public class CalcularAlquilerDAO {
             
         }
         
-        double importeSemanal = calcularImporteSemanal(total_rent, cuotas);
+        double importeSemanal = calcularImporteSemanal(sumaCapital, sumaInteres, cuotas);
         importeSemanal = Math.round(importeSemanal * 100.0) / 100.0;
         
         // Actualizar la columna "Por Pagar" en cada fila
@@ -396,7 +402,7 @@ public class CalcularAlquilerDAO {
         tbCalculoImporte.setModel(modelo);
     }
         
-    public void MostrarImporteQuincenal(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent) {
+    public void MostrarImporteQuincenal(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -426,7 +432,7 @@ public class CalcularAlquilerDAO {
             
         }
         
-        double importeQuincenal = calcularImporteQuincenal(total_rent, cuotas);
+        double importeQuincenal = calcularImporteQuincenal(sumaCapital, sumaInteres, cuotas);
         importeQuincenal = Math.round(importeQuincenal * 100.0) / 100.0;
         
         // Actualizar la columna "Por Pagar" en cada fila
@@ -439,7 +445,7 @@ public class CalcularAlquilerDAO {
         tbCalculoImporte.setModel(modelo);
     }
     
-     public void MostrarImporteMensual(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent) {
+     public void MostrarImporteMensual(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -472,7 +478,7 @@ public class CalcularAlquilerDAO {
             
         }
         
-        double importeMensual = calcularImporteMensual(total_rent, cuotas);
+        double importeMensual = calcularImporteMensual(sumaCapital, sumaInteres, cuotas);
         importeMensual = Math.round(importeMensual * 100.0) / 100.0;
         
         // Actualizar la columna "Por Pagar" en cada fila
