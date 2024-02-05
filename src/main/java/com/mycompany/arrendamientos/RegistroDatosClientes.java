@@ -322,11 +322,6 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tbTotalClientes);
 
         txtEstadocivil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Soltero/a", "Casado/a", "Seperado/a", "Divorciado/a", "Viudo/a" }));
-        txtEstadocivil.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtEstadocivilActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -592,10 +587,6 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSearchActionPerformed
-
-    private void txtEstadocivilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadocivilActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtEstadocivilActionPerformed
     
    private void filterTable() {
     String searchText = txtSearch.getText().trim();

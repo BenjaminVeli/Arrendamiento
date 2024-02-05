@@ -1,12 +1,15 @@
 package com.mycompany.arrendamientos;
 
 import DAO.CalcularAlquilerDAO;
+import com.mysql.cj.util.StringUtils;
+import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -51,19 +54,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 exportarAExcel();
             }
         });
-        
-        selectPago.addItem("");
-        selectPago.addItem("Diario");
-        selectPago.addItem("Semanal");
-        selectPago.addItem("Quincenal");
-        selectPago.addItem("Mensual");
     }
     
     private void mostrarCalculos() {
-        
-        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-        
         try {
+        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
             
         // Obtener los campos del formulario
          int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
@@ -80,25 +75,22 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         // Convertir java.util.Date a java.sql.Date
         java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
         
-        dao.MostrarCalculos(tbCalculoAlquiler, cuotas, fecha, total_rent, interes);
-        
-        double interesAcumulativa = dao.obtenerSumaInteresAcumulativa();
-        interesAcumulativa = Math.round(interesAcumulativa * 100.0) / 100.0;
-        txtSumInteres.setText(String.valueOf(interesAcumulativa));
+        DefaultTableModel modelo = dao.MostrarCalculos(
+            txtSumCapital,
+            txtSumInteres,
+            txtSumMensual,
+            cuotas,
+            fecha,
+            total_rent,
+            interes
+        );
         
         double porPagar = dao.calcularPorPagar(total_rent, cuotas);
         porPagar = Math.round(porPagar * 100.0) / 100.0;
         System.out.println("porPagar en el JFRAME de mostrarCalculo: " + porPagar);
         mensualtxt.setText(String.valueOf(porPagar));
         
-        double sumaMensual = dao.calcularSumaMensual(porPagar, cuotas);
-        sumaMensual = Math.round(sumaMensual * 100.0) / 100.0;
-        System.out.println("sumaMensual en el JFRAME: " + sumaMensual);
-        txtSumMensual.setText(String.valueOf(sumaMensual));
-        
-        double sumaCapital = dao.obtenerSumaCapitalAcumulativa();
-        sumaCapital = Math.round(sumaCapital * 100.0) / 100.0;
-        txtSumCapital.setText(String.valueOf(sumaCapital));
+        tbCalculoAlquiler.setModel(modelo);
         
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Ingresa valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -115,12 +107,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
          int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
         java.util.Date utilFecha = fechaingresotxt.getDate();
         double total_rent = Double.parseDouble(totalAlquilertxt.getText());
-        double interes = Double.parseDouble(interesestxt.getText());
         double sumaCapital = Double.parseDouble(txtSumCapital.getText());
         double sumaInteres = Double.parseDouble(txtSumInteres.getText());
         
         // Verificar que todos los campos estén completos antes de continuar
-        if (cuotas <= 0 || utilFecha == null || total_rent <= 0) {
+        if (cuotas <= 0 || utilFecha == null || totalAlquilertxt.getText().isEmpty() || txtSumCapital.getText().isEmpty() || txtSumInteres.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Completa todos los campos correctamente diario.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -133,7 +124,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         double importeDiario = dao.Importe(sumaCapital, sumaInteres);
         importeDiario = Math.round(importeDiario * 100.0) / 100.0;
         System.out.println("importeDiario en el JFRAME: " + importeDiario);
-        importe.setText(String.valueOf(importeDiario));
+        txtSumImporte.setText(String.valueOf(importeDiario));
         
         double pagoDiario = dao.calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
         pagoDiario = Math.round(pagoDiario * 100.0) / 100.0;
@@ -171,7 +162,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
         double importeSemanal = dao.Importe(sumaCapital, sumaInteres);
         importeSemanal = Math.round(importeSemanal * 100.0) / 100.0;
-        importe.setText(String.valueOf(importeSemanal));
+        txtSumImporte.setText(String.valueOf(importeSemanal));
         
         double pagoDiario = dao.calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
         pagoDiario = Math.round(pagoDiario * 100.0) / 100.0;
@@ -207,12 +198,9 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
         dao.MostrarImporteQuincenal(tbCalculoImporte, cuotas, fecha, total_rent, sumaCapital, sumaInteres);
         
-        double porPagar = dao.calcularPorPagar(total_rent, cuotas);
-        porPagar = Math.round(porPagar * 100.0) / 100.0;
-        
         double importeQuincenal = dao.Importe(sumaCapital, sumaInteres);
         importeQuincenal = Math.round(importeQuincenal * 100.0) / 100.0;
-        importe.setText(String.valueOf(importeQuincenal));
+        txtSumImporte.setText(String.valueOf(importeQuincenal));
         
         double pagoDiario = dao.calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
         pagoDiario = Math.round(pagoDiario * 100.0) / 100.0;
@@ -225,10 +213,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         double pagoQuincenal = dao.calcularImporteQuincenal(sumaCapital, sumaInteres, cuotas);
         pagoQuincenal = Math.round(pagoQuincenal * 100.0) / 100.0;
         pagoQuincenaltxt.setText(String.valueOf(pagoQuincenal));
-        
-        // double pagoMensual = dao.calcularImporteMensual(total_rent, cuotas);
-        // pagoMensual = Math.round(pagoMensual * 100.0) / 100.0;
-        // pagoQuincenaltxt.setText(String.valueOf(pagoMensual));
     }    
     
     private void mostrarImporteMensual() {
@@ -254,7 +238,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
         double importeMensual = dao.Importe(sumaCapital, sumaInteres);
         importeMensual = Math.round(importeMensual * 100.0) / 100.0;
-        importe.setText(String.valueOf(importeMensual));
+        txtSumImporte.setText(String.valueOf(importeMensual));
         
         double pagoDiario = dao.calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
         pagoDiario = Math.round(pagoDiario * 100.0) / 100.0;
@@ -373,7 +357,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         txtSumMensual = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         tbCalculoImporte = new javax.swing.JTable();
-        importe = new javax.swing.JTextField();
+        txtSumImporte = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         crearPisotxt = new javax.swing.JButton();
         crearCuartobtn = new javax.swing.JButton();
@@ -595,6 +579,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         pagoQuincenaltxt.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         selectPago.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        selectPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Diario", "Semanal", "Quincenal", "Mensual" }));
         selectPago.setBorder(null);
         selectPago.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -862,8 +847,8 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         ));
         jScrollPane4.setViewportView(tbCalculoImporte);
 
-        importe.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        importe.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtSumImporte.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSumImporte.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -884,7 +869,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(importe, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSumImporte, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -901,7 +886,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                         .addComponent(txtSumCapital, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtSumInteres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtSumMensual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(importe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtSumImporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(9, 9, 9))
         );
 
@@ -999,7 +984,18 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 return;
             }
             
+            // Obtener los campos del formulario
+            int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
+            java.util.Date utilFecha = fechatxt.getDate();
+            double interes = Double.parseDouble(interesestxt.getText());
+            double total_rent = Double.parseDouble(totalAlquilertxt.getText());
+
+            // Convertir java.util.Date a java.sql.Date
+            java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
+            
             dao.insertarCalculoAlquiler(search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
+            // Llamar al método para insertar los datos mensuales
+            dao.insertarImporteMensual(search.getSelectedItem().toString(), cuotas, fecha, total_rent, interes, txtSumCapital, txtSumInteres, txtSumMensual);
             dao.MostrarAlquiler(tbTotalCalculo);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Los campos de alquiler y total deben contener valores numéricos", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1246,8 +1242,6 @@ private void exportarAExcel() {
     }
 }
 
-     
-    
     /**
      * @param args the command line arguments
      */
@@ -1301,7 +1295,6 @@ private void exportarAExcel() {
     private com.toedter.calendar.JDateChooser fechatxt;
     private javax.swing.JTextField garantiatxt;
     private javax.swing.JTextField idtxt;
-    private javax.swing.JTextField importe;
     private javax.swing.JTextField interesestxt;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
@@ -1346,6 +1339,7 @@ private void exportarAExcel() {
     private javax.swing.JTextField totaltxt;
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtSumCapital;
+    private javax.swing.JTextField txtSumImporte;
     private javax.swing.JTextField txtSumInteres;
     private javax.swing.JTextField txtSumMensual;
     // End of variables declaration//GEN-END:variables
@@ -1363,5 +1357,14 @@ private void exportarAExcel() {
         pagoDiariotxt.setText("");
         pagoSemtxt.setText("");
         pagoQuincenaltxt.setText("");
+        txtSumCapital.setText("");
+        txtSumInteres.setText("");
+        txtSumMensual.setText("");
+        txtSumImporte.setText("");
+        
+        // Limpiar la tabla
+        DefaultTableModel model = new DefaultTableModel();
+        tbCalculoAlquiler.setModel(model);
+        tbCalculoImporte.setModel(model);
     }
 }
