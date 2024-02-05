@@ -60,6 +60,35 @@ CREATE TABLE rent_calculation (
   mensual DECIMAL(10,2),
   fecha DATE,
   fecha_ingreso DATE,
+  tipo_pago VARCHAR(30),
+  pago_diario DECIMAL(10,2),
+  pago_sem DECIMAL(10,2),
+  quincenal DECIMAL(10,2),
   FOREIGN KEY (floor_id) REFERENCES piso(id),
   FOREIGN KEY (room_id) REFERENCES cuarto(id)
+);
+
+CREATE TABLE importe_mensual (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  rent_calculation_id INT,
+  FOREIGN KEY (rent_calculation_id) REFERENCES rent_calculation(id) ON DELETE CASCADE,
+  ord INT,
+  fecha DATE,
+  saldo DECIMAL(10,2),
+  capital DECIMAL(10,2),
+  interes DECIMAL(10,2),
+  por_pagar DECIMAL(10,2),
+  sum_capital DECIMAL(10,2),
+  sum_interes DECIMAL(10,2),
+  sum_porPagar DECIMAL(10,2)
+);
+
+CREATE TABLE importe_variado (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  rent_calculation_id INT,
+  FOREIGN KEY (rent_calculation_id) REFERENCES rent_calculation(id) ON DELETE CASCADE,
+  ord INT,
+  fecha DATE,
+  importe DECIMAL(10,2),
+  sum_importe DECIMAL(10,2)
 );
