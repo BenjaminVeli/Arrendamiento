@@ -115,7 +115,7 @@ public class CuartoDAO {
                     }
                 }
 
-                modelo.addRow(new Object[]{id, nombre_piso, numcuarto, metraje});
+                modelo.addRow(new Object[]{id, nombre_piso, numcuarto, metraje , foto});
             }
 
             tbTotalCuartos.setModel(modelo);

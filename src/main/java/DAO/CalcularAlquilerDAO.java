@@ -252,8 +252,8 @@ public class CalcularAlquilerDAO {
     TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
     tbTotalCalculo.setRowSorter(ordenarTabla);
 
-    String[] columnasMostradas = {"Id", "Cliente", "Alquiler","Cuotas", "Piso", "Cuarto"};
-    String[] columnasBD = {"id", "nombre_cliente", "rent", "total",  "nombre_piso", "numcuarto", "interes","mensual", "fecha", "fecha_ingreso" ,"total_rent",  "garantia" ,  "tipo_pago" , "pago_diario" , "pago_sem" , "quincenal"};
+    String[] columnasMostradas = {"Id", "Cliente","Alquiler", "Cuotas", "Piso", "Cuarto"};
+    String[] columnasBD = {"id", "nombre_cliente", "rent", "total",  "nombre_piso", "numcuarto", "interes","mensual", "fecha", "fecha_ingreso" ,"total_rent",  "garantia" ,  "tipo_pago" , "pago_diario" , "pago_sem" , "quincenal","dni_propietario","ruc","direccion"};
 
     for (int i = 0; i < columnasMostradas.length; i++) {
         modelo.addColumn(columnasMostradas[i]);
@@ -261,7 +261,7 @@ public class CalcularAlquilerDAO {
 
     tbTotalCalculo.setModel(modelo);
 
-    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, garantia,interes,mensual, pago_diario, tipo_pago, pago_sem, quincenal, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
+    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, datos_cli_prov.dni_propietario, datos_cli_prov.ruc, datos_cli_prov.direccion, rent, garantia,interes,mensual, pago_diario, tipo_pago, pago_sem, quincenal, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
 
     try (Statement st = objetoConexion.estableceConexion().createStatement();
          ResultSet rs = st.executeQuery(sql)) {
@@ -705,7 +705,7 @@ public class CalcularAlquilerDAO {
         tbCalculoImporte.setModel(modelo);
     }
     
-    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal) {
+    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramDni, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JTextField paramRuc) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
@@ -723,7 +723,8 @@ public class CalcularAlquilerDAO {
             ResultSet rs = st.executeQuery(sql);
 
             if (rs.next()) {
-                paramId.setText(rs.getString("id"));
+                String dniPropietario = rs.getString("dni_propietario");
+                paramDni.setText(dniPropietario);
                 paramRent.setText(rs.getString("rent"));
                 paramGarantia.setText(rs.getString("garantia"));
                 paramInteres.setText(rs.getString("interes"));
@@ -762,6 +763,8 @@ public class CalcularAlquilerDAO {
                 parampagoDiario.setText( rs.getString("pago_diario"));
                 parampagoSem.setText( rs.getString("pago_sem"));
                 paramQuincenal.setText( rs.getString("quincenal"));
+                String Ruc = rs.getString("ruc");
+                paramRuc.setText(Ruc);
                 
                 // Manejo de fechas
                 java.util.Date fecha = rs.getDate("fecha");
