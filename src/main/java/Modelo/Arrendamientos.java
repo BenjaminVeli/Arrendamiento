@@ -8,14 +8,9 @@ public class Arrendamientos {
         
         int codigo;
         String nombre;
-        String direccion;
         String ruc;
-        String telefono;
-        String contacto1;
-        String contacto2;
         String propietario;
         String direccion_propietario;
-        String telefono_propietario;
         int celular;
         Date nacimiento;
         String dni_propietario;
@@ -42,14 +37,7 @@ public class Arrendamientos {
         this.nombre = nombre;
     }
 
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
+   
     public String getRuc() {
         return ruc;
     }
@@ -58,30 +46,7 @@ public class Arrendamientos {
         this.ruc = ruc;
     }
 
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getContacto1() {
-        return contacto1;
-    }
-
-    public void setContacto1(String contacto1) {
-        this.contacto1 = contacto1;
-    }
-
-    public String getContacto2() {
-        return contacto2;
-    }
-
-    public void setContacto2(String contacto2) {
-        this.contacto2 = contacto2;
-    }
-
+   
     public String getPropietario() {
         return propietario;
     }
@@ -98,13 +63,7 @@ public class Arrendamientos {
         this.direccion_propietario = direccion_propietario;
     }
 
-    public String getTelefono_propietario() {
-        return telefono_propietario;
-    }
-
-    public void setTelefono_propietario(String telefono_propietario) {
-        this.telefono_propietario = telefono_propietario;
-    }
+   
 
     public int getCelular() {
         return celular;

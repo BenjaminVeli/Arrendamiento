@@ -690,7 +690,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         });
 
         jLabel21.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel21.setText("Teléfono");
+        jLabel21.setText("Celular");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -1125,7 +1125,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void tbTotalCalculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCalculoMouseClicked
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.SeleccionarCalculoAlquiler(tbTotalCalculo,idtxt, dnitxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,ructxt);
+       dao.SeleccionarCalculoAlquiler(tbTotalCalculo,idtxt, dnitxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,ructxt,direcciontxt,telefonotxt);
 
     }//GEN-LAST:event_tbTotalCalculoMouseClicked
 
@@ -1557,6 +1557,8 @@ private void exportarAExcel() {
         txtSumInteres.setText("");
         txtSumMensual.setText("");
         txtSumImporte.setText("");
+        telefonotxt.setText("");
+        direcciontxt.setText("");
         
         // Limpiar la tabla
         DefaultTableModel model = new DefaultTableModel();

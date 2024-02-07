@@ -18,17 +18,11 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 public class ArrendamientosDAO {
-    public void InsertarCliente(JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
+    public void InsertarCliente(JTextField paramNombre,  JTextField paramRuc, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso,  JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
         Arrendamientos arrendamientos = new Arrendamientos();
         arrendamientos.setNombre(paramNombre.getText());
-        arrendamientos.setDireccion(paramDireccion.getText());
         arrendamientos.setRuc(paramRuc.getText());
-        arrendamientos.setTelefono(paramTelefono.getText());
-        arrendamientos.setContacto1(paramContacto1.getText());
-        arrendamientos.setContacto2(paramContacto2.getText());
-        arrendamientos.setPropietario(paramPropietario.getText());
         arrendamientos.setDireccion_propietario(paramDireccion_propietario.getText());
-        arrendamientos.setTelefono_propietario(paramTelefono_propietario.getText());
         arrendamientos.setCelular(Integer.parseInt(paramCelular.getText()));
         arrendamientos.setNacimiento(new Date(paramNacimiento.getDate().getTime()));
         arrendamientos.setDni_propietario(paramDni_propietario.getText());
@@ -41,28 +35,22 @@ public class ArrendamientosDAO {
         arrendamientos.setFechaIngreso(new Timestamp(fechaIngresoUtil.getTime()));
 
         CConexion objetoConexion = new CConexion();
-        String consulta = "insert into datos_cli_prov (nombre, direccion, ruc, telefono, contacto1, contacto2, propietario, direccion_propietario, telefono_propietario, celular, nacimiento, dni_propietario, fecha_ingreso, correo, estado_civil, conyuge, dni_conyuge, ciudad) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";    
+        String consulta = "insert into datos_cli_prov (nombre,  ruc,  direccion_propietario,  celular, nacimiento, dni_propietario, fecha_ingreso, correo, estado_civil, conyuge, dni_conyuge, ciudad) values (?,?,?,?,?,?,?,?,?,?,?,?)";    
         try {
             java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
             cs.setString(1, arrendamientos.getNombre());
-            cs.setString(2, arrendamientos.getDireccion());
-            cs.setString(3, arrendamientos.getRuc());
-            cs.setString(4, arrendamientos.getTelefono());
-            cs.setString(5, arrendamientos.getContacto1());
-            cs.setString(6, arrendamientos.getContacto2());
-            cs.setString(7, arrendamientos.getPropietario());
-            cs.setString(8, arrendamientos.getDireccion_propietario());
-            cs.setString(9, arrendamientos.getTelefono_propietario());
-            cs.setInt(10, arrendamientos.getCelular());
-            cs.setDate( 11, arrendamientos.getNacimiento());
-            cs.setString(12, arrendamientos.getDni_propietario());
-            cs.setTimestamp(13, arrendamientos.getFechaIngreso());
-            cs.setString(14, arrendamientos.getCorreo());
-            cs.setString(15, arrendamientos.getEstado_civil());
-            cs.setString(16, arrendamientos.getConyuge());
-            cs.setString(17, arrendamientos.getDni_conyuge());
-            cs.setString(18, arrendamientos.getCiudad());
+            cs.setString(2, arrendamientos.getRuc());
+            cs.setString(3, arrendamientos.getDireccion_propietario());
+            cs.setInt(4, arrendamientos.getCelular());
+            cs.setDate( 5, arrendamientos.getNacimiento());
+            cs.setString(6, arrendamientos.getDni_propietario());
+            cs.setTimestamp(7, arrendamientos.getFechaIngreso());
+            cs.setString(8, arrendamientos.getCorreo());
+            cs.setString(9, arrendamientos.getEstado_civil());
+            cs.setString(10, arrendamientos.getConyuge());
+            cs.setString(11, arrendamientos.getDni_conyuge());
+            cs.setString(12, arrendamientos.getCiudad());
 
             cs.execute();
             JOptionPane.showMessageDialog(null, "Se insertó correctamente");
@@ -85,8 +73,7 @@ public class ArrendamientosDAO {
     paramTablaTotalClientes.setRowSorter(ordenarTabla);
 
     String[] columnasMostradas = {"Id", "Nombre", "Dirección", "Ruc", "Telefono"};
-    String[] columnasBD = {"id", "nombre", "direccion", "ruc", "telefono", "contacto1", "contacto2", 
-                            "propietario", "direccion_propietario", "telefono_propietario", "celular", 
+    String[] columnasBD = {"id", "nombre",  "direccion_propietario","ruc",  "celular", 
                             "nacimiento", "dni_propietario", "fecha_ingreso", "correo", 
                             "estado_civil", "conyuge", "dni_conyuge", "ciudad"};
 
@@ -120,7 +107,7 @@ public class ArrendamientosDAO {
     }
 }
     
-    public void SeleccionarCliente(JTable paramTablaClientes, JTextField paramId, JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
+    public void SeleccionarCliente(JTable paramTablaClientes, JTextField paramId, JTextField paramNombre, JTextField paramRuc, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso,  JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
     try {
         int fila = paramTablaClientes.getSelectedRow();
         if (fila >= 0) {
@@ -137,14 +124,8 @@ public class ArrendamientosDAO {
 
                 paramId.setText(rs.getString("id"));
                 paramNombre.setText(rs.getString("nombre"));
-                paramDireccion.setText(rs.getString("direccion"));
                 paramRuc.setText(rs.getString("ruc"));
-                paramTelefono.setText(rs.getString("telefono"));
-                paramContacto1.setText(rs.getString("contacto1"));
-                paramContacto2.setText(rs.getString("contacto2"));
-                paramPropietario.setText(rs.getString("propietario"));
                 paramDireccion_propietario.setText(rs.getString("direccion_propietario"));
-                paramTelefono_propietario.setText(rs.getString("telefono_propietario"));
                 paramNacimiento.setDate(rs.getDate("nacimiento"));
                 Timestamp fechaIngreso = rs.getTimestamp("fecha_ingreso");
                 if (fechaIngreso != null) {
@@ -177,18 +158,12 @@ public class ArrendamientosDAO {
     }
 }
     
-    public void ModificarCliente(JTextField paramCodigo, JTextField paramNombre, JTextField paramDireccion, JTextField paramRuc, JTextField paramTelefono, JTextField paramContacto1, JTextField paramContacto2, JTextField paramPropietario, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramTelefono_propietario, JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
+    public void ModificarCliente(JTextField paramCodigo, JTextField paramNombre,  JTextField paramRuc,   JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso,  JTextField paramCelular, JDateChooser txtNacimiento, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad) {
     Arrendamientos arrendamientos = new Arrendamientos();
     arrendamientos.setCodigo(Integer.parseInt(paramCodigo.getText()));
     arrendamientos.setNombre(paramNombre.getText());
-    arrendamientos.setDireccion(paramDireccion.getText());
     arrendamientos.setRuc(paramRuc.getText());
-    arrendamientos.setTelefono(paramTelefono.getText());
-    arrendamientos.setContacto1(paramContacto1.getText());
-    arrendamientos.setContacto2(paramContacto2.getText());
-    arrendamientos.setPropietario(paramPropietario.getText());
     arrendamientos.setDireccion_propietario(paramDireccion_propietario.getText());
-    arrendamientos.setTelefono_propietario(paramTelefono_propietario.getText());
     arrendamientos.setCelular(Integer.parseInt(paramCelular.getText()));
     arrendamientos.setNacimiento(new java.sql.Date(paramNacimiento.getDate().getTime()));
     arrendamientos.setDni_propietario(paramDni_propietario.getText());
@@ -204,30 +179,24 @@ public class ArrendamientosDAO {
 
     CConexion objetoConexion = new CConexion();
 
-    String consulta = "UPDATE datos_cli_prov SET nombre=?, direccion=?, ruc=?, telefono=?, contacto1=?, contacto2=?, propietario=?, direccion_propietario=?, telefono_propietario=?, celular=?, nacimiento=?, dni_propietario=?, fecha_ingreso=?, correo=?, estado_civil=?, conyuge=?, dni_conyuge=?, ciudad=? WHERE id=?";
+    String consulta = "UPDATE datos_cli_prov SET nombre=?,  ruc=?,  direccion_propietario=?,  celular=?, nacimiento=?, dni_propietario=?, fecha_ingreso=?, correo=?, estado_civil=?, conyuge=?, dni_conyuge=?, ciudad=? WHERE id=?";
 
     try {
         java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
         cs.setString(1, arrendamientos.getNombre());
-        cs.setString(2, arrendamientos.getDireccion());
-        cs.setString(3, arrendamientos.getRuc());
-        cs.setString(4, arrendamientos.getTelefono());
-        cs.setString(5, arrendamientos.getContacto1());
-        cs.setString(6, arrendamientos.getContacto2());
-        cs.setString(7, arrendamientos.getPropietario());
-        cs.setString(8, arrendamientos.getDireccion_propietario());
-        cs.setString(9, arrendamientos.getTelefono_propietario());
-        cs.setInt(10, arrendamientos.getCelular());
-        cs.setDate(11, arrendamientos.getNacimiento());
-        cs.setString(12, arrendamientos.getDni_propietario());
-        cs.setTimestamp(13, arrendamientos.getFechaIngreso());
-        cs.setString(14, arrendamientos.getCorreo());
-        cs.setString(15, arrendamientos.getEstado_civil());
-        cs.setString(16, arrendamientos.getConyuge());
-        cs.setString(17, arrendamientos.getDni_conyuge());
-        cs.setString(18, arrendamientos.getCiudad());
-        cs.setInt(19, arrendamientos.getCodigo());
+        cs.setString(2, arrendamientos.getRuc());
+        cs.setString(3, arrendamientos.getDireccion_propietario());
+        cs.setInt(4, arrendamientos.getCelular());
+        cs.setDate(5, arrendamientos.getNacimiento());
+        cs.setString(6, arrendamientos.getDni_propietario());
+        cs.setTimestamp(7, arrendamientos.getFechaIngreso());
+        cs.setString(8, arrendamientos.getCorreo());
+        cs.setString(9, arrendamientos.getEstado_civil());
+        cs.setString(10, arrendamientos.getConyuge());
+        cs.setString(11, arrendamientos.getDni_conyuge());
+        cs.setString(12, arrendamientos.getCiudad());
+        cs.setInt(13 , arrendamientos.getCodigo());
 
         int filasAfectadas = cs.executeUpdate();
 
