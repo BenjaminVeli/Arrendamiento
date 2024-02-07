@@ -4,8 +4,6 @@ import Conexion.CConexion;
 import java.sql.PreparedStatement;
 import Modelo.CalcularAlquiler;
 import Modelo.Piso;
-import Modelo.ImporteMensual;
-import Modelo.ImporteVariado;
 import com.toedter.calendar.JDateChooser;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -705,7 +703,7 @@ public class CalcularAlquilerDAO {
         tbCalculoImporte.setModel(modelo);
     }
     
-    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramDni, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JTextField paramRuc) {
+    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler,JTextField paramId, JTextField paramDni, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JTextField paramRuc) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
@@ -723,6 +721,7 @@ public class CalcularAlquilerDAO {
             ResultSet rs = st.executeQuery(sql);
 
             if (rs.next()) {
+                paramId.setText(rs.getString("id"));
                 String dniPropietario = rs.getString("dni_propietario");
                 paramDni.setText(dniPropietario);
                 paramRent.setText(rs.getString("rent"));

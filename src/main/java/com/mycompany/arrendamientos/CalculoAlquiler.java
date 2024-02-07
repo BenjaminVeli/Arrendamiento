@@ -49,6 +49,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         direcciontxt.setEnabled(false);
         dnitxt.setEnabled(false);
         telefonotxt.setEnabled(false);
+        idtxt.setEnabled(false);
         CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
         dao.MostrarAlquiler(tbTotalCalculo);
         btnExportar.addActionListener(new ActionListener() {
@@ -313,6 +314,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         txtSearch = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbTotalCalculo = new javax.swing.JTable();
+        idtxt = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         registroClientebtn = new javax.swing.JButton();
@@ -447,10 +449,12 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 772, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(35, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtSearch)
-                        .addGap(68, 68, 68)
+                        .addComponent(idtxt)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(Grabarbtn)
                         .addGap(18, 18, 18)
                         .addComponent(btnLimpiar)
@@ -469,7 +473,8 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                     .addComponent(btnModificar)
                     .addComponent(btnLimpiar)
                     .addComponent(Grabarbtn)
-                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(idtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(14, Short.MAX_VALUE))
@@ -1064,7 +1069,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-        dao.EliminarCalculoAlquiler(ructxt);
+        dao.EliminarCalculoAlquiler(idtxt);
         dao.MostrarAlquiler(tbTotalCalculo);
     }//GEN-LAST:event_btnEliminarActionPerformed
 
@@ -1120,13 +1125,13 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void tbTotalCalculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCalculoMouseClicked
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.SeleccionarCalculoAlquiler(tbTotalCalculo, dnitxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,ructxt);
+       dao.SeleccionarCalculoAlquiler(tbTotalCalculo,idtxt, dnitxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,ructxt);
 
     }//GEN-LAST:event_tbTotalCalculoMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.ModificarCalculoAlquiler(tbTotalCalculo, dnitxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
+       dao.ModificarCalculoAlquiler(tbTotalCalculo,idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
        dao.MostrarAlquiler(tbTotalCalculo);
     }//GEN-LAST:event_btnModificarActionPerformed
 
@@ -1478,6 +1483,7 @@ private void exportarAExcel() {
     private com.toedter.calendar.JDateChooser fechaingresotxt;
     private com.toedter.calendar.JDateChooser fechatxt;
     private javax.swing.JTextField garantiatxt;
+    private javax.swing.JTextField idtxt;
     private javax.swing.JTextField interesestxt;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
