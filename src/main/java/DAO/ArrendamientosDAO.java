@@ -276,7 +276,7 @@ public class ArrendamientosDAO {
     paramTablaTotalClientes.setModel(modelo);
 
     if (!searchText.isEmpty()) {
-        sql = "SELECT * FROM datos_cli_prov WHERE nombre LIKE '%" + searchText + "%' OR direccion LIKE '%" + searchText + "%' OR ruc LIKE '%" + searchText + "%' OR telefono LIKE '%" + searchText + "%'";
+        sql = "SELECT * FROM datos_cli_prov WHERE nombre LIKE '%" + searchText + "%' OR direccion_propietario LIKE '%" + searchText + "%' OR ruc LIKE '%" + searchText + "%' OR celular LIKE '%" + searchText + "%'";
     } else {
         sql = "SELECT * FROM datos_cli_prov";
     }

@@ -372,6 +372,8 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         crearPisotxt = new javax.swing.JButton();
         crearCuartobtn = new javax.swing.JButton();
         btnExportar = new javax.swing.JButton();
+        btnMantenimiento = new javax.swing.JButton();
+        btnContrato = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -977,16 +979,36 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         btnExportar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnExportar.setText("Exportar");
 
+        btnMantenimiento.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnMantenimiento.setText("Mantenimiento");
+        btnMantenimiento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMantenimientoActionPerformed(evt);
+            }
+        });
+
+        btnContrato.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnContrato.setText("Contrato");
+        btnContrato.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnContratoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnContrato)
+                .addGap(18, 18, 18)
+                .addComponent(btnMantenimiento)
+                .addGap(18, 18, 18)
                 .addComponent(btnExportar)
-                .addGap(30, 30, 30)
+                .addGap(18, 18, 18)
                 .addComponent(crearCuartobtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addGap(18, 18, 18)
                 .addComponent(crearPisotxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
         );
@@ -997,7 +1019,9 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(crearPisotxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(crearCuartobtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnExportar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnExportar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnMantenimiento)
+                    .addComponent(btnContrato))
                 .addContainerGap())
         );
 
@@ -1175,6 +1199,18 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     private void telefonotxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_telefonotxtMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_telefonotxtMouseClicked
+
+    private void btnContratoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContratoActionPerformed
+        Contrato c2 = new Contrato();
+        c2.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnContratoActionPerformed
+
+    private void btnMantenimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMantenimientoActionPerformed
+       mantenimiento m2 = new mantenimiento();
+        m2.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnMantenimientoActionPerformed
     
     private void calcularYActualizarTotal() {
         // Obtener valores de los campos
@@ -1262,11 +1298,11 @@ private void exportarAExcel() {
         searchContentCell.setCellValue(search.getSelectedItem().toString()); 
         searchContentCell.setCellStyle(estiloSinBordes); 
         
-        Cell rucLabelCell = searchRow.createCell(5); 
+        Cell rucLabelCell = searchRow.createCell(4); 
         rucLabelCell.setCellValue("RUC :");
         rucLabelCell.setCellStyle(estiloSinBordes); 
 
-        Cell rucContentCell = searchRow.createCell(6); 
+        Cell rucContentCell = searchRow.createCell(5); 
         rucContentCell.setCellValue(ructxt.getText()); 
         rucContentCell.setCellStyle(estiloSinBordes);
         
@@ -1281,11 +1317,11 @@ private void exportarAExcel() {
         direccionContentCell.setCellStyle(estiloSinBordes);
         
         // Etiqueta para el DNI
-        Cell dniLabelCell = direccionRow.createCell(5); 
+        Cell dniLabelCell = direccionRow.createCell(4); 
         dniLabelCell.setCellValue("DNI :");
         dniLabelCell.setCellStyle(estiloSinBordes); 
 
-        Cell dniContentCell = direccionRow.createCell(6); 
+        Cell dniContentCell = direccionRow.createCell(5); 
         dniContentCell.setCellValue(dnitxt.getText()); 
         dniContentCell.setCellStyle(estiloSinBordes); 
         
@@ -1299,11 +1335,11 @@ private void exportarAExcel() {
         totalrentContentCell.setCellStyle(estiloSinBordes);
          
          // Etiqueta para el teléfono
-        Cell telefLabelCell = totalrentRow.createCell(5); 
+        Cell telefLabelCell = totalrentRow.createCell(4); 
         telefLabelCell.setCellValue("Teléf :");
         telefLabelCell.setCellStyle(estiloSinBordes);
 
-        Cell telefContentCell = totalrentRow.createCell(6); 
+        Cell telefContentCell = totalrentRow.createCell(5); 
         telefContentCell.setCellValue(telefonotxt.getText()); 
         telefContentCell.setCellStyle(estiloSinBordes); 
         
@@ -1318,11 +1354,11 @@ private void exportarAExcel() {
         inicialContentCell.setCellValue(garantiatxt.getText());
         inicialContentCell.setCellStyle(estiloSinBordes); 
         
-        Cell tpagoLabelCell = inicialRow.createCell(5);
+        Cell tpagoLabelCell = inicialRow.createCell(4);
         tpagoLabelCell.setCellValue("Tipo pago :");
         tpagoLabelCell.setCellStyle(estiloSinBordes);
 
-        Cell tpagoContentCell = inicialRow.createCell(6);
+        Cell tpagoContentCell = inicialRow.createCell(5);
 
         Object selectedValue = selectPago.getSelectedItem();
 
@@ -1471,9 +1507,11 @@ private void exportarAExcel() {
     private javax.swing.JButton Grabarbtn;
     private javax.swing.JPanel Separator;
     private javax.swing.JTextField alquilertxt;
+    private javax.swing.JButton btnContrato;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnExportar;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnMantenimiento;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton crearCuartobtn;
     private javax.swing.JButton crearPisotxt;

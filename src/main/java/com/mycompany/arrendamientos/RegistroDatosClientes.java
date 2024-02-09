@@ -68,7 +68,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         txtCelular = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JButton();
-        btnGuardar1 = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
@@ -146,10 +146,10 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
             }
         });
 
-        btnGuardar1.setText("Salir");
-        btnGuardar1.addActionListener(new java.awt.event.ActionListener() {
+        btnSalir.setText("Salir");
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardar1ActionPerformed(evt);
+                btnSalirActionPerformed(evt);
             }
         });
 
@@ -185,7 +185,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
                     .addComponent(btnModificar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnEliminar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGuardar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(74, 74, 74))
         );
         jPanel1Layout.setVerticalGroup(
@@ -200,7 +200,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnLimpiar)
                 .addGap(18, 18, 18)
-                .addComponent(btnGuardar1)
+                .addComponent(btnSalir)
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -230,6 +230,11 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel17.setText("DNI :");
 
+        txtDnipropietario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDnipropietarioActionPerformed(evt);
+            }
+        });
         txtDnipropietario.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtDnipropietarioKeyTyped(evt);
@@ -437,11 +442,11 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         objetoArrendamientos.MostrarCliente(tbTotalClientes);
     }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private void btnGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardar1ActionPerformed
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         CalculoAlquiler ca = new CalculoAlquiler();
         ca.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_btnGuardar1ActionPerformed
+    }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         Limpiar();
@@ -499,6 +504,10 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void txtDnipropietarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDnipropietarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDnipropietarioActionPerformed
     
    private void filterTable() {
     String searchText = txtSearch.getText().trim();
@@ -518,9 +527,9 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnGuardar1;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
