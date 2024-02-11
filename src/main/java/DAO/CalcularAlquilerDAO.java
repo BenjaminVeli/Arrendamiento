@@ -402,13 +402,13 @@ public class CalcularAlquilerDAO {
                 int resultadoUpdate = pstUpdate.executeUpdate();
 
                 if (resultadoUpdate > 0) {
-                    JOptionPane.showMessageDialog(null, "Registros actualizados correctamente en importe_mensual.");
+                    JOptionPane.showMessageDialog(null, "Registros constantes actualizados correctamente en importe_mensual.");
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error al actualizar los registros en importe_mensual.");
+                    JOptionPane.showMessageDialog(null, "Error al actualizar los registros constantes en importe_mensual.");
                 }
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error SQL al actualizar los registros en importe_mensual: " + e.toString());
+            JOptionPane.showMessageDialog(null, "Error SQL al actualizar los registros constantes en importe_mensual: " + e.toString());
         }
     }
     
@@ -427,13 +427,13 @@ public class CalcularAlquilerDAO {
                 int resultadoUpdate = pstUpdate.executeUpdate();
 
                 if (resultadoUpdate > 0) {
-                    JOptionPane.showMessageDialog(null, "Registros actualizados correctamente en importe_mensual.");
+                    JOptionPane.showMessageDialog(null, "Registro del campo capital actualizado correctamente en importe_mensual.");
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error al actualizar los registros en importe_mensual.");
+                    JOptionPane.showMessageDialog(null, "Error al actualizar el campo capital de los registros en importe_mensual.");
                 }
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error SQL al actualizar los registros en importe_mensual: " + e.toString());
+            JOptionPane.showMessageDialog(null, "Error SQL al actualizar el campo capital de los registros en importe_mensual: " + e.toString());
         }
     }
     
@@ -838,6 +838,233 @@ public class CalcularAlquilerDAO {
     }
 }
     
+    public void recalcularImporteMensual(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas , Date fecha, double total_rent, double interes, JTextField txtSumCapital, JTextField txtSumInteres, JTextField txtSumMensual, JTextField totaltxt){
+        CConexion objetoConexion = new CConexion();
+        
+        try {
+            int fila = paramTablaCalculosAlquiler.getSelectedRow();
+            if (fila >= 0) {
+            
+            // Obtener el id de rent_calculation
+            int clientRentId = obtenerIdRentCalculation(nombreCliente);
+            
+            // Punto 1: Verificar el valor de totaltxt
+            System.out.println("Valor de totaltxt: " + totaltxt.getText());
+    
+            // Obtener la cantidad original de cuotas
+            int cuotasOriginal = obtenerCantidadCuotas(clientRentId);
+            System.out.println("Valor de cuotas original: " + cuotasOriginal);
+            
+            // Eliminar todos los cálculos de alquiler asociados al ID seleccionado
+            eliminarCalculosAlquiler(clientRentId);
+
+            // Si la nueva cantidad de cuotas es mayor que la original, sucede esto:
+            if (nuevaCuotas > cuotasOriginal) {
+                System.out.println("Entrando en el bloque del caso de mayor cantidad de cuotas");
+                for (int i = 1; i <= nuevaCuotas; i++) {
+                    // Dentro de este bucle for, se encargara de insertar los nuevos calculos de alquiler a "importe_mensual"
+                    
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(fecha);
+
+                    //Esto avanza al mes siguiente la fecha
+                    calendar.add(Calendar.MONTH, i);
+
+                    // Esto ajustar el día al último día del mes
+                    int ultimoDiaMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                    int diaSeleccionado = calendar.get(Calendar.DAY_OF_MONTH);
+                    int diaAjustado = Math.min(ultimoDiaMes, diaSeleccionado);
+                    calendar.set(Calendar.DAY_OF_MONTH, diaAjustado);
+                    
+                    // Obtener la fecha como java.sql.Date
+                    java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
+
+                    // Calcular el monto restante por pagar en cada cuota
+                    double cociente = (total_rent / nuevaCuotas) * (i - 1);
+                    double cocienteRedondeado = Math.round(cociente * 100.0) / 100.0;
+                    double saldo = total_rent - cocienteRedondeado;
+                    double saldoRedondeado = Math.round(saldo * 100.0) / 100.0;
+
+                    // Calcular el Interes multiplicando el saldo por el Interes (dividido por 100)
+                    double interesCalculado = saldoRedondeado * (interes / 100);
+                    double interesCalculadoRedondeado = Math.round(interesCalculado * 100.0) / 100.0;
+
+                    sumaInteresAcumulativa += interesCalculadoRedondeado;
+                    sumaInteresAcumulativa = Math.round(sumaInteresAcumulativa * 100.0) / 100.0;
+
+                    // Insertar a la base de datos
+                    String sql = "INSERT INTO importe_mensual (rent_calculation_id, ord, fecha, saldo, capital, interes, por_pagar, sum_capital, sum_interes, sum_porPagar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    
+                        try {
+                            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+
+                            pst.setInt(1, clientRentId); // Esta inserción esta bien
+                            pst.setInt(2, i); // Esta inserción esta bien
+                            pst.setDate(3, fechaSQL); // Esta inserción esta bien
+                            pst.setBigDecimal(4, new BigDecimal(saldoRedondeado)); // Esta inserción esta bien
+                            pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(interesCalculadoRedondeado)); // Esta inserción esta bien
+                            pst.setBigDecimal(7, new BigDecimal(0.0)); // Puedes establecer a 0 inicialmente, ya que se calculará después del Bucle A
+                            pst.setBigDecimal(8, new BigDecimal(saldoRedondeado));
+                            pst.setBigDecimal(9, new BigDecimal(sumaInteresAcumulativa));
+                            pst.setBigDecimal(10, new BigDecimal(0.0)); // Puedes establecer a 0 inicialmente, ya que se calculará después del Bucle A
+
+                            int resultado = pst.executeUpdate();
+
+                            if (resultado > 0) {
+                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_mensual.");
+                            }
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Error SQL al insertar el registro en importe_mensual: " + e.toString());
+                        }
+                    
+                    System.out.println("Iteración " + (i + 1) + " del bucle para las filas de la nueva cuota");
+                    System.out.println("Cantidad de cuotas en el caso mayor = " + nuevaCuotas);
+                }
+                
+                // Después del Bucle A, calcular valores constantes en el Bucle B
+                for (int i = 1; i <= nuevaCuotas; i++) {
+                    double porPagar = (sumaInteresAcumulativa + total_rent) / nuevaCuotas;
+                    porPagar = Math.round(porPagar * 100.0) / 100.0;
+
+                    // Calcular la suma total de porPagar
+                    double sumPorPagar = calcularSumaMensual(porPagar, nuevaCuotas);
+
+                    // Obtener el valor actualizado de sumaInteresAcumulativa
+                    double sumInteresAcumulativaActualizado = obtenerSumaInteresAcumulativa();
+
+                    // Actualizar los registros en la base de datos con los valores constantes calculados
+                    actualizarRegistrosConstantes(clientRentId, i, porPagar, sumPorPagar, sumInteresAcumulativaActualizado, total_rent);
+
+                    // Bucle para calcular y actualizar la columna "Capital"
+                    for (int j = 0; j < i; j++) {
+                        double porPagarActual = obtenerPorPagar(clientRentId, j + 1); // Asegúrate de tener un método similar para obtener el valor de "por_pagar" desde la base de datos
+                        double interesActual = obtenerInteres(clientRentId, j + 1); // Asegúrate de tener un método similar para obtener el valor de "interes" desde la base de datos
+
+                        // Calcular el valor de la columna "Capital"
+                        double capital = porPagarActual - interesActual;
+                        capital = Math.round(capital * 100.0) / 100.0;
+
+                        // Actualizar el registro en la base de datos con el nuevo valor de "capital"
+                        actualizarCapital(clientRentId, j + 1, capital);
+                    }
+
+                }
+                
+            }
+            // Si la nueva cantidad de cuotas es menor que la original, sucede esto:
+            else if (nuevaCuotas < cuotasOriginal) {
+                System.out.println("Entrando en el bloque del caso de menor cantidad de cuotas");
+                for (int i = 1; i <= nuevaCuotas; i++) {
+                     // Dentro de este bucle for, se encargara de insertar los nuevos calculos de alquiler a "importe_mensual"
+                    
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(fecha);
+
+                    //Esto avanza al mes siguiente la fecha
+                    calendar.add(Calendar.MONTH, i);
+
+                    // Esto ajustar el día al último día del mes
+                    int ultimoDiaMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                    int diaSeleccionado = calendar.get(Calendar.DAY_OF_MONTH);
+                    int diaAjustado = Math.min(ultimoDiaMes, diaSeleccionado);
+                    calendar.set(Calendar.DAY_OF_MONTH, diaAjustado);
+                    
+                    // Obtener la fecha como java.sql.Date
+                    java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
+
+                    // Calcular el monto restante por pagar en cada cuota
+                    double cociente = (total_rent / nuevaCuotas) * (i - 1);
+                    double cocienteRedondeado = Math.round(cociente * 100.0) / 100.0;
+                    double saldo = total_rent - cocienteRedondeado;
+                    double saldoRedondeado = Math.round(saldo * 100.0) / 100.0;
+
+                    // Calcular el Interes multiplicando el saldo por el Interes (dividido por 100)
+                    double interesCalculado = saldoRedondeado * (interes / 100);
+                    double interesCalculadoRedondeado = Math.round(interesCalculado * 100.0) / 100.0;
+
+                    sumaInteresAcumulativa += interesCalculadoRedondeado;
+                    sumaInteresAcumulativa = Math.round(sumaInteresAcumulativa * 100.0) / 100.0;
+
+                    // Insertar a la base de datos
+                    String sql = "INSERT INTO importe_mensual (rent_calculation_id, ord, fecha, saldo, capital, interes, por_pagar, sum_capital, sum_interes, sum_porPagar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    
+                        try {
+                            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+
+                            pst.setInt(1, clientRentId); // Esta inserción esta bien
+                            pst.setInt(2, i); // Esta inserción esta bien
+                            pst.setDate(3, fechaSQL); // Esta inserción esta bien
+                            pst.setBigDecimal(4, new BigDecimal(saldoRedondeado)); // Esta inserción esta bien
+                            pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(interesCalculadoRedondeado)); // Esta inserción esta bien
+                            pst.setBigDecimal(7, new BigDecimal(0.0)); // Puedes establecer a 0 inicialmente, ya que se calculará después del Bucle A
+                            pst.setBigDecimal(8, new BigDecimal(saldoRedondeado));
+                            pst.setBigDecimal(9, new BigDecimal(sumaInteresAcumulativa));
+                            pst.setBigDecimal(10, new BigDecimal(0.0)); // Puedes establecer a 0 inicialmente, ya que se calculará después del Bucle A
+
+                            int resultado = pst.executeUpdate();
+
+                            if (resultado > 0) {
+                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_mensual.");
+                            }
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Error SQL al insertar el registro en importe_mensual: " + e.toString());
+                        }
+                    System.out.println("Iteración " + (i + 1) + " del bucle para las filas de la nueva cuota");
+                    System.out.println("Cantidad de cuotas en el caso menor = " + nuevaCuotas);
+                }
+                
+                // Después del Bucle A, calcular valores constantes en el Bucle B
+                for (int i = 1; i <= nuevaCuotas; i++) {
+                    double porPagar = (sumaInteresAcumulativa + total_rent) / nuevaCuotas;
+                    porPagar = Math.round(porPagar * 100.0) / 100.0;
+
+                    // Calcular la suma total de porPagar
+                    double sumPorPagar = calcularSumaMensual(porPagar, nuevaCuotas);
+
+                    // Obtener el valor actualizado de sumaInteresAcumulativa
+                    double sumInteresAcumulativaActualizado = obtenerSumaInteresAcumulativa();
+
+                    // Actualizar los registros en la base de datos con los valores constantes calculados
+                    actualizarRegistrosConstantes(clientRentId, i, porPagar, sumPorPagar, sumInteresAcumulativaActualizado, total_rent);
+
+                    // Bucle para calcular y actualizar la columna "Capital"
+                    for (int j = 0; j < i; j++) {
+                        double porPagarActual = obtenerPorPagar(clientRentId, j + 1); // Asegúrate de tener un método similar para obtener el valor de "por_pagar" desde la base de datos
+                        double interesActual = obtenerInteres(clientRentId, j + 1); // Asegúrate de tener un método similar para obtener el valor de "interes" desde la base de datos
+
+                        // Calcular el valor de la columna "Capital"
+                        double capital = porPagarActual - interesActual;
+                        capital = Math.round(capital * 100.0) / 100.0;
+
+                        // Actualizar el registro en la base de datos con el nuevo valor de "capital"
+                        actualizarCapital(clientRentId, j + 1, capital);
+                    }
+
+                }
+            }
+            
+            else if (nuevaCuotas == 0) {
+                System.out.println("Entrando en el bloque de que no hay diferencia de cuotas");
+                for (int i = 0; i < Math.abs(nuevaCuotas); i++) {
+                    // Eliminar la fila correspondiente en la tabla "importe_mensual"
+                    JOptionPane.showMessageDialog(null, "No hay cantidad de cuotas");
+                }
+            }
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error general al recalcular la tabla importe_mensual: " + e.toString());
+        }
+    }
+    
     public void EliminarCalculoAlquiler(JTextField id) {
     CConexion objetoConexion = new CConexion();
     String obtenerDatosCuarto = "SELECT floor_id, room_id FROM rent_calculation WHERE id=?";
@@ -930,6 +1157,69 @@ public class CalcularAlquilerDAO {
         return cuotas;
     }
     
+    private int obtenerCantidadCuotas(int rentCalculationId) {
+        int cantidadCuotas = -1;
+        CConexion objetoConexion = new CConexion();
+
+        String sql = "SELECT COUNT(*) AS total FROM importe_mensual WHERE rent_calculation_id = ?";
+
+        try {
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setInt(1, rentCalculationId);
+
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                cantidadCuotas = rs.getInt("total");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener la cantidad de cuotas: " + e.toString());
+        }
+
+        return cantidadCuotas;
+    }
+    
+    private void eliminarCalculosAlquiler(int rentCalculationId) {
+        CConexion objetoConexion = new CConexion();
+
+        String sql = "DELETE FROM importe_mensual WHERE rent_calculation_id = ?";
+
+        try {
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setInt(1, rentCalculationId);
+
+            // Ejecutar la sentencia DELETE
+            pst.executeUpdate();
+
+            System.out.println("Se eliminaron los cálculos de alquiler asociados al ID: " + rentCalculationId);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al eliminar los cálculos de alquiler: " + e.toString());
+        }
+    }
+
+    private int obtenerIdRentCalculation(String nombreClienteRenta) {
+        int rentCalculationId = -1;
+        CConexion objetoConexion = new CConexion();
+
+        // Intentamos obtener el ID de la fila más reciente que coincide con el nombre del cliente y la fecha *NUEVO*
+        String sqlSelect = "SELECT id FROM rent_calculation WHERE client_id IN (SELECT id FROM datos_cli_prov WHERE nombre = ?) ORDER BY fecha DESC LIMIT 1";
+
+        try (PreparedStatement pstSelect = objetoConexion.estableceConexion().prepareStatement(sqlSelect)) {
+            pstSelect.setString(1, nombreClienteRenta);
+
+            ResultSet rs = pstSelect.executeQuery();
+
+            if (rs.next()) {
+                rentCalculationId = rs.getInt("id");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener el ID de rent_calculation: " + e.toString());
+        }
+
+        return rentCalculationId;
+    }
+    
     private int obtenerIdCuartoPorCalculoAlquiler(int idCalculoAlquiler) {
         CConexion objetoConexion = new CConexion();
         String sql = "SELECT room_id FROM rent_calculation WHERE id=?";
@@ -1016,28 +1306,6 @@ public class CalcularAlquilerDAO {
         }
 
         return clientId;
-    }
-    
-    private int obtenerIdRentCalculation(String nombreClienteRenta) {
-        int rentCalculationId = -1;
-        CConexion objetoConexion = new CConexion();
-
-        // Intentamos obtener el ID existente
-        String sqlSelect = "SELECT id FROM rent_calculation WHERE client_id IN (SELECT id FROM datos_cli_prov WHERE nombre = ?)";
-
-        try (PreparedStatement pstSelect = objetoConexion.estableceConexion().prepareStatement(sqlSelect)) {
-            pstSelect.setString(1, nombreClienteRenta);
-
-            ResultSet rs = pstSelect.executeQuery();
-
-            if (rs.next()) {
-                rentCalculationId = rs.getInt("id");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al obtener el ID de rent_calculation: " + e.toString());
-        }
-
-        return rentCalculationId;
     }
     
     private int obtenerIdPiso(String nombrePiso) {

@@ -1155,8 +1155,23 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.ModificarCalculoAlquiler(tbTotalCalculo,idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
-       dao.MostrarAlquiler(tbTotalCalculo);
+       
+       // Obtener los campos del formulario
+        int nuevaCuotas  = dao.obtenerNumeroCuotas(totaltxt.getText());
+        java.util.Date utilFecha = fechatxt.getDate();
+        double interes = Double.parseDouble(interesestxt.getText());
+        double total_rent = Double.parseDouble(totalAlquilertxt.getText());
+
+        // Convertir java.util.Date a java.sql.Date
+        java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
+        
+        // Llamar al método ModificarCalculoAlquiler del DAO para actualizar el cálculo de alquiler
+        dao.ModificarCalculoAlquiler(tbTotalCalculo,idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
+        
+        // Continuar con el resto del proceso, incluyendo la actualización de importe_mensual
+        // Paso 3: Actualizar los campos ord, fecha, saldo, capital e interes
+        dao.recalcularImporteMensual(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas , fecha, total_rent, interes, txtSumCapital, txtSumInteres, txtSumMensual, totaltxt);
+        dao.MostrarAlquiler(tbTotalCalculo);
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void mensualtxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mensualtxtMouseClicked

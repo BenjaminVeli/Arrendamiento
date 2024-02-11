@@ -1,8 +1,6 @@
 package Modelo;
-import com.toedter.calendar.JDateChooser;
 import java.sql.Date;
 import java.sql.Timestamp;
-import javax.swing.JTextField;
 
 public class Arrendamientos {
         
