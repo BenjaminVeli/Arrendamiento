@@ -2,7 +2,10 @@
 package DAO;
 
 import Conexion.CConexion;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -23,29 +26,53 @@ public class ContratoDAO {
         this.idArrendador = idArrendador;
     }
     
-    public void MostrarArrendadorCombo(JComboBox comboArrendador){
-        CConexion objetoConexion = new CConexion(); 
+    public void MostrarArrendadorCombo(JComboBox comboArrendador, JTextField txtdireccionArrendador, JTextField txtDniArrendador, JTextField txtTeleArrendador) {
+    CConexion objetoConexion = new CConexion(); 
+    
+    String sql = "SELECT * FROM mantenimiento WHERE rol = 'Arrendador'";
+    Statement st;
+    try {
+        st = objetoConexion.estableceConexion().createStatement();
+        ResultSet rs = st.executeQuery(sql);
+        comboArrendador.removeAllItems();
         
-         String sql = "SELECT * FROM mantenimiento WHERE rol = 'Arrendador'";
-        Statement st;
-        try{
-                st = objetoConexion.estableceConexion().createStatement();
-                ResultSet rs = st.executeQuery(sql);
-                comboArrendador.removeAllItems();
-                
-                while (rs.next () ){
-                    String nombreArrendador = rs.getString("nombre");
-                    this.establecerIdArrendador(rs.getInt("id"));
-                    
-                    comboArrendador.addItem(nombreArrendador);
-                    comboArrendador.putClientProperty(nombreArrendador,idArrendador);
-                    
-                }
-                
-        } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error al mostrar al arrendador: " + e.toString());
+        while (rs.next()) {
+            String nombreArrendador = rs.getString("nombre");
+            int idArrendador = rs.getInt("id");
+            String direccion = rs.getString("direccion");
+            String dni = rs.getString("dni");
+            String celular = rs.getString("celular");
+            
+            comboArrendador.addItem(nombreArrendador);
+            comboArrendador.putClientProperty(nombreArrendador, idArrendador);
         }
+        
+        comboArrendador.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedName = (String) comboArrendador.getSelectedItem();
+                if (selectedName != null) {
+                    // Realizar consulta para obtener los detalles del arrendador seleccionado
+                    String query = "SELECT direccion, dni, celular FROM mantenimiento WHERE nombre = ?";
+                    try (PreparedStatement statement = objetoConexion.estableceConexion().prepareStatement(query)) {
+                        statement.setString(1, selectedName);
+                        ResultSet resultSet = statement.executeQuery();
+                        if (resultSet.next()) {
+                            txtdireccionArrendador.setText(resultSet.getString("direccion"));
+                            txtDniArrendador.setText(resultSet.getString("dni"));
+                            txtTeleArrendador.setText(resultSet.getString("celular"));
+                        }
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(null, "Error al obtener detalles del arrendador: " + ex.toString());
+                    }
+                }
+            }
+        });
+        
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error al mostrar al arrendador: " + e.toString());
     }
+}
+
     
     
     int idVerificador;
@@ -54,29 +81,53 @@ public class ContratoDAO {
         this.idVerificador = idVerificador;
     }
     
-    public void MostrarVerificadorCombo(JComboBox comboVerificador){
-    CConexion objetoConexion = new CConexion(); 
-        
+    public void MostrarVerificadorCombo(JComboBox comboVerificador, JTextField txtdireccionVerificador, JTextField txtDniVerificador, JTextField txtTeleVerificador) {
+        CConexion objetoConexion = new CConexion(); 
+
         String sql = "SELECT * FROM mantenimiento WHERE rol = 'Verificador'";
         Statement st;
-        try{
-                st = objetoConexion.estableceConexion().createStatement();
-                ResultSet rs = st.executeQuery(sql);
-                comboVerificador.removeAllItems();
-                
-                while (rs.next () ){
-                    String nombreVerificador = rs.getString("nombre");
-                    this.establecerIdVerificador(rs.getInt("id"));
-                    
-                    comboVerificador.addItem(nombreVerificador);
-                    comboVerificador.putClientProperty(nombreVerificador,idVerificador);
-                    
+        try {
+            st = objetoConexion.estableceConexion().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            comboVerificador.removeAllItems();
+
+            while (rs.next()) {
+                String nombreVerificador = rs.getString("nombre");
+                int idVerificador = rs.getInt("id");
+                String direccion = rs.getString("direccion");
+                String dni = rs.getString("dni");
+                String celular = rs.getString("celular");
+
+                comboVerificador.addItem(nombreVerificador);
+                comboVerificador.putClientProperty(nombreVerificador, idVerificador);
+            }
+
+            comboVerificador.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String selectedName = (String) comboVerificador.getSelectedItem();
+                    if (selectedName != null) {
+                        // Realizar consulta para obtener los detalles del verificador seleccionado
+                        String query = "SELECT direccion, dni, celular FROM mantenimiento WHERE nombre = ?";
+                        try (PreparedStatement statement = objetoConexion.estableceConexion().prepareStatement(query)) {
+                            statement.setString(1, selectedName);
+                            ResultSet resultSet = statement.executeQuery();
+                            if (resultSet.next()) {
+                                txtdireccionVerificador.setText(resultSet.getString("direccion"));
+                                txtDniVerificador.setText(resultSet.getString("dni"));
+                                txtTeleVerificador.setText(resultSet.getString("celular"));
+                            }
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(null, "Error al obtener detalles del verificador: " + ex.toString());
+                        }
+                    }
                 }
-                
+            });
+
         } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error al mostrar al arrendador: " + e.toString());
+            JOptionPane.showMessageDialog(null, "Error al mostrar al verificador: " + e.toString());
         }
     }
+
 
     
     int idGarante;
@@ -85,29 +136,53 @@ public class ContratoDAO {
         this.idGarante = idGarante;
     }
     
-    public void MostrarGaranteCombo(JComboBox comboGarante){
-    CConexion objetoConexion = new CConexion(); 
-        
+    public void MostrarGaranteCombo(JComboBox comboGarante, JTextField txtdireccionGarante, JTextField txtDniGarante, JTextField txtTeleGarante) {
+        CConexion objetoConexion = new CConexion(); 
+
         String sql = "SELECT * FROM mantenimiento WHERE rol = 'Garante'";
         Statement st;
-        try{
-                st = objetoConexion.estableceConexion().createStatement();
-                ResultSet rs = st.executeQuery(sql);
-                comboGarante.removeAllItems();
-                
-                while (rs.next () ){
-                    String nombreGarante = rs.getString("nombre");
-                    this.establecertIdGarante(rs.getInt("id"));
-                    
-                    comboGarante.addItem(nombreGarante);
-                    comboGarante.putClientProperty(nombreGarante,idGarante);
-                    
+        try {
+            st = objetoConexion.estableceConexion().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            comboGarante.removeAllItems();
+
+            while (rs.next()) {
+                String nombreGarante = rs.getString("nombre");
+                int idGarante = rs.getInt("id");
+                String direccion = rs.getString("direccion");
+                String dni = rs.getString("dni");
+                String celular = rs.getString("celular");
+
+                comboGarante.addItem(nombreGarante);
+                comboGarante.putClientProperty(nombreGarante, idGarante);
+            }
+
+            comboGarante.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String selectedName = (String) comboGarante.getSelectedItem();
+                    if (selectedName != null) {
+                        // Realizar consulta para obtener los detalles del garante seleccionado
+                        String query = "SELECT direccion, dni, celular FROM mantenimiento WHERE nombre = ?";
+                        try (PreparedStatement statement = objetoConexion.estableceConexion().prepareStatement(query)) {
+                            statement.setString(1, selectedName);
+                            ResultSet resultSet = statement.executeQuery();
+                            if (resultSet.next()) {
+                                txtdireccionGarante.setText(resultSet.getString("direccion"));
+                                txtDniGarante.setText(resultSet.getString("dni"));
+                                txtTeleGarante.setText(resultSet.getString("celular"));
+                            }
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(null, "Error al obtener detalles del garante: " + ex.toString());
+                        }
+                    }
                 }
-                
+            });
+
         } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error al mostrar al arrendador: " + e.toString());
+            JOptionPane.showMessageDialog(null, "Error al mostrar al garante: " + e.toString());
         }
     }
+
 
    
     int idArrendatario;
@@ -116,10 +191,10 @@ public class ContratoDAO {
         this.idArrendatario = idArrendatario;
     }
     
-    public void MostrarArrendatario(JComboBox comboArrendatario) {
+    public void MostrarArrendatario(JComboBox comboArrendatario, JTextField txtdireccionPropietario, JTextField txtDniPropietario, JTextField txtTelePropietario) {
     CConexion objetoConexion = new CConexion(); 
     
-    String sql = "SELECT datos_cli_prov.nombre, rent_calculation.id " +
+    String sql = "SELECT datos_cli_prov.nombre, datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.celular, rent_calculation.id " +
                  "FROM datos_cli_prov " +
                  "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id";
     Statement st;
@@ -136,10 +211,32 @@ public class ContratoDAO {
             comboArrendatario.putClientProperty(nombreArrendatario, idArrendatario);
         }
         
+        comboArrendatario.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedName = (String) comboArrendatario.getSelectedItem();
+                if (selectedName != null) {
+                    // Realizar consulta para obtener los detalles del arrendatario seleccionado
+                    String query = "SELECT direccion_propietario, dni_propietario, celular FROM datos_cli_prov WHERE nombre = ?";
+                    try (PreparedStatement statement = objetoConexion.estableceConexion().prepareStatement(query)) {
+                        statement.setString(1, selectedName);
+                        ResultSet resultSet = statement.executeQuery();
+                        if (resultSet.next()) {
+                            txtdireccionPropietario.setText(resultSet.getString("direccion_propietario"));
+                            txtDniPropietario.setText(resultSet.getString("dni_propietario"));
+                            txtTelePropietario.setText(resultSet.getString("celular"));
+                        }
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(null, "Error al obtener detalles del arrendatario: " + ex.toString());
+                    }
+                }
+            }
+        });
+        
     } catch (SQLException e) {
         JOptionPane.showMessageDialog(null, "Error al mostrar al arrendador: " + e.toString());
     }
 }
+
 
     
     
@@ -184,8 +281,8 @@ public class ContratoDAO {
         TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
         tbAlquiler.setRowSorter(ordenarTabla);
 
-        String[] columnasMostradas = {"ID", "Arrendatario", "Arrendador", "Verificador", "Garante", "Celular", "Dirección", "Dni", "Garantía", "Mensual", "Floor ID", "Room ID", "Fecha"};
-        String[] columnasBD = {"id", "arrendatario", "arrendador", "verificador", "garante", "celular", "direccion_propietario", "dni_propietario", "garantia", "mensual", "floor_id", "room_id", "fecha"};
+        String[] columnasMostradas = {"ID", "Arrendatario", "Arrendador", "Verificador", "Garante",  "Garantía", "Mensual", "Piso", "Cuarto", "Fecha", "Metraje"};
+        String[] columnasBD = {"id", "arrendatario", "arrendador", "verificador", "garante",  "garantia", "mensual", "nombre_piso", "nombre_cuarto", "fecha", "metraje"};
 
         for (int i = 0; i < columnasMostradas.length; i++) {
             modelo.addColumn(columnasMostradas[i]);
@@ -193,13 +290,25 @@ public class ContratoDAO {
 
         tbAlquiler.setModel(modelo);
 
-        String sql = "SELECT contrato.id, mantenimiento_arrendador.nombre AS arrendador, mantenimiento_verificador.nombre AS verificador, mantenimiento_garante.nombre AS garante, datos_cli_prov.nombre AS arrendatario, datos_cli_prov.celular, datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, rent_calculation.garantia, rent_calculation.mensual, rent_calculation.floor_id, rent_calculation.room_id, rent_calculation.fecha " +
-                     "FROM contrato " +
-                     "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
-                     "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
-                     "INNER JOIN mantenimiento AS mantenimiento_arrendador ON contrato.id_mantenimiento_arrendador = mantenimiento_arrendador.id " +
-                     "INNER JOIN mantenimiento AS mantenimiento_verificador ON contrato.id_mantenimiento_verificador = mantenimiento_verificador.id " +
-                     "INNER JOIN mantenimiento AS mantenimiento_garante ON contrato.id_mantenimiento_garante = mantenimiento_garante.id";
+        String sql = "SELECT contrato.id, " +
+                        "mantenimiento_arrendador.nombre AS arrendador, " +
+                        "mantenimiento_verificador.nombre AS verificador, " +
+                        "mantenimiento_garante.nombre AS garante, " +
+                        "datos_cli_prov.nombre AS arrendatario, " +
+                        "rent_calculation.garantia, " +
+                        "rent_calculation.mensual, " +
+                        "piso.piso AS nombre_piso, " +
+                        "cuarto.numcuarto AS nombre_cuarto, " +
+                        "rent_calculation.fecha, " +
+                        "cuarto.metraje " + 
+                        "FROM contrato " +
+                        "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
+                        "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                        "INNER JOIN mantenimiento AS mantenimiento_arrendador ON contrato.id_mantenimiento_arrendador = mantenimiento_arrendador.id " +
+                        "INNER JOIN mantenimiento AS mantenimiento_verificador ON contrato.id_mantenimiento_verificador = mantenimiento_verificador.id " +
+                        "INNER JOIN mantenimiento AS mantenimiento_garante ON contrato.id_mantenimiento_garante = mantenimiento_garante.id " +
+                        "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+                        "INNER JOIN piso ON cuarto.piso_id = piso.id;";
 
         try (Statement st = objetoConexion.estableceConexion().createStatement();
              ResultSet rs = st.executeQuery(sql)) {
@@ -223,7 +332,7 @@ public class ContratoDAO {
     }
 
 
-   public void SeleccionarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboVerificador, JComboBox comboGarante, JTextField celularArrendatario, JTextField direccionArrendatario, JTextField dniArrendatario, JTextField garantia, JTextField mensual, JTextField floorId, JTextField roomId, JTextField fecha) {
+   public void SeleccionarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboVerificador, JComboBox comboGarante,  JTextField garantia, JTextField mensual, JTextField floorId, JTextField roomId, JTextField fecha, JTextField metraje) {
         int fila = tbAlquiler.getSelectedRow();
 
         if (fila >= 0) {
@@ -232,25 +341,21 @@ public class ContratoDAO {
             comboArrendador.setSelectedItem(tbAlquiler.getValueAt(fila, 2).toString());
             comboVerificador.setSelectedItem(tbAlquiler.getValueAt(fila, 3).toString());
             comboGarante.setSelectedItem(tbAlquiler.getValueAt(fila, 4).toString());
-            celularArrendatario.setText(tbAlquiler.getValueAt(fila, 5).toString());
-            direccionArrendatario.setText(tbAlquiler.getValueAt(fila, 6).toString());
-            dniArrendatario.setText(tbAlquiler.getValueAt(fila, 7).toString());
-            garantia.setText(tbAlquiler.getValueAt(fila, 8).toString());
-            mensual.setText(tbAlquiler.getValueAt(fila, 9).toString());
-            floorId.setText(tbAlquiler.getValueAt(fila, 10).toString());
-            roomId.setText(tbAlquiler.getValueAt(fila, 11).toString());
-            fecha.setText(tbAlquiler.getValueAt(fila, 12).toString());
+            garantia.setText(tbAlquiler.getValueAt(fila, 5).toString());
+            mensual.setText(tbAlquiler.getValueAt(fila, 6).toString());
+            floorId.setText(tbAlquiler.getValueAt(fila, 7).toString());
+            roomId.setText(tbAlquiler.getValueAt(fila, 8).toString());
+            fecha.setText(tbAlquiler.getValueAt(fila, 9).toString());
+            metraje.setText(tbAlquiler.getValueAt(fila, 10).toString());
         } else {
             JOptionPane.showMessageDialog(null, "Error al seleccionar contrato: No se ha seleccionado ningún contrato");
         }
     }
 
-
-   
    
    public void ModificarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboVerificador, JComboBox comboGarante) {
         CConexion objetoConexion = new CConexion();
-        String consulta = "UPDATE contrato SET id_mantenimiento_arrendador=?, id_mantenimiento_verificador=?, id_mantenimiento_garante=? WHERE id=?";
+        String consulta = "UPDATE contrato SET id_rent_calculation=?, id_mantenimiento_arrendador=?, id_mantenimiento_verificador=?, id_mantenimiento_garante=? WHERE id=?";
 
         try {
             CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
@@ -264,10 +369,11 @@ public class ContratoDAO {
                 int idVerificador = (int) comboVerificador.getClientProperty(comboVerificador.getSelectedItem());
                 int idGarante = (int) comboGarante.getClientProperty(comboGarante.getSelectedItem());
 
-                cs.setInt(1, idArrendador);
-                cs.setInt(2, idVerificador);
-                cs.setInt(3, idGarante);
-                cs.setInt(4, idContrato);
+                cs.setInt(1, idArrendatario);
+                cs.setInt(2, idArrendador);
+                cs.setInt(3, idVerificador);
+                cs.setInt(4, idGarante);
+                cs.setInt(5, idContrato);
 
                 cs.executeUpdate();
 
@@ -279,6 +385,7 @@ public class ContratoDAO {
             JOptionPane.showMessageDialog(null, "Error al modificar contrato: " + e.toString());
         }
     }
+
 
 
    public void EliminarContrato(JTextField id) {
@@ -297,3 +404,4 @@ public class ContratoDAO {
 
     
 }
+    

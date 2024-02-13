@@ -2,8 +2,10 @@ package com.mycompany.arrendamientos;
 
 import DAO.CalcularAlquilerDAO;
 import DAO.ImporteVariadoDAO;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -1448,18 +1450,23 @@ private void exportarAExcel() {
             sheet.autoSizeColumn(i);
         }
 
-        // Guardar el libro en un archivo
-        String desktopPath = System.getProperty("user.home") + "/Desktop/";
-        try (FileOutputStream fileOut = new FileOutputStream(desktopPath + "detalle.xlsx")) {
+        // Guardar el libro en un archivo temporal
+        File tempFile = File.createTempFile("detalle", ".xlsx");
+        try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
             workbook.write(fileOut);
             JOptionPane.showMessageDialog(null, "Datos exportados correctamente a Excel.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
         }
+
+        // Abrir el archivo Excel recién creado
+        Desktop.getDesktop().open(tempFile);
+        
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "Error: " + e.toString());
     }
 }
+
 
     /**
      * @param args the command line arguments

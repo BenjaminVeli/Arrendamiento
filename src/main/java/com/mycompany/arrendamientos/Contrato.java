@@ -14,10 +14,11 @@ public class Contrato extends javax.swing.JFrame {
         
         
          DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
-         objetoContrato.MostrarArrendadorCombo(cbArrendador);
-         objetoContrato.MostrarVerificadorCombo(cbVerificador);
-         objetoContrato.MostrarGaranteCombo(cbGarante);
-         objetoContrato.MostrarArrendatario(cbArrendatario);
+         objetoContrato.MostrarArrendadorCombo(cbArrendador, txtdireccionArrendador, txtDniArrendador, txtTeleArrendador);
+         objetoContrato.MostrarVerificadorCombo(cbVerificador,txtDireccionVerificador,txtDniVerificador,txtTeleVerificador);
+         objetoContrato.MostrarGaranteCombo(cbGarante,txtDireccionGarante,txtDniGarante,txtTeleGarante);
+         objetoContrato.MostrarArrendatario(cbArrendatario,txtDireccionArrendatario,txtDniArrendatario,txtTeleArrendatario);
+
           
          objetoContrato.MostrarContrato(tbAlquiler);
          
@@ -578,7 +579,7 @@ public class Contrato extends javax.swing.JFrame {
 
     private void tbAlquilerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbAlquilerMouseClicked
         DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
-        objetoContrato.SeleccionarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,cbVerificador,cbGarante,txtTeleArrendatario,txtDireccionArrendatario,txtDniArrendatario,txtgarantia,txtmensualidad,txtpiso,txtcuarto,txtfecha);
+        objetoContrato.SeleccionarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,cbVerificador,cbGarante,txtgarantia,txtmensualidad,txtpiso,txtcuarto,txtfecha,jTextField17);
     }//GEN-LAST:event_tbAlquilerMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
@@ -705,5 +706,23 @@ public class Contrato extends javax.swing.JFrame {
         txtDireccionArrendatario.setText("");
         txtDniArrendatario.setText("");
         txtTeleArrendatario.setText("");
+        txtDireccionGarante.setText("");
+        txtDniGarante.setText("");
+        txtTeleGarante.setText("");
+        txtDireccionVerificador.setText("");
+        txtDniVerificador.setText("");
+        txtTeleVerificador.setText("");
+        txtdireccionArrendador.setText("");
+        txtDniArrendador.setText("");
+        txtTeleArrendador.setText("");
+        jTextField13.setText("");
+        txtpiso.setText("");
+        txtcuarto.setText("");
+        txtfecha.setText("");
+        jTextField14.setText("");
+        txtmensualidad.setText("");
+        txtgarantia.setText("");
+        jTextField17.setText("");
+
     }
 }
