@@ -1,5 +1,18 @@
 package com.mycompany.arrendamientos;
 
+import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.swing.JOptionPane;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+
 
 
 public class Contrato extends javax.swing.JFrame {
@@ -24,6 +37,12 @@ public class Contrato extends javax.swing.JFrame {
          
         Limpiar();
         idtxt.setEnabled(false);
+        
+        btnExportar.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent evt) {
+                exportarAWord();
+            }
+        });
     }
 
 
@@ -85,7 +104,7 @@ public class Contrato extends javax.swing.JFrame {
         jLabel30 = new javax.swing.JLabel();
         txtgarantia = new javax.swing.JTextField();
         jTextField17 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
+        btnExportar = new javax.swing.JButton();
         txtpiso = new javax.swing.JTextField();
         txtcuarto = new javax.swing.JTextField();
         txtfecha = new javax.swing.JTextField();
@@ -353,8 +372,8 @@ public class Contrato extends javax.swing.JFrame {
         jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel30.setText("Area :");
 
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton3.setText("Hacer contrato");
+        btnExportar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnExportar.setText("Hacer contrato");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -399,7 +418,7 @@ public class Contrato extends javax.swing.JFrame {
                 .addContainerGap(118, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addComponent(btnExportar)
                 .addGap(20, 20, 20))
         );
         jPanel2Layout.setVerticalGroup(
@@ -435,7 +454,7 @@ public class Contrato extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addComponent(btnExportar)
                 .addGap(22, 22, 22))
         );
 
@@ -594,9 +613,42 @@ public class Contrato extends javax.swing.JFrame {
         objetoContrato.MostrarContrato(tbAlquiler);
     }//GEN-LAST:event_btnEliminarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    
+         public static void exportarAWord() {
+    try {
+        XWPFDocument documento = new XWPFDocument();
+        
+        XWPFParagraph parrafo = documento.createParagraph();
+        parrafo.setAlignment(ParagraphAlignment.CENTER); // Alinear el párrafo al centro
+        
+        XWPFRun run = parrafo.createRun();
+        run.setText("CONTRATO DE ALQUILER");
+        run.setBold(true); // Establecer negrita
+        run.setUnderline(UnderlinePatterns.SINGLE); // Establecer subrayado
+        run.setFontSize(13); // Establecer tamaño de fuente
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        documento.write(out);
+        
+        File tempFile = File.createTempFile("documento", ".docx");
+        
+        try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
+            out.writeTo(fileOut);
+            JOptionPane.showMessageDialog(null, "Documento exportado correctamente a Word.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al guardar el documento de Word: " + e.getMessage());
+        }
+        
+        out.close();
+        
+        Desktop.getDesktop().open(tempFile);
+        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al crear el documento de Word: " + e.getMessage());
+    }
+}
+
+    
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -630,6 +682,7 @@ public class Contrato extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnExportar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
@@ -639,7 +692,6 @@ public class Contrato extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbGarante;
     private javax.swing.JComboBox<String> cbVerificador;
     private javax.swing.JTextField idtxt;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
