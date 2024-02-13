@@ -282,7 +282,8 @@ public class CalcularAlquilerDAO {
     }
 }
     
-    public void insertarImporteMensual(String nombreCliente, int cuotas, Date fecha, double total_rent, double interes, JTextField txtSumCapital, JTextField txtSumInteres, JTextField txtSumMensual){
+    public void insertarImporteMensual(String nombreCliente, int cuotas, Date fecha, double total_rent, double interes, JTextField txtSumCapital, 
+                                                                JTextField txtSumInteres, JTextField txtSumMensual){
         
         CConexion objetoConexion = new CConexion();
         
@@ -340,7 +341,7 @@ public class CalcularAlquilerDAO {
                 int resultado = pst.executeUpdate();
 
                 if (resultado > 0) {
-                    JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
+                    // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_mensual.");
                 }
@@ -402,7 +403,7 @@ public class CalcularAlquilerDAO {
                 int resultadoUpdate = pstUpdate.executeUpdate();
 
                 if (resultadoUpdate > 0) {
-                    JOptionPane.showMessageDialog(null, "Registros constantes actualizados correctamente en importe_mensual.");
+                    // JOptionPane.showMessageDialog(null, "Registros constantes actualizados correctamente en importe_mensual.");
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al actualizar los registros constantes en importe_mensual.");
                 }
@@ -427,7 +428,7 @@ public class CalcularAlquilerDAO {
                 int resultadoUpdate = pstUpdate.executeUpdate();
 
                 if (resultadoUpdate > 0) {
-                    JOptionPane.showMessageDialog(null, "Registro del campo capital actualizado correctamente en importe_mensual.");
+                    // JOptionPane.showMessageDialog(null, "Registro del campo capital actualizado correctamente en importe_mensual.");
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al actualizar el campo capital de los registros en importe_mensual.");
                 }
@@ -436,7 +437,7 @@ public class CalcularAlquilerDAO {
             JOptionPane.showMessageDialog(null, "Error SQL al actualizar el campo capital de los registros en importe_mensual: " + e.toString());
         }
     }
-    
+  
     public DefaultTableModel  MostrarCalculos(JTextField txtSumCapital, JTextField txtSumInteres, 
                                                                              JTextField txtSumMensual, int cuotas, Date fecha, double total_rent, double interes){
         
@@ -540,13 +541,13 @@ public class CalcularAlquilerDAO {
         
         double totalCuotas = cuotas * 30;
         
-        for (int i = 0; i <= totalCuotas; i++) {
+        for (int i = 1; i <= totalCuotas; i++) {
             
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(fecha);
             
             //Esto avanza dia a dia  siguiente la fecha
-            calendar.add(Calendar.DAY_OF_YEAR, i);
+            calendar.add(Calendar.DAY_OF_YEAR, i-1);
             
             //Formatear la fecha en dia mes año
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
@@ -582,13 +583,13 @@ public class CalcularAlquilerDAO {
         
         double totalCuotas = cuotas * 4;
         
-        for (int i = 0; i <= totalCuotas; i++) {
+        for (int i = 1; i <= totalCuotas; i++) {
             
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(fecha);
             
             //Esto avanza de semana a semana
-            calendar.add(Calendar.WEEK_OF_YEAR, i);
+            calendar.add(Calendar.WEEK_OF_YEAR, i-1);
             
             //Formatear la fecha en dia mes año
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
@@ -624,13 +625,13 @@ public class CalcularAlquilerDAO {
         
         double totalCuotas = cuotas * 2;
         
-         for (int i = 0; i <= totalCuotas; i++) {
+         for (int i = 1; i <= totalCuotas; i++) {
             
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(fecha);
             
             // Esto avanza de 15 en 15 días
-            int diasAgregados = i * 15;
+            int diasAgregados = (i-1) * 15;
             calendar.add(Calendar.DAY_OF_YEAR, diasAgregados);
             
             //Formatear la fecha en dia mes año
@@ -657,7 +658,7 @@ public class CalcularAlquilerDAO {
         tbCalculoImporte.setModel(modelo);
     }
     
-     public void MostrarImporteMensual(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public void MostrarImporteMensual(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -665,13 +666,13 @@ public class CalcularAlquilerDAO {
         modelo.addColumn("Fecha");
         modelo.addColumn("Importe");
         
-         for (int i = 0; i <= cuotas; i++) {
+         for (int i = 1; i <= cuotas; i++) {
             
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(fecha);
             
             //Esto avanza al mes siguiente la fecha
-            calendar.add(Calendar.MONTH, i);
+            calendar.add(Calendar.MONTH, i-1);
             
             // Esto ajustar el día al último día del mes
             int ultimoDiaMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -838,7 +839,8 @@ public class CalcularAlquilerDAO {
     }
 }
     
-    public void recalcularImporteMensual(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas , Date fecha, double total_rent, double interes, JTextField txtSumCapital, JTextField txtSumInteres, JTextField txtSumMensual, JTextField totaltxt){
+    public void recalcularImporteMensual(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas , Date fecha, double total_rent, double interes, 
+                                                                    JTextField txtSumCapital, JTextField txtSumInteres, JTextField txtSumMensual, JTextField totaltxt){
         CConexion objetoConexion = new CConexion();
         
         try {
@@ -912,7 +914,7 @@ public class CalcularAlquilerDAO {
                             int resultado = pst.executeUpdate();
 
                             if (resultado > 0) {
-                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_mensual.");
                             }
@@ -1008,7 +1010,7 @@ public class CalcularAlquilerDAO {
                             int resultado = pst.executeUpdate();
 
                             if (resultado > 0) {
-                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_mensual.");
                             }
@@ -1157,7 +1159,7 @@ public class CalcularAlquilerDAO {
         return cuotas;
     }
     
-    private int obtenerCantidadCuotas(int rentCalculationId) {
+    public int obtenerCantidadCuotas(int rentCalculationId) {
         int cantidadCuotas = -1;
         CConexion objetoConexion = new CConexion();
 
@@ -1198,12 +1200,12 @@ public class CalcularAlquilerDAO {
         }
     }
 
-    private int obtenerIdRentCalculation(String nombreClienteRenta) {
+    public int obtenerIdRentCalculation(String nombreClienteRenta) {
         int rentCalculationId = -1;
         CConexion objetoConexion = new CConexion();
 
         // Intentamos obtener el ID de la fila más reciente que coincide con el nombre del cliente y la fecha *NUEVO*
-        String sqlSelect = "SELECT id FROM rent_calculation WHERE client_id IN (SELECT id FROM datos_cli_prov WHERE nombre = ?) ORDER BY fecha DESC LIMIT 1";
+        String sqlSelect = "SELECT id FROM rent_calculation WHERE client_id IN (SELECT id FROM datos_cli_prov WHERE nombre = ?) ORDER BY fecha DESC, id DESC LIMIT 1";
 
         try (PreparedStatement pstSelect = objetoConexion.estableceConexion().prepareStatement(sqlSelect)) {
             pstSelect.setString(1, nombreClienteRenta);

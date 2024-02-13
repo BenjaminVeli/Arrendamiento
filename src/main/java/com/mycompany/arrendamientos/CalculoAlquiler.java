@@ -1,6 +1,7 @@
 package com.mycompany.arrendamientos;
 
 import DAO.CalcularAlquilerDAO;
+import DAO.ImporteVariadoDAO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
@@ -500,11 +501,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
         alquilertxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         alquilertxt.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        alquilertxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                alquilertxtActionPerformed(evt);
-            }
-        });
         alquilertxt.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 alquilertxtKeyReleased(evt);
@@ -522,11 +518,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
         totaltxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         totaltxt.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        totaltxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                totaltxtActionPerformed(evt);
-            }
-        });
         totaltxt.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 totaltxtKeyReleased(evt);
@@ -608,33 +599,13 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         jComboBox3.setBorder(null);
 
         search.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        search.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchActionPerformed(evt);
-            }
-        });
 
         totalAlquilertxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         totalAlquilertxt.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        totalAlquilertxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                totalAlquilertxtActionPerformed(evt);
-            }
-        });
 
         pisostxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        pisostxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pisostxtActionPerformed(evt);
-            }
-        });
 
         cuartostxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cuartostxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cuartostxtActionPerformed(evt);
-            }
-        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Cuartos");
@@ -1062,6 +1033,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     private void GrabarbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GrabarbtnActionPerformed
         try {
             CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
+            ImporteVariadoDAO importeVariadoDao = new ImporteVariadoDAO();
             
             if (search.getSelectedItem() == null || alquilertxt.getText().isEmpty()
                     || totaltxt.getText().isEmpty() || pisostxt.getSelectedItem() == null
@@ -1073,15 +1045,33 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             // Obtener los campos del formulario
             int cuotas = dao.obtenerNumeroCuotas(totaltxt.getText());
             java.util.Date utilFecha = fechatxt.getDate();
+            java.util.Date utilFecha2 = fechaingresotxt.getDate();
             double interes = Double.parseDouble(interesestxt.getText());
             double total_rent = Double.parseDouble(totalAlquilertxt.getText());
+            double sumaCapital = Double.parseDouble(txtSumCapital.getText());
+            double sumaInteres = Double.parseDouble(txtSumInteres.getText());
 
             // Convertir java.util.Date a java.sql.Date
             java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
+            java.sql.Date fecha_ingreso = new java.sql.Date(utilFecha2.getTime());
+            
+            // Obtener la opción seleccionada en el JComboBox "selectPago"
+            String tiposPago = (String) selectPago.getSelectedItem();
             
             dao.insertarCalculoAlquiler(search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
             // Llamar al método para insertar los datos mensuales
             dao.insertarImporteMensual(search.getSelectedItem().toString(), cuotas, fecha, total_rent, interes, txtSumCapital, txtSumInteres, txtSumMensual);
+            
+            // Condicionar el guardado de cálculos según la opción seleccionada
+            
+            switch (tiposPago) {
+                case "Diario" -> importeVariadoDao.insertarCalculosDiarios(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres);
+                case "Semanal" -> importeVariadoDao.insertarCalculosSemanal(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres);
+                case "Quincenal" -> importeVariadoDao.insertarCalculosQuincenal(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres);
+                case "Mensual" -> importeVariadoDao.insertarCalculosMensual(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres);
+                default -> JOptionPane.showMessageDialog(null, "Opción no válida");
+            }
+            
             dao.MostrarAlquiler(tbTotalCalculo);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Los campos de alquiler y total deben contener valores numéricos", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1097,31 +1087,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         dao.MostrarAlquiler(tbTotalCalculo);
     }//GEN-LAST:event_btnEliminarActionPerformed
 
-    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
-        // La funcion del buscador esta en el metodo CargarNombres, si falta algo agregalo
-    }//GEN-LAST:event_searchActionPerformed
-
     private void registroClientebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registroClientebtnActionPerformed
         RegistroDatosClientes rdc = new RegistroDatosClientes();
         rdc.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_registroClientebtnActionPerformed
-
-    private void totalAlquilertxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalAlquilertxtActionPerformed
-        // calcular la multiplicación entre alguiler y total has las 
-    }//GEN-LAST:event_totalAlquilertxtActionPerformed
-
-    private void pisostxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pisostxtActionPerformed
-        // La funcion del select de pisos  esta en el metodo cargarPisos, si falta algo agregalo
-    }//GEN-LAST:event_pisostxtActionPerformed
-
-    private void alquilertxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alquilertxtActionPerformed
-        // funcion para poner el monto del alquiler
-    }//GEN-LAST:event_alquilertxtActionPerformed
-
-    private void totaltxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totaltxtActionPerformed
-        // funcion para poner el monto del total
-    }//GEN-LAST:event_totaltxtActionPerformed
 
     private void alquilertxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_alquilertxtKeyReleased
         calcularYActualizarTotal();
@@ -1143,10 +1113,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_crearCuartobtnActionPerformed
 
-    private void cuartostxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cuartostxtActionPerformed
-
-    }//GEN-LAST:event_cuartostxtActionPerformed
-
     private void tbTotalCalculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCalculoMouseClicked
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
        dao.SeleccionarCalculoAlquiler(tbTotalCalculo,idtxt, dnitxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,ructxt,direcciontxt,telefonotxt);
@@ -1155,22 +1121,37 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
+       ImporteVariadoDAO importeVariadoDao = new ImporteVariadoDAO();
        
        // Obtener los campos del formulario
         int nuevaCuotas  = dao.obtenerNumeroCuotas(totaltxt.getText());
         java.util.Date utilFecha = fechatxt.getDate();
+        java.util.Date utilFecha2 = fechaingresotxt.getDate();
         double interes = Double.parseDouble(interesestxt.getText());
         double total_rent = Double.parseDouble(totalAlquilertxt.getText());
+        double sumaCapital = Double.parseDouble(txtSumCapital.getText());
+        double sumaInteres = Double.parseDouble(txtSumInteres.getText());
 
         // Convertir java.util.Date a java.sql.Date
         java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
+        java.sql.Date fecha_ingreso = new java.sql.Date(utilFecha2.getTime());
+        
+        String tiposPago = (String) selectPago.getSelectedItem();
         
         // Llamar al método ModificarCalculoAlquiler del DAO para actualizar el cálculo de alquiler
         dao.ModificarCalculoAlquiler(tbTotalCalculo,idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
         
         // Continuar con el resto del proceso, incluyendo la actualización de importe_mensual
-        // Paso 3: Actualizar los campos ord, fecha, saldo, capital e interes
-        dao.recalcularImporteMensual(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas , fecha, total_rent, interes, txtSumCapital, txtSumInteres, txtSumMensual, totaltxt);
+        dao.recalcularImporteMensual(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha, total_rent, interes, txtSumCapital, txtSumInteres, txtSumMensual, totaltxt);
+        
+        switch (tiposPago) {
+            case "Diario" -> importeVariadoDao.recalcularCalculosDiarios(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
+            case "Semanal" -> importeVariadoDao.recalcularCalculosSemanal(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
+            case "Quincenal" -> importeVariadoDao.recalcularCalculosQuincenal(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
+            case "Mensual" -> importeVariadoDao.recalcularCalculosMensual(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
+            default -> JOptionPane.showMessageDialog(null, "Opción no válida");
+        }
+        
         dao.MostrarAlquiler(tbTotalCalculo);
     }//GEN-LAST:event_btnModificarActionPerformed
 
