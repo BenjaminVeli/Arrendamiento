@@ -12,11 +12,11 @@ INSERT INTO users (user, password) VALUES ('admin', '123');
 CREATE TABLE datos_cli_prov (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100),
-    ruc VARCHAR(11),
+    ruc VARCHAR(11) UNIQUE,
     direccion_propietario VARCHAR(100),
     celular INT(9),
     nacimiento DATE,
-    dni_propietario VARCHAR(8),
+    dni_propietario VARCHAR(8) UNIQUE,
     fecha_ingreso TIMESTAMP,
     correo VARCHAR(100),
     estado_civil VARCHAR(30),

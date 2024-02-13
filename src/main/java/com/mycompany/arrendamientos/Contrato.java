@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -614,39 +615,79 @@ public class Contrato extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     
-         public static void exportarAWord() {
+     public void exportarAWord() {
     try {
         XWPFDocument documento = new XWPFDocument();
+
+        XWPFParagraph parrafo1 = documento.createParagraph();
+        parrafo1.setAlignment(ParagraphAlignment.CENTER); 
+
+        XWPFRun run1 = parrafo1.createRun();
+        run1.setText("CONTRATO DE ALQUILER");
+        run1.setBold(true); // Establecer negrita
+        run1.setUnderline(UnderlinePatterns.SINGLE); 
+        run1.setFontSize(13); 
+
         
-        XWPFParagraph parrafo = documento.createParagraph();
-        parrafo.setAlignment(ParagraphAlignment.CENTER); // Alinear el párrafo al centro
         
-        XWPFRun run = parrafo.createRun();
-        run.setText("CONTRATO DE ALQUILER");
-        run.setBold(true); // Establecer negrita
-        run.setUnderline(UnderlinePatterns.SINGLE); // Establecer subrayado
-        run.setFontSize(13); // Establecer tamaño de fuente
+        XWPFParagraph parrafo2 = documento.createParagraph();
+        parrafo2.setAlignment(ParagraphAlignment.LEFT);
+
+        XWPFRun run2 = parrafo2.createRun();
+        run2.setText("---------------------------------------------------------");
+        run2.setFontSize(9); // Establecer tamaño de fuente
         
+        Object arrendadorSeleccionado = cbArrendador.getSelectedItem();
+
+        if (arrendadorSeleccionado != null) {
+            String contenidoArrendador = arrendadorSeleccionado.toString();
+
+            XWPFParagraph parrafo3 = documento.createParagraph();
+            parrafo3.setAlignment(ParagraphAlignment.LEFT);
+
+            XWPFRun run3 = parrafo3.createRun();
+            run3.setText(contenidoArrendador);
+            run3.setFontSize(9);
+        }
+
+        String dniArrendador = txtDniArrendador.getText(); 
+        XWPFParagraph parrafo4 = documento.createParagraph();
+        parrafo4.setAlignment(ParagraphAlignment.LEFT);
+            
+        XWPFRun run4 = parrafo4.createRun();
+        run4.setText("DNI: " + dniArrendador);
+        run4.setFontSize(9);
+
+        XWPFParagraph parrafo5 = documento.createParagraph();
+        parrafo5.setAlignment(ParagraphAlignment.LEFT);
+
+        XWPFRun run5 = parrafo5.createRun(); 
+        run5.setText("EL ARRENDADOR");
+        run5.setFontSize(9);
+        
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         documento.write(out);
-        
+
         File tempFile = File.createTempFile("documento", ".docx");
-        
+
         try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
             out.writeTo(fileOut);
             JOptionPane.showMessageDialog(null, "Documento exportado correctamente a Word.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error al guardar el documento de Word: " + e.getMessage());
         }
-        
+
         out.close();
-        
+
         Desktop.getDesktop().open(tempFile);
-        
+
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "Error al crear el documento de Word: " + e.getMessage());
     }
 }
+
+
 
     
     public static void main(String args[]) {

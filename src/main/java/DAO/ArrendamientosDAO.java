@@ -5,6 +5,7 @@ import Modelo.Arrendamientos;
 import com.toedter.calendar.JDateChooser;
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -53,11 +54,13 @@ public class ArrendamientosDAO {
             cs.setString(12, arrendamientos.getCiudad());
 
             cs.execute();
-            JOptionPane.showMessageDialog(null, "Se insertó correctamente");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
-        }
+        JOptionPane.showMessageDialog(null, "Se insertó correctamente");
+    } catch (SQLIntegrityConstraintViolationException e) {
+        JOptionPane.showMessageDialog(null, "El DNI o RUC ya están ingresados", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
     }
+}
     
     public void MostrarCliente(JTable paramTablaTotalClientes) {
 
@@ -72,7 +75,7 @@ public class ArrendamientosDAO {
     TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
     paramTablaTotalClientes.setRowSorter(ordenarTabla);
 
-    String[] columnasMostradas = {"Id", "Nombre", "Dirección", "Ruc", "Telefono"};
+    String[] columnasMostradas = {"Id", "Nombre", "Dirección", "Ruc", "Celular"};
     String[] columnasBD = {"id", "nombre",  "direccion_propietario","ruc",  "celular", 
                             "nacimiento", "dni_propietario", "fecha_ingreso", "correo", 
                             "estado_civil", "conyuge", "dni_conyuge", "ciudad"};
@@ -270,7 +273,7 @@ public class ArrendamientosDAO {
     modelo.addColumn("Nombre");
     modelo.addColumn("Dirección");
     modelo.addColumn("Ruc");
-    modelo.addColumn("Telefono");
+    modelo.addColumn("Celular");
 
 
     paramTablaTotalClientes.setModel(modelo);
@@ -289,11 +292,11 @@ public class ArrendamientosDAO {
         ResultSet rs = st.executeQuery(sql);
 
         while (rs.next()) {
-            datos[0] = rs.getString(1);
-            datos[1] = rs.getString(2);
-            datos[2] = rs.getString(3);
-            datos[3] = rs.getString(4);
-            datos[4] = rs.getString(5);
+            datos[0] = rs.getString(1); 
+            datos[1] = rs.getString(2); 
+            datos[2] = rs.getString(4); 
+            datos[3] = rs.getString(3); 
+            datos[4] = rs.getString(5); 
 
 
             modelo.addRow(datos);
