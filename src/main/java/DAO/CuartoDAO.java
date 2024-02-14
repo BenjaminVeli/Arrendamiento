@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -71,10 +72,11 @@ public class CuartoDAO {
                 JOptionPane.showMessageDialog(null, "Seleccione un piso antes de insertar el cuarto");
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al insertar el cuarto: " + e.toString());
-        }
+        } catch (SQLIntegrityConstraintViolationException e) {
+        JOptionPane.showMessageDialog(null, "El cuarto ingresado ya esta registrado. ", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
+    }
 }
          
          public void MostrarCuartos(JTable tbTotalCuartos) {
@@ -168,10 +170,12 @@ public class CuartoDAO {
 
                     JOptionPane.showMessageDialog(null, "Se modificó correctamente");
                 }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "No se modificó correctamente, error: " + e.toString());
-            }
-        }
+            } catch (SQLIntegrityConstraintViolationException e) {
+        JOptionPane.showMessageDialog(null, "No es posible modificar el cuarto, ya que está registrado. ", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "No se modificó correctamente, error: " + e.toString());
+    }
+}
          
          public void EliminarCuartos(JTextField id) {
         CConexion objetoConexion = new CConexion();

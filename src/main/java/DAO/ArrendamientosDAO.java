@@ -209,6 +209,8 @@ public class ArrendamientosDAO {
             JOptionPane.showMessageDialog(null, "No se pudo modificar, el cliente con el ID proporcionado no existe.");
         }
 
+    } catch (SQLIntegrityConstraintViolationException e) {
+        JOptionPane.showMessageDialog(null, "No es posible modificar al cliente , ya que el DNI o RUC ingresado ya esta registrado.", "Error", JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "No se pudo modificar, error: " + e.toString());
     }

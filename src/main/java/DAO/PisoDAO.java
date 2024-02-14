@@ -3,6 +3,7 @@ package DAO;
 import Conexion.CConexion;
 import Modelo.Piso;
 import java.sql.ResultSet;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -25,7 +26,9 @@ public class PisoDAO {
             cs.setString(1, piso.getPiso());
 
             cs.execute();
-            JOptionPane.showMessageDialog(null, "Se insertó correctamente");
+        JOptionPane.showMessageDialog(null, "Se insertó correctamente");
+        } catch (SQLIntegrityConstraintViolationException e) {
+            JOptionPane.showMessageDialog(null, "El piso ingresado ya esta registrado", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
         }
@@ -125,6 +128,8 @@ public class PisoDAO {
             JOptionPane.showMessageDialog(null, "No se pudo modificar, el piso con el ID proporcionado no existe.");
         }
 
+    } catch (SQLIntegrityConstraintViolationException e) {
+        JOptionPane.showMessageDialog(null, "No es posible modificar el piso, ya que está registrado.", "Error", JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "No se pudo modificar, error: " + e.toString());
     }

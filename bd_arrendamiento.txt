@@ -27,13 +27,13 @@ CREATE TABLE datos_cli_prov (
 
 create table piso (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  piso VARCHAR(100)
+  piso VARCHAR(100) UNIQUE
 );
 
 CREATE TABLE cuarto (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     piso_id INT,
-    numcuarto VARCHAR(100),
+    numcuarto VARCHAR(100) UNIQUE,
     metraje VARCHAR(100),
     foto LONGBLOB,
     ocupado BOOLEAN DEFAULT false,
@@ -91,7 +91,7 @@ CREATE TABLE mantenimiento (
 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 nombre VARCHAR(100),
 direccion VARCHAR(100),
-dni VARCHAR(8),
+dni VARCHAR(8) UNIQUE,
 celular VARCHAR(9),
 rol VARCHAR(100)
 );
