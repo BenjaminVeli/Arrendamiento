@@ -93,7 +93,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
         double porPagar = dao.calcularPorPagar(total_rent, cuotas);
         porPagar = Math.round(porPagar * 100.0) / 100.0;
-        System.out.println("porPagar en el JFRAME de mostrarCalculo: " + porPagar);
         mensualtxt.setText(String.valueOf(porPagar));
         
         tbCalculoAlquiler.setModel(modelo);
@@ -129,7 +128,6 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
         double importeDiario = dao.Importe(sumaCapital, sumaInteres);
         importeDiario = Math.round(importeDiario * 100.0) / 100.0;
-        System.out.println("importeDiario en el JFRAME: " + importeDiario);
         txtSumImporte.setText(String.valueOf(importeDiario));
         
         double pagoDiario = dao.calcularImporteDiario(sumaCapital, sumaInteres, cuotas);
@@ -1122,10 +1120,10 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_tbTotalCalculoMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-       CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       ImporteVariadoDAO importeVariadoDao = new ImporteVariadoDAO();
-       
-       // Obtener los campos del formulario
+        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
+        ImporteVariadoDAO importeVariadoDao = new ImporteVariadoDAO();
+        
+        // Obtener los campos del formulario
         int nuevaCuotas  = dao.obtenerNumeroCuotas(totaltxt.getText());
         java.util.Date utilFecha = fechatxt.getDate();
         java.util.Date utilFecha2 = fechaingresotxt.getDate();
@@ -1140,11 +1138,9 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
         String tiposPago = (String) selectPago.getSelectedItem();
         
+        
         // Llamar al método ModificarCalculoAlquiler del DAO para actualizar el cálculo de alquiler
         dao.ModificarCalculoAlquiler(tbTotalCalculo,idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
-        
-        // Continuar con el resto del proceso, incluyendo la actualización de importe_mensual
-        dao.recalcularImporteMensual(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha, total_rent, interes, txtSumCapital, txtSumInteres, txtSumMensual, totaltxt);
         
         switch (tiposPago) {
             case "Diario" -> importeVariadoDao.recalcularCalculosDiarios(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
@@ -1153,6 +1149,9 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             case "Mensual" -> importeVariadoDao.recalcularCalculosMensual(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
             default -> JOptionPane.showMessageDialog(null, "Opción no válida");
         }
+        
+        // Continuar con el resto del proceso, incluyendo la actualización de importe_mensual
+        dao.recalcularImporteMensual(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha, total_rent, interes, txtSumCapital, txtSumInteres, txtSumMensual, totaltxt);
         
         dao.MostrarAlquiler(tbTotalCalculo);
     }//GEN-LAST:event_btnModificarActionPerformed

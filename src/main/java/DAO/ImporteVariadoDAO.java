@@ -24,7 +24,7 @@ import DAO.CalcularAlquilerDAO;
 import java.sql.SQLException;
 
 public class ImporteVariadoDAO {
-    
+
     public double calcularImporteDiario(double sumaCapital, double sumaInteres, int cuotas) {
         return (sumaCapital + sumaInteres) / (cuotas * 30);
     }
@@ -42,7 +42,6 @@ public class ImporteVariadoDAO {
     }
     
     // Insertar datos hacia la tabla importe_variado
-    
     public void actualizarRegistrosConstantes(int clientRentId, int ord, double importe, double importeTotal){
         CConexion objetoConexion = new CConexion();
         
@@ -332,16 +331,19 @@ public class ImporteVariadoDAO {
         
         try {
             int fila = paramTablaCalculosAlquiler.getSelectedRow();
-            
             if (fila >= 0) {
+                
+                // Obtén el ID de la fila seleccionada
+                String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
+                
                 // Obtener el id de rent_calculation
-                int clientRentId = ca.obtenerIdRentCalculation(nombreCliente);
+                int clientRentId = Integer.parseInt(idSeleccionado);
                 
                 // Punto 1: Verificar el valor de totaltxt
                 System.out.println("Valor de totaltxt en importe_variado: " + totaltxt.getText());
                 
                 // Obtener la cantidad original de cuotas
-                int cuotasOriginal = obtenerCantidadCuotasDiario(clientRentId);
+                int cuotasOriginal = ca.obtenerCantidadCuotas(clientRentId);
                 System.out.println("Valor de cuotas original en importe_variado: " + cuotasOriginal);
                 
                 // Eliminar todos los cálculos de alquiler asociados al ID seleccionado
@@ -379,7 +381,7 @@ public class ImporteVariadoDAO {
                             int resultado = pst.executeUpdate();
                             
                             if (resultado > 0) {
-                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
                             }
@@ -431,7 +433,7 @@ public class ImporteVariadoDAO {
                             int resultado = pst.executeUpdate();
                             
                             if (resultado > 0) {
-                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
                             }
@@ -452,10 +454,55 @@ public class ImporteVariadoDAO {
                     }
                 }
                 
-                else if (nuevaCuotas == 0) {
-                    for (int i = 0; i < Math.abs(nuevaCuotas); i++) {
-                        // Eliminar la fila correspondiente en la tabla "importe_mensual"
-                        JOptionPane.showMessageDialog(null, "No hay cantidad de cuotas");
+                else if (nuevaCuotas == cuotasOriginal) {
+                    System.out.println("Entrando en el bloque del caso de que la cantidad de cuotas no cambie en importe_variado");
+                    
+                    double totalCuotas = nuevaCuotas * 30;
+                    // Bucle A
+                    for (int i = 1; i <= totalCuotas; i++){
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(fecha);
+
+                        //Esto avanza dia a dia  siguiente la fecha
+                        calendar.add(Calendar.DAY_OF_YEAR, i-1);
+
+                        // Obtener la fecha como java.sql.Date
+                        java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
+                        
+                        // Insertar a la base de datos
+                        
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        
+                        try {
+                            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                            
+                            pst.setInt(1, clientRentId); // Esta inserción esta bien
+                            pst.setInt(2, i); // Esta inserción esta bien
+                            pst.setDate(3, fechaSQL); // Esta inserción esta bien
+                            pst.setBigDecimal(4, new BigDecimal(0.0));
+                            pst.setBigDecimal(5, new BigDecimal(0.0));
+                            
+                            int resultado = pst.executeUpdate();
+                            
+                            if (resultado > 0) {
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
+                            }
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Error SQL al insertar el registro en importe_variado: " + e.toString());
+                        }
+                    }
+                    
+                    //Bucle B
+                    for (int i = 1; i <= totalCuotas; i++) {
+                        double importeMensual = calcularImporteDiario(sumaCapital, sumaInteres, nuevaCuotas);
+                        importeMensual = Math.round(importeMensual * 100.0) / 100.0;
+
+                        double importeTotal = sumaCapital + sumaInteres;
+                        importeTotal = Math.round(importeTotal * 100.0) / 100.0;
+
+                        actualizarRegistrosConstantes(clientRentId, i, importeMensual, importeTotal);
                     }
                 }
                 
@@ -476,14 +523,17 @@ public class ImporteVariadoDAO {
             int fila = paramTablaCalculosAlquiler.getSelectedRow();
             
             if (fila >= 0) {
+                // Obtén el ID de la fila seleccionada
+                String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
+                
                 // Obtener el id de rent_calculation
-                int clientRentId = ca.obtenerIdRentCalculation(nombreCliente);
+                int clientRentId = Integer.parseInt(idSeleccionado);
                 
                 // Punto 1: Verificar el valor de totaltxt
                 System.out.println("Valor de totaltxt en importe_variado: " + totaltxt.getText());
                 
                 // Obtener la cantidad original de cuotas
-                int cuotasOriginal = obtenerCantidadCuotasSemanal(clientRentId);
+                int cuotasOriginal = ca.obtenerCantidadCuotas(clientRentId);
                 System.out.println("Valor de cuotas original en importe_variado: " + cuotasOriginal);
                 
                 // Eliminar todos los cálculos de alquiler asociados al ID seleccionado
@@ -521,7 +571,7 @@ public class ImporteVariadoDAO {
                             int resultado = pst.executeUpdate();
                             
                             if (resultado > 0) {
-                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
                             }
@@ -573,7 +623,7 @@ public class ImporteVariadoDAO {
                             int resultado = pst.executeUpdate();
                             
                             if (resultado > 0) {
-                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
                             }
@@ -594,10 +644,55 @@ public class ImporteVariadoDAO {
                     }
                 }
                 
-                else if (nuevaCuotas == 0) {
-                    for (int i = 0; i < Math.abs(nuevaCuotas); i++) {
-                        // Eliminar la fila correspondiente en la tabla "importe_mensual"
-                        JOptionPane.showMessageDialog(null, "No hay cantidad de cuotas");
+                else if (nuevaCuotas == cuotasOriginal) {
+                    System.out.println("Entrando en el bloque del caso de que la cantidad de cuotas no cambie en importe_variado");
+                    
+                    double totalCuotas = nuevaCuotas * 4;
+                    // Bucle A
+                    for (int i = 1; i <= totalCuotas; i++){
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(fecha);
+
+                        //Esto avanza de semana a semana
+                        calendar.add(Calendar.WEEK_OF_YEAR, i-1);
+
+                        // Obtener la fecha como java.sql.Date
+                        java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
+                        
+                        // Insertar a la base de datos
+                        
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        
+                        try {
+                            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                            
+                            pst.setInt(1, clientRentId); // Esta inserción esta bien
+                            pst.setInt(2, i); // Esta inserción esta bien
+                            pst.setDate(3, fechaSQL); // Esta inserción esta bien
+                            pst.setBigDecimal(4, new BigDecimal(0.0));
+                            pst.setBigDecimal(5, new BigDecimal(0.0));
+                            
+                            int resultado = pst.executeUpdate();
+                            
+                            if (resultado > 0) {
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
+                            }
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Error SQL al insertar el registro en importe_variado: " + e.toString());
+                        }
+                    }
+                    
+                    //Bucle B
+                    for (int i = 1; i <= totalCuotas; i++) {
+                        double importeMensual = calcularImporteSemanal(sumaCapital, sumaInteres, nuevaCuotas);
+                        importeMensual = Math.round(importeMensual * 100.0) / 100.0;
+
+                        double importeTotal = sumaCapital + sumaInteres;
+                        importeTotal = Math.round(importeTotal * 100.0) / 100.0;
+
+                        actualizarRegistrosConstantes(clientRentId, i, importeMensual, importeTotal);
                     }
                 }
                 
@@ -619,14 +714,18 @@ public class ImporteVariadoDAO {
             int fila = paramTablaCalculosAlquiler.getSelectedRow();
             
             if (fila >= 0) {
+                
+                // Obtén el ID de la fila seleccionada
+                String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
+                
                 // Obtener el id de rent_calculation
-                int clientRentId = ca.obtenerIdRentCalculation(nombreCliente);
+                int clientRentId =  Integer.parseInt(idSeleccionado);
                 
                 // Punto 1: Verificar el valor de totaltxt
                 System.out.println("Valor de totaltxt en importe_variado: " + totaltxt.getText());
                 
                 // Obtener la cantidad original de cuotas
-                int cuotasOriginal = obtenerCantidadCuotasQuincenal(clientRentId);
+                int cuotasOriginal = ca.obtenerCantidadCuotas(clientRentId);
                 System.out.println("Valor de cuotas original en importe_variado: " + cuotasOriginal);
                 
                 // Eliminar todos los cálculos de alquiler asociados al ID seleccionado
@@ -665,7 +764,7 @@ public class ImporteVariadoDAO {
                             int resultado = pst.executeUpdate();
                             
                             if (resultado > 0) {
-                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
                             }
@@ -718,7 +817,7 @@ public class ImporteVariadoDAO {
                             int resultado = pst.executeUpdate();
                             
                             if (resultado > 0) {
-                                JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
                             }
@@ -739,10 +838,56 @@ public class ImporteVariadoDAO {
                     }
                 }
                 
-                else if (nuevaCuotas == 0) {
-                    for (int i = 0; i < Math.abs(nuevaCuotas); i++) {
-                        // Eliminar la fila correspondiente en la tabla "importe_mensual"
-                        JOptionPane.showMessageDialog(null, "No hay cantidad de cuotas");
+                else if (nuevaCuotas == cuotasOriginal) {
+                    System.out.println("Entrando en el bloque del caso de que la cantidad de cuotas no cambie en importe_variado");
+                    
+                    double totalCuotas = nuevaCuotas * 2;
+                    // Bucle A
+                    for (int i = 1; i <= totalCuotas; i++){
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(fecha);
+
+                        // Esto avanza de 15 en 15 días
+                        int diasAgregados = (i-1) * 15;
+                        calendar.add(Calendar.DAY_OF_YEAR, diasAgregados);
+
+                        // Obtener la fecha como java.sql.Date
+                        java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
+                        
+                        // Insertar a la base de datos
+                        
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        
+                        try {
+                            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                            
+                            pst.setInt(1, clientRentId); // Esta inserción esta bien
+                            pst.setInt(2, i); // Esta inserción esta bien
+                            pst.setDate(3, fechaSQL); // Esta inserción esta bien
+                            pst.setBigDecimal(4, new BigDecimal(0.0));
+                            pst.setBigDecimal(5, new BigDecimal(0.0));
+                            
+                            int resultado = pst.executeUpdate();
+                            
+                            if (resultado > 0) {
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
+                            }
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Error SQL al insertar el registro en importe_variado: " + e.toString());
+                        }
+                    }
+                    
+                    //Bucle B
+                    for (int i = 1; i <= totalCuotas; i++) {
+                        double importeMensual = calcularImporteQuincenal(sumaCapital, sumaInteres, nuevaCuotas);
+                        importeMensual = Math.round(importeMensual * 100.0) / 100.0;
+
+                        double importeTotal = sumaCapital + sumaInteres;
+                        importeTotal = Math.round(importeTotal * 100.0) / 100.0;
+
+                        actualizarRegistrosConstantes(clientRentId, i, importeMensual, importeTotal);
                     }
                 }
                 
@@ -764,14 +909,18 @@ public class ImporteVariadoDAO {
             int fila = paramTablaCalculosAlquiler.getSelectedRow();
             
             if (fila >= 0) {
+                
+                // Obtén el ID de la fila seleccionada
+                String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
+                
                 // Obtener el id de rent_calculation
-                int clientRentId = ca.obtenerIdRentCalculation(nombreCliente);
+                int clientRentId = Integer.parseInt(idSeleccionado);
                 
                 // Punto 1: Verificar el valor de totaltxt
                 System.out.println("Valor de totaltxt en importe_variado: " + totaltxt.getText());
                 
                 // Obtener la cantidad original de cuotas
-                int cuotasOriginal = obtenerCantidadCuotasMensual(clientRentId);
+                int cuotasOriginal = ca.obtenerCantidadCuotas(clientRentId);
                 System.out.println("Valor de cuotas original en importe_variado: " + cuotasOriginal);
                 
                 // Eliminar todos los cálculos de alquiler asociados al ID seleccionado
@@ -857,7 +1006,7 @@ public class ImporteVariadoDAO {
                             int resultado = pst.executeUpdate();
                             
                             if (resultado > 0) {
-                            
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
                             } else {
                                 JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
                             }
@@ -878,10 +1027,53 @@ public class ImporteVariadoDAO {
                     }
                 }
                 
-                else if (nuevaCuotas == 0) {
-                    for (int i = 0; i < Math.abs(nuevaCuotas); i++) {
-                        // Eliminar la fila correspondiente en la tabla "importe_mensual"
-                        JOptionPane.showMessageDialog(null, "No hay cantidad de cuotas");
+                else if (nuevaCuotas == cuotasOriginal) {
+                    System.out.println("Entrando en el bloque del caso de que la cantidad de cuotas no cambio en importe_variado");
+                    // Bucle A
+                    for (int i = 1; i <= nuevaCuotas; i++){
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(fecha);
+
+                        //Esto avanza al mes siguiente la fecha
+                        calendar.add(Calendar.MONTH, i-1);
+
+                        // Obtener la fecha como java.sql.Date
+                        java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
+                        
+                        // Insertar a la base de datos
+                        
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        
+                        try {
+                            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                            
+                            pst.setInt(1, clientRentId); // Esta inserción esta bien
+                            pst.setInt(2, i); // Esta inserción esta bien
+                            pst.setDate(3, fechaSQL); // Esta inserción esta bien
+                            pst.setBigDecimal(4, new BigDecimal(0.0));
+                            pst.setBigDecimal(5, new BigDecimal(0.0));
+                            
+                            int resultado = pst.executeUpdate();
+                            
+                            if (resultado > 0) {
+                                // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_variado.");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Error al insertar el registro en importe_variado.");
+                            }
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Error SQL al insertar el registro en importe_variado: " + e.toString());
+                        }
+                    }
+                    
+                    //Bucle B
+                    for (int i = 1; i <= nuevaCuotas; i++) {
+                        double importeMensual = calcularImporteMensual(sumaCapital, sumaInteres, nuevaCuotas);
+                        importeMensual = Math.round(importeMensual * 100.0) / 100.0;
+
+                        double importeTotal = sumaCapital + sumaInteres;
+                        importeTotal = Math.round(importeTotal * 100.0) / 100.0;
+
+                        actualizarRegistrosConstantes(clientRentId, i, importeMensual, importeTotal);
                     }
                 }
                 
@@ -914,95 +1106,16 @@ public class ImporteVariadoDAO {
         }
     }
     
-    public int obtenerCantidadCuotasDiario(int rentCalculationId) {
-        int cantidadCuotas = -1;
-        CConexion objetoConexion = new CConexion();
-
-        String sql = "SELECT COUNT(*) AS ord FROM importe_variado WHERE rent_calculation_id = ?";
-
-        try {
-            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
-            pst.setInt(1, rentCalculationId);
-
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                cantidadCuotas = rs.getInt("ord") / 30;
-            }
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al obtener la cantidad de cuotas de importe_variado: " + e.toString());
-        }
-
-        return cantidadCuotas;
-    }
+    /*public void obtenerId(JTable paramTablaCalculosAlquiler){
+        CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
     
-    public int obtenerCantidadCuotasSemanal(int rentCalculationId) {
-        int cantidadCuotas = -1;
-        CConexion objetoConexion = new CConexion();
-
-        String sql = "SELECT COUNT(*) AS ord FROM importe_variado WHERE rent_calculation_id = ?";
-
-        try {
-            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
-            pst.setInt(1, rentCalculationId);
-
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                cantidadCuotas = rs.getInt("ord") / 4;
-            }
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al obtener la cantidad de cuotas de importe_variado: " + e.toString());
+        int fila = paramTablaCalculosAlquiler.getSelectedRow();
+        if (fila >= 0) {
+            // Obtén el ID de la fila seleccionada
+            String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
+            System.out.println("El id del registro seleccionado es: " + idSeleccionado);
+        } else {
+            System.out.println("No se selecciono ni una fila");
         }
-
-        return cantidadCuotas;
-    }
-    
-    public int obtenerCantidadCuotasQuincenal(int rentCalculationId) {
-        int cantidadCuotas = -1;
-        CConexion objetoConexion = new CConexion();
-
-        String sql = "SELECT COUNT(*) AS ord FROM importe_variado WHERE rent_calculation_id = ?";
-
-        try {
-            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
-            pst.setInt(1, rentCalculationId);
-
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                cantidadCuotas = rs.getInt("ord") / 2;
-            }
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al obtener la cantidad de cuotas de importe_variado: " + e.toString());
-        }
-
-        return cantidadCuotas;
-    }
-    
-    public int obtenerCantidadCuotasMensual(int rentCalculationId) {
-        int cantidadCuotas = -1;
-        CConexion objetoConexion = new CConexion();
-
-        String sql = "SELECT COUNT(*) AS ord FROM importe_variado WHERE rent_calculation_id = ?";
-
-        try {
-            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
-            pst.setInt(1, rentCalculationId);
-
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                cantidadCuotas = rs.getInt("ord");
-            }
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al obtener la cantidad de cuotas de importe_variado: " + e.toString());
-        }
-
-        return cantidadCuotas;
-    }
+    }*/
 }
