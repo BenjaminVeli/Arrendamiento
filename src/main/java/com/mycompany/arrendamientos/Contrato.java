@@ -21,6 +21,24 @@ public class Contrato extends javax.swing.JFrame {
     public Contrato() {
         initComponents();
          
+        txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+         @Override
+         public void insertUpdate(javax.swing.event.DocumentEvent e) {
+            filterTable();
+         }
+
+        @Override
+        public void removeUpdate(javax.swing.event.DocumentEvent e) {
+            filterTable();
+        }
+
+        @Override
+        public void changedUpdate(javax.swing.event.DocumentEvent e) {
+            filterTable();
+        }
+
+    });
+        
         
         this.setLocationRelativeTo(null);
         
@@ -30,7 +48,7 @@ public class Contrato extends javax.swing.JFrame {
          objetoContrato.MostrarArrendadorCombo(cbArrendador, txtdireccionArrendador, txtDniArrendador, txtTeleArrendador);
          objetoContrato.MostrarVerificadorCombo(cbVerificador,txtDireccionVerificador,txtDniVerificador,txtTeleVerificador);
          objetoContrato.MostrarGaranteCombo(cbGarante,txtDireccionGarante,txtDniGarante,txtTeleGarante);
-         objetoContrato.MostrarArrendatario(cbArrendatario,txtDireccionArrendatario,txtDniArrendatario,txtTeleArrendatario);
+         objetoContrato.MostrarArrendatario(cbArrendatario,txtDireccionArrendatario,txtDniArrendatario,txtTeleArrendatario,txtmensualidad,txtfecha,txtpiso,txtcuarto,txtgarantia,txtarea);
 
           
          objetoContrato.MostrarContrato(tbAlquiler);
@@ -103,7 +121,7 @@ public class Contrato extends javax.swing.JFrame {
         jLabel29 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
         txtgarantia = new javax.swing.JTextField();
-        jTextField17 = new javax.swing.JTextField();
+        txtarea = new javax.swing.JTextField();
         btnExportar = new javax.swing.JButton();
         txtpiso = new javax.swing.JTextField();
         txtcuarto = new javax.swing.JTextField();
@@ -113,7 +131,7 @@ public class Contrato extends javax.swing.JFrame {
         btnModificar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
-        searchtxt = new javax.swing.JTextField();
+        txtSearch = new javax.swing.JTextField();
         idtxt = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbAlquiler = new javax.swing.JTable();
@@ -413,7 +431,7 @@ public class Contrato extends javax.swing.JFrame {
                             .addComponent(jLabel30))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField17, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                            .addComponent(txtarea, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
                             .addComponent(txtgarantia))))
                 .addContainerGap(118, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -452,7 +470,7 @@ public class Contrato extends javax.swing.JFrame {
                             .addComponent(jLabel29)
                             .addComponent(txtgarantia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtarea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnExportar)
                 .addGap(22, 22, 22))
@@ -498,7 +516,7 @@ public class Contrato extends javax.swing.JFrame {
             }
         });
 
-        searchtxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         idtxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
@@ -535,7 +553,7 @@ public class Contrato extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addComponent(idtxt)
                             .addGap(18, 18, 18)
-                            .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(18, 18, 18)
                             .addComponent(btnGuardar)
                             .addGap(18, 18, 18)
@@ -566,7 +584,7 @@ public class Contrato extends javax.swing.JFrame {
                     .addComponent(btnModificar)
                     .addComponent(btnLimpiar)
                     .addComponent(btnGuardar)
-                    .addComponent(searchtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(idtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -598,7 +616,7 @@ public class Contrato extends javax.swing.JFrame {
 
     private void tbAlquilerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbAlquilerMouseClicked
         DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
-        objetoContrato.SeleccionarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,cbVerificador,cbGarante,txtgarantia,txtmensualidad,txtpiso,txtcuarto,txtfecha,jTextField17);
+        objetoContrato.SeleccionarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,cbVerificador,cbGarante);
     }//GEN-LAST:event_tbAlquilerMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
@@ -687,7 +705,11 @@ public class Contrato extends javax.swing.JFrame {
 }
 
 
-
+     private void filterTable() {
+    String searchText = txtSearch.getText().trim();
+    DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
+    objetoContrato.FiltrarClientes(tbAlquiler, searchText);
+    }
     
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -768,8 +790,6 @@ public class Contrato extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField13;
     private javax.swing.JTextField jTextField14;
-    private javax.swing.JTextField jTextField17;
-    private javax.swing.JTextField searchtxt;
     private javax.swing.JTable tbAlquiler;
     private javax.swing.JTextField txtDireccionArrendatario;
     private javax.swing.JTextField txtDireccionGarante;
@@ -778,10 +798,12 @@ public class Contrato extends javax.swing.JFrame {
     private javax.swing.JTextField txtDniArrendatario;
     private javax.swing.JTextField txtDniGarante;
     private javax.swing.JTextField txtDniVerificador;
+    private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtTeleArrendador;
     private javax.swing.JTextField txtTeleArrendatario;
     private javax.swing.JTextField txtTeleGarante;
     private javax.swing.JTextField txtTeleVerificador;
+    private javax.swing.JTextField txtarea;
     private javax.swing.JTextField txtcuarto;
     private javax.swing.JTextField txtdireccionArrendador;
     private javax.swing.JTextField txtfecha;
@@ -814,7 +836,7 @@ public class Contrato extends javax.swing.JFrame {
         jTextField14.setText("");
         txtmensualidad.setText("");
         txtgarantia.setText("");
-        jTextField17.setText("");
+        txtarea.setText("");
 
     }
 }

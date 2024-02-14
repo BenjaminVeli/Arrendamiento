@@ -1,9 +1,9 @@
-
 package DAO;
 
 import Conexion.CConexion;
 import Modelo.Mantenimiento;
 import java.sql.ResultSet;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -36,10 +36,12 @@ public class MantenimientoDAO {
 
             cs.execute();
             JOptionPane.showMessageDialog(null, "Se insertó correctamente");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
-        }
+        } catch (SQLIntegrityConstraintViolationException e) {
+        JOptionPane.showMessageDialog(null, "El DNI ingresado ya esta registrado", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
     }
+}
     
     public void MostrarMantenimiento(JTable paramTablaMantenimiento) {
     CConexion objetoConexion = new CConexion();
@@ -155,6 +157,8 @@ public class MantenimientoDAO {
             JOptionPane.showMessageDialog(null, "No se pudo modificar, el registro con el ID proporcionado no existe.");
         }
 
+    } catch (SQLIntegrityConstraintViolationException e) {
+        JOptionPane.showMessageDialog(null, "No es posible modificar al cliente , ya que el DNI  ya esta registrado.", "Error", JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "No se pudo modificar, error: " + e.toString());
     }

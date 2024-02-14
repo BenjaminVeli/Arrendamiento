@@ -1192,46 +1192,42 @@ public class CalcularAlquilerDAO {
 }
     
     public void FiltrarRentCalculation(JTable paramtbTotalCalculo, String searchText) {
-            CConexion objetoConexion = new CConexion();
-            DefaultTableModel modelo = (DefaultTableModel) paramtbTotalCalculo.getModel();
-            TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
-            paramtbTotalCalculo.setRowSorter(ordenarTabla);
+        CConexion objetoConexion = new CConexion();
+        DefaultTableModel modelo = (DefaultTableModel) paramtbTotalCalculo.getModel();
+        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
+        paramtbTotalCalculo.setRowSorter(ordenarTabla);
 
-            String sql = "";
-            modelo.setRowCount(0); // Limpiar filas existentes en el modelo
+        String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, total, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation " +
+                     "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                     "INNER JOIN piso ON rent_calculation.floor_id = piso.id " +
+                     "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
 
-            if (!searchText.isEmpty()) {
-                sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, total, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation " +
-                      "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
-                      "INNER JOIN piso ON rent_calculation.floor_id = piso.id " +
-                      "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
-                      "WHERE datos_cli_prov.nombre LIKE '%" + searchText + "%'";
-            } else {
-                sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, rent, total, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation " +
-                      "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
-                      "INNER JOIN piso ON rent_calculation.floor_id = piso.id " +
-                      "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
+        if (!searchText.isEmpty()) {
+            sql += " WHERE datos_cli_prov.nombre LIKE '%" + searchText + "%'";
+        }
+
+        modelo.setRowCount(0); // Limpiar filas existentes en el modelo
+
+        try (Statement st = objetoConexion.estableceConexion().createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String[] datos = new String[6];
+                datos[0] = rs.getString(1);
+                datos[1] = rs.getString(2);
+                datos[2] = rs.getString(3);
+                datos[3] = rs.getString(4);
+                datos[4] = rs.getString(5);
+                datos[5] = rs.getString(6);
+
+                modelo.addRow(datos);
             }
 
-            try (Statement st = objetoConexion.estableceConexion().createStatement();
-                 ResultSet rs = st.executeQuery(sql)) {
-
-                while (rs.next()) {
-                    String[] datos = new String[6];
-                    datos[0] = rs.getString(1);
-                    datos[1] = rs.getString(2);
-                    datos[2] = rs.getString(3);
-                    datos[3] = rs.getString(4);
-                    datos[4] = rs.getString(5);
-                    datos[5] = rs.getString(6);
-
-                    modelo.addRow(datos);
-                }
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error: " + e.toString());
-            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error: " + e.toString());
+        }
     }
+
 
     /******************************************************************************************************/
     

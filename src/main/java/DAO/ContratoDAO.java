@@ -191,10 +191,10 @@ public class ContratoDAO {
         this.idArrendatario = idArrendatario;
     }
     
-    public void MostrarArrendatario(JComboBox comboArrendatario, JTextField txtdireccionPropietario, JTextField txtDniPropietario, JTextField txtTelePropietario) {
+    public void MostrarArrendatario(JComboBox comboArrendatario, JTextField txtdireccionPropietario, JTextField txtDniPropietario, JTextField txtTelePropietario, JTextField txtMensualidad, JTextField txtFecha, JTextField txtNombrePiso, JTextField txtNombreCuarto, JTextField txtGarantia, JTextField txtMetraje) {
     CConexion objetoConexion = new CConexion(); 
     
-    String sql = "SELECT datos_cli_prov.nombre, datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.celular, rent_calculation.id " +
+    String sql = "SELECT datos_cli_prov.nombre, datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.celular, rent_calculation.id, rent_calculation.mensual, rent_calculation.fecha " +
                  "FROM datos_cli_prov " +
                  "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id";
     Statement st;
@@ -206,7 +206,6 @@ public class ContratoDAO {
         while (rs.next()) {
             String nombreArrendatario = rs.getString("nombre");
             int idArrendatario = rs.getInt("id");
-            
             comboArrendatario.addItem(nombreArrendatario);
             comboArrendatario.putClientProperty(nombreArrendatario, idArrendatario);
         }
@@ -216,7 +215,12 @@ public class ContratoDAO {
                 String selectedName = (String) comboArrendatario.getSelectedItem();
                 if (selectedName != null) {
                     // Realizar consulta para obtener los detalles del arrendatario seleccionado
-                    String query = "SELECT direccion_propietario, dni_propietario, celular FROM datos_cli_prov WHERE nombre = ?";
+                    String query = "SELECT datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.celular, rent_calculation.mensual, rent_calculation.fecha, piso.piso AS nombre_piso, cuarto.numcuarto AS nombre_cuarto, rent_calculation.garantia, cuarto.metraje AS area " +
+                                            "FROM datos_cli_prov " +
+                                            "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id " +
+                                            "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+                                            "INNER JOIN piso ON cuarto.piso_id = piso.id " +
+                                            "WHERE datos_cli_prov.nombre = ?";
                     try (PreparedStatement statement = objetoConexion.estableceConexion().prepareStatement(query)) {
                         statement.setString(1, selectedName);
                         ResultSet resultSet = statement.executeQuery();
@@ -224,6 +228,12 @@ public class ContratoDAO {
                             txtdireccionPropietario.setText(resultSet.getString("direccion_propietario"));
                             txtDniPropietario.setText(resultSet.getString("dni_propietario"));
                             txtTelePropietario.setText(resultSet.getString("celular"));
+                            txtMensualidad.setText(resultSet.getString("mensual"));
+                            txtFecha.setText(resultSet.getString("fecha"));
+                            txtNombrePiso.setText(resultSet.getString("nombre_piso"));
+                            txtNombreCuarto.setText(resultSet.getString("nombre_cuarto"));
+                            txtGarantia.setText(resultSet.getString("garantia"));
+                            txtMetraje.setText(resultSet.getString("area"));
                         }
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(null, "Error al obtener detalles del arrendatario: " + ex.toString());
@@ -236,6 +246,7 @@ public class ContratoDAO {
         JOptionPane.showMessageDialog(null, "Error al mostrar al arrendador: " + e.toString());
     }
 }
+
 
 
     
@@ -270,69 +281,62 @@ public class ContratoDAO {
 
     
     public void MostrarContrato(JTable tbAlquiler) {
-        CConexion objetoConexion = new CConexion();
-        DefaultTableModel modelo = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
+    CConexion objetoConexion = new CConexion();
+    DefaultTableModel modelo = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+
+    TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
+    tbAlquiler.setRowSorter(ordenarTabla);
+
+    String[] columnasMostradas = {"ID", "Arrendatario", "Arrendador", "Verificador", "Garante"};
+    String[] columnasBD = {"id", "arrendatario", "arrendador", "verificador", "garante"};
+
+    for (int i = 0; i < columnasMostradas.length; i++) {
+        modelo.addColumn(columnasMostradas[i]);
+    }
+
+    tbAlquiler.setModel(modelo);
+
+    String sql = "SELECT contrato.id, " +
+                    "mantenimiento_arrendador.nombre AS arrendador, " +
+                    "mantenimiento_verificador.nombre AS verificador, " +
+                    "mantenimiento_garante.nombre AS garante, " +
+                    "datos_cli_prov.nombre AS arrendatario " +
+                    "FROM contrato " +
+                    "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
+                    "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                    "INNER JOIN mantenimiento AS mantenimiento_arrendador ON contrato.id_mantenimiento_arrendador = mantenimiento_arrendador.id " +
+                    "INNER JOIN mantenimiento AS mantenimiento_verificador ON contrato.id_mantenimiento_verificador = mantenimiento_verificador.id " +
+                    "INNER JOIN mantenimiento AS mantenimiento_garante ON contrato.id_mantenimiento_garante = mantenimiento_garante.id";
+
+    try (Statement st = objetoConexion.estableceConexion().createStatement();
+         ResultSet rs = st.executeQuery(sql)) {
+
+        while (rs.next()) {
+            String[] datos = new String[columnasBD.length];
+
+            for (int i = 0; i < columnasBD.length; i++) {
+                datos[i] = rs.getString(columnasBD[i]);
             }
-        };
 
-        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
-        tbAlquiler.setRowSorter(ordenarTabla);
-
-        String[] columnasMostradas = {"ID", "Arrendatario", "Arrendador", "Verificador", "Garante",  "Garantía", "Mensual", "Piso", "Cuarto", "Fecha", "Metraje"};
-        String[] columnasBD = {"id", "arrendatario", "arrendador", "verificador", "garante",  "garantia", "mensual", "nombre_piso", "nombre_cuarto", "fecha", "metraje"};
-
-        for (int i = 0; i < columnasMostradas.length; i++) {
-            modelo.addColumn(columnasMostradas[i]);
+            modelo.addRow(datos);
         }
 
         tbAlquiler.setModel(modelo);
 
-        String sql = "SELECT contrato.id, " +
-                        "mantenimiento_arrendador.nombre AS arrendador, " +
-                        "mantenimiento_verificador.nombre AS verificador, " +
-                        "mantenimiento_garante.nombre AS garante, " +
-                        "datos_cli_prov.nombre AS arrendatario, " +
-                        "rent_calculation.garantia, " +
-                        "rent_calculation.mensual, " +
-                        "piso.piso AS nombre_piso, " +
-                        "cuarto.numcuarto AS nombre_cuarto, " +
-                        "rent_calculation.fecha, " +
-                        "cuarto.metraje " + 
-                        "FROM contrato " +
-                        "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
-                        "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
-                        "INNER JOIN mantenimiento AS mantenimiento_arrendador ON contrato.id_mantenimiento_arrendador = mantenimiento_arrendador.id " +
-                        "INNER JOIN mantenimiento AS mantenimiento_verificador ON contrato.id_mantenimiento_verificador = mantenimiento_verificador.id " +
-                        "INNER JOIN mantenimiento AS mantenimiento_garante ON contrato.id_mantenimiento_garante = mantenimiento_garante.id " +
-                        "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
-                        "INNER JOIN piso ON cuarto.piso_id = piso.id;";
-
-        try (Statement st = objetoConexion.estableceConexion().createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-                String[] datos = new String[columnasBD.length];
-
-                for (int i = 0; i < columnasBD.length; i++) {
-                    datos[i] = rs.getString(columnasBD[i]);
-                }
-
-                modelo.addRow(datos);
-            }
-
-            tbAlquiler.setModel(modelo);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al mostrar contratos: " + e.toString());
-            e.printStackTrace();
-        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al mostrar contratos: " + e.toString());
+        e.printStackTrace();
     }
+}
 
 
-   public void SeleccionarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboVerificador, JComboBox comboGarante,  JTextField garantia, JTextField mensual, JTextField floorId, JTextField roomId, JTextField fecha, JTextField metraje) {
+
+   public void SeleccionarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboVerificador, JComboBox comboGarante) {
         int fila = tbAlquiler.getSelectedRow();
 
         if (fila >= 0) {
@@ -341,12 +345,6 @@ public class ContratoDAO {
             comboArrendador.setSelectedItem(tbAlquiler.getValueAt(fila, 2).toString());
             comboVerificador.setSelectedItem(tbAlquiler.getValueAt(fila, 3).toString());
             comboGarante.setSelectedItem(tbAlquiler.getValueAt(fila, 4).toString());
-            garantia.setText(tbAlquiler.getValueAt(fila, 5).toString());
-            mensual.setText(tbAlquiler.getValueAt(fila, 6).toString());
-            floorId.setText(tbAlquiler.getValueAt(fila, 7).toString());
-            roomId.setText(tbAlquiler.getValueAt(fila, 8).toString());
-            fecha.setText(tbAlquiler.getValueAt(fila, 9).toString());
-            metraje.setText(tbAlquiler.getValueAt(fila, 10).toString());
         } else {
             JOptionPane.showMessageDialog(null, "Error al seleccionar contrato: No se ha seleccionado ningún contrato");
         }
@@ -403,5 +401,51 @@ public class ContratoDAO {
     }
 
     
+   
+   public void FiltrarClientes(JTable tbAlquiler, String searchText) {
+        CConexion objetoConexion = new CConexion();
+        DefaultTableModel modelo = (DefaultTableModel) tbAlquiler.getModel();
+        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
+        tbAlquiler.setRowSorter(ordenarTabla);
+
+        String sql = "SELECT contrato.id, " +
+                        "mantenimiento_arrendador.nombre AS arrendador, " +
+                        "mantenimiento_verificador.nombre AS verificador, " +
+                        "mantenimiento_garante.nombre AS garante, " +
+                        "datos_cli_prov.nombre AS arrendatario " +
+                        "FROM contrato " +
+                        "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
+                        "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                        "INNER JOIN mantenimiento AS mantenimiento_arrendador ON contrato.id_mantenimiento_arrendador = mantenimiento_arrendador.id " +
+                        "INNER JOIN mantenimiento AS mantenimiento_verificador ON contrato.id_mantenimiento_verificador = mantenimiento_verificador.id " +
+                        "INNER JOIN mantenimiento AS mantenimiento_garante ON contrato.id_mantenimiento_garante = mantenimiento_garante.id";
+
+        modelo.setRowCount(0); // Limpiar filas existentes en el modelo
+
+        if (!searchText.isEmpty()) {
+            sql += " WHERE datos_cli_prov.nombre LIKE '%" + searchText + "%'";
+        }
+
+        try (Statement st = objetoConexion.estableceConexion().createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String[] datos = new String[5];
+                datos[0] = rs.getString("id");
+                datos[1] = rs.getString("arrendatario");
+                datos[2] = rs.getString("arrendador");
+                datos[3] = rs.getString("verificador");
+                datos[4] = rs.getString("garante");
+
+                modelo.addRow(datos);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al filtrar clientes: " + e.toString());
+        }
+    }
+
+
+   
+   
 }
-    
