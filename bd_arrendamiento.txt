@@ -21,8 +21,12 @@ CREATE TABLE datos_cli_prov (
     correo VARCHAR(100),
     estado_civil VARCHAR(30),
     conyuge VARCHAR(100),
-    dni_conyuge VARCHAR(8),
-    ciudad VARCHAR(100)
+    dni_conyuge VARCHAR(8) UNIQUE,
+    ciudad VARCHAR(100),
+    celular_conyuge INT(9),
+    provincia VARCHAR(100),
+    departamento VARCHAR(100),
+    distrito VARCHAR(100)	  
 );
 
 create table piso (
@@ -101,7 +105,6 @@ CREATE TABLE contrato (
     id_rent_calculation INT,
     id_datos_cli_prov_conyuge INT,
     id_mantenimiento_arrendador INT,
-    id_mantenimiento_verificador INT,
     id_mantenimiento_garante INT,
     FOREIGN KEY (id_rent_calculation) REFERENCES rent_calculation(id),
     FOREIGN KEY (id_mantenimiento_arrendador) REFERENCES mantenimiento(id),

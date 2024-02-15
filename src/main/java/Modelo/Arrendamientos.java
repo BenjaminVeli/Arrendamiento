@@ -18,6 +18,42 @@ public class Arrendamientos {
         String conyuge;
         String dni_conyuge;
         String ciudad;
+        int celular_conyuge;
+        String provincia;
+        String departamento;
+        String distrito;
+
+    public int getCelular_conyuge() {
+        return celular_conyuge;
+    }
+
+    public void setCelular_conyuge(int celular_conyuge) {
+        this.celular_conyuge = celular_conyuge;
+    }
+
+    public String getProvincia() {
+        return provincia;
+    }
+
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    public String getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
+    }
+
+    public String getDistrito() {
+        return distrito;
+    }
+
+    public void setDistrito(String distrito) {
+        this.distrito = distrito;
+    }
         
     public int getCodigo() {
         return codigo;

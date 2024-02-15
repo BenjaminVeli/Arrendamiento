@@ -621,12 +621,12 @@ public class Contrato extends javax.swing.JFrame {
 
     private void tbAlquilerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbAlquilerMouseClicked
         DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
-        objetoContrato.SeleccionarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,cbGarante);
+        objetoContrato.SeleccionarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,cbGarante,cbConyuge);
     }//GEN-LAST:event_tbAlquilerMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
-        objetoContrato.ModificarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,  cbGarante);
+        objetoContrato.ModificarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,  cbGarante,cbConyuge);
         objetoContrato.MostrarContrato(tbAlquiler);
     }//GEN-LAST:event_btnModificarActionPerformed
 
