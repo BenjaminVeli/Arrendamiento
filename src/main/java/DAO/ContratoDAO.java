@@ -73,62 +73,7 @@ public class ContratoDAO {
     }
 }
 
-    
-    
-    int idVerificador;
-    
-    public void establecerIdVerificador(int idVerificador) {
-        this.idVerificador = idVerificador;
-    }
-    
-    public void MostrarVerificadorCombo(JComboBox comboVerificador, JTextField txtdireccionVerificador, JTextField txtDniVerificador, JTextField txtTeleVerificador) {
-        CConexion objetoConexion = new CConexion(); 
-
-        String sql = "SELECT * FROM mantenimiento WHERE rol = 'Verificador'";
-        Statement st;
-        try {
-            st = objetoConexion.estableceConexion().createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            comboVerificador.removeAllItems();
-
-            while (rs.next()) {
-                String nombreVerificador = rs.getString("nombre");
-                int idVerificador = rs.getInt("id");
-                String direccion = rs.getString("direccion");
-                String dni = rs.getString("dni");
-                String celular = rs.getString("celular");
-
-                comboVerificador.addItem(nombreVerificador);
-                comboVerificador.putClientProperty(nombreVerificador, idVerificador);
-            }
-
-            comboVerificador.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    String selectedName = (String) comboVerificador.getSelectedItem();
-                    if (selectedName != null) {
-                        // Realizar consulta para obtener los detalles del verificador seleccionado
-                        String query = "SELECT direccion, dni, celular FROM mantenimiento WHERE nombre = ?";
-                        try (PreparedStatement statement = objetoConexion.estableceConexion().prepareStatement(query)) {
-                            statement.setString(1, selectedName);
-                            ResultSet resultSet = statement.executeQuery();
-                            if (resultSet.next()) {
-                                txtdireccionVerificador.setText(resultSet.getString("direccion"));
-                                txtDniVerificador.setText(resultSet.getString("dni"));
-                                txtTeleVerificador.setText(resultSet.getString("celular"));
-                            }
-                        } catch (SQLException ex) {
-                            JOptionPane.showMessageDialog(null, "Error al obtener detalles del verificador: " + ex.toString());
-                        }
-                    }
-                }
-            });
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al mostrar al verificador: " + e.toString());
-        }
-    }
-
-
+   
     
     int idGarante;
     
@@ -253,22 +198,20 @@ public class ContratoDAO {
     
     /*************************************   OPERACIONES CRUD   *********************************************/
     
-    public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboVerificador, JComboBox comboGarante) {
+    public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendatario,  JComboBox comboGarante) {
     CConexion objetoConexion = new CConexion();
 
-    String consulta = "INSERT INTO contrato (id_rent_calculation, id_mantenimiento_arrendador, id_mantenimiento_verificador, id_mantenimiento_garante) VALUES (?, ?, ?, ?)";
+    String consulta = "INSERT INTO contrato (id_rent_calculation, id_mantenimiento_arrendador,  id_mantenimiento_garante) VALUES (?, ?, ?, ?)";
 
     try {
         int idArrendatario = (int) comboArrendatario.getClientProperty(comboArrendatario.getSelectedItem());
         int idArrendador = (int) comboArrendador.getClientProperty(comboArrendador.getSelectedItem());
-        int idVerificador = (int) comboVerificador.getClientProperty(comboVerificador.getSelectedItem());
         int idGarante = (int) comboGarante.getClientProperty(comboGarante.getSelectedItem());
 
         CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
         cs.setInt(1, idArrendatario);
         cs.setInt(2, idArrendador);
-        cs.setInt(3, idVerificador);
-        cs.setInt(4, idGarante);
+        cs.setInt(3, idGarante);
         cs.executeUpdate();
 
         JOptionPane.showMessageDialog(null, "Contrato insertado exitosamente");
@@ -292,8 +235,8 @@ public class ContratoDAO {
     TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
     tbAlquiler.setRowSorter(ordenarTabla);
 
-    String[] columnasMostradas = {"ID", "Arrendatario", "Arrendador", "Verificador", "Garante"};
-    String[] columnasBD = {"id", "arrendatario", "arrendador", "verificador", "garante"};
+    String[] columnasMostradas = {"ID", "Arrendatario", "Arrendador",  "Garante"};
+    String[] columnasBD = {"id", "arrendatario", "arrendador",  "garante"};
 
     for (int i = 0; i < columnasMostradas.length; i++) {
         modelo.addColumn(columnasMostradas[i]);
@@ -303,14 +246,12 @@ public class ContratoDAO {
 
     String sql = "SELECT contrato.id, " +
                     "mantenimiento_arrendador.nombre AS arrendador, " +
-                    "mantenimiento_verificador.nombre AS verificador, " +
                     "mantenimiento_garante.nombre AS garante, " +
                     "datos_cli_prov.nombre AS arrendatario " +
                     "FROM contrato " +
                     "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
                     "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
                     "INNER JOIN mantenimiento AS mantenimiento_arrendador ON contrato.id_mantenimiento_arrendador = mantenimiento_arrendador.id " +
-                    "INNER JOIN mantenimiento AS mantenimiento_verificador ON contrato.id_mantenimiento_verificador = mantenimiento_verificador.id " +
                     "INNER JOIN mantenimiento AS mantenimiento_garante ON contrato.id_mantenimiento_garante = mantenimiento_garante.id";
 
     try (Statement st = objetoConexion.estableceConexion().createStatement();
@@ -336,24 +277,23 @@ public class ContratoDAO {
 
 
 
-   public void SeleccionarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboVerificador, JComboBox comboGarante) {
+   public void SeleccionarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario,  JComboBox comboGarante) {
         int fila = tbAlquiler.getSelectedRow();
 
         if (fila >= 0) {
             id.setText(tbAlquiler.getValueAt(fila, 0).toString());
             comboArrendatario.setSelectedItem(tbAlquiler.getValueAt(fila, 1).toString());
             comboArrendador.setSelectedItem(tbAlquiler.getValueAt(fila, 2).toString());
-            comboVerificador.setSelectedItem(tbAlquiler.getValueAt(fila, 3).toString());
-            comboGarante.setSelectedItem(tbAlquiler.getValueAt(fila, 4).toString());
+            comboGarante.setSelectedItem(tbAlquiler.getValueAt(fila, 3).toString());
         } else {
             JOptionPane.showMessageDialog(null, "Error al seleccionar contrato: No se ha seleccionado ningún contrato");
         }
     }
 
    
-   public void ModificarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboVerificador, JComboBox comboGarante) {
+   public void ModificarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario,  JComboBox comboGarante) {
         CConexion objetoConexion = new CConexion();
-        String consulta = "UPDATE contrato SET id_rent_calculation=?, id_mantenimiento_arrendador=?, id_mantenimiento_verificador=?, id_mantenimiento_garante=? WHERE id=?";
+        String consulta = "UPDATE contrato SET id_rent_calculation=?, id_mantenimiento_arrendador=?,  id_mantenimiento_garante=? WHERE id=?";
 
         try {
             CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
@@ -364,14 +304,12 @@ public class ContratoDAO {
                 int idContrato = Integer.parseInt(id.getText());
                 int idArrendador = (int) comboArrendador.getClientProperty(comboArrendador.getSelectedItem());
                 int idArrendatario = (int) comboArrendatario.getClientProperty(comboArrendatario.getSelectedItem());
-                int idVerificador = (int) comboVerificador.getClientProperty(comboVerificador.getSelectedItem());
                 int idGarante = (int) comboGarante.getClientProperty(comboGarante.getSelectedItem());
 
                 cs.setInt(1, idArrendatario);
                 cs.setInt(2, idArrendador);
-                cs.setInt(3, idVerificador);
-                cs.setInt(4, idGarante);
-                cs.setInt(5, idContrato);
+                cs.setInt(3, idGarante);
+                cs.setInt(4, idContrato);
 
                 cs.executeUpdate();
 
@@ -410,14 +348,12 @@ public class ContratoDAO {
 
         String sql = "SELECT contrato.id, " +
                         "mantenimiento_arrendador.nombre AS arrendador, " +
-                        "mantenimiento_verificador.nombre AS verificador, " +
                         "mantenimiento_garante.nombre AS garante, " +
                         "datos_cli_prov.nombre AS arrendatario " +
                         "FROM contrato " +
                         "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
                         "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
                         "INNER JOIN mantenimiento AS mantenimiento_arrendador ON contrato.id_mantenimiento_arrendador = mantenimiento_arrendador.id " +
-                        "INNER JOIN mantenimiento AS mantenimiento_verificador ON contrato.id_mantenimiento_verificador = mantenimiento_verificador.id " +
                         "INNER JOIN mantenimiento AS mantenimiento_garante ON contrato.id_mantenimiento_garante = mantenimiento_garante.id";
 
         modelo.setRowCount(0); // Limpiar filas existentes en el modelo
@@ -430,11 +366,10 @@ public class ContratoDAO {
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
-                String[] datos = new String[5];
+                String[] datos = new String[4];
                 datos[0] = rs.getString("id");
                 datos[1] = rs.getString("arrendatario");
                 datos[2] = rs.getString("arrendador");
-                datos[3] = rs.getString("verificador");
                 datos[4] = rs.getString("garante");
 
                 modelo.addRow(datos);

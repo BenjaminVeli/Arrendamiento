@@ -89,7 +89,7 @@ public class mantenimiento extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tipo :");
 
-        txtrol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Arrendador", "Verificador", "Garante", " " }));
+        txtrol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Arrendador", "Garante" }));
         txtrol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtrolActionPerformed(evt);
