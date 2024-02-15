@@ -193,25 +193,79 @@ public class ContratoDAO {
 }
 
 
+    int idConyuge;
+    
+    public void establecerIdConyuge(int idConyuge){
+        this.idConyuge = idConyuge;
+    }
+    
+    public void MostrarConyuge(JComboBox comboConyuge, JTextField txtciudad, JTextField txtDniConyuge) {
+    CConexion objetoConexion = new CConexion();
 
+    String sql = "SELECT id, conyuge, ciudad, dni_conyuge FROM datos_cli_prov WHERE conyuge IS NOT NULL";
+    Statement st;
+    try {
+        st = objetoConexion.estableceConexion().createStatement();
+        ResultSet rs = st.executeQuery(sql);
+        comboConyuge.removeAllItems();
+
+        while (rs.next()) {
+            int idConyuge = rs.getInt("id");
+            String conyuge = rs.getString("conyuge");
+            String ciudad = rs.getString("ciudad");
+            String dniConyuge = rs.getString("dni_conyuge");
+
+            comboConyuge.addItem(conyuge);
+            comboConyuge.putClientProperty(conyuge, idConyuge); // Almacenar el ID del cónyuge como la propiedad del cliente
+        }
+
+        comboConyuge.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selectedConyuge = (String) comboConyuge.getSelectedItem();
+                if (selectedConyuge != null) {
+                    // Obtener el ID del cónyuge
+                    int idConyuge = (int) comboConyuge.getClientProperty(selectedConyuge);
+                    
+                    // Realizar consulta para obtener los detalles del cónyuge seleccionado
+                    String query = "SELECT ciudad, dni_conyuge FROM datos_cli_prov WHERE id = ?";
+                    try (PreparedStatement statement = objetoConexion.estableceConexion().prepareStatement(query)) {
+                        statement.setInt(1, idConyuge);
+                        ResultSet resultSet = statement.executeQuery();
+                        if (resultSet.next()) {
+                            txtciudad.setText(resultSet.getString("ciudad"));
+                            txtDniConyuge.setText(resultSet.getString("dni_conyuge"));
+                        }
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(null, "Error al obtener detalles del cónyuge: " + ex.toString());
+                    }
+                }
+            }
+        });
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error al mostrar al cónyuge: " + e.toString());
+    }
+}
     
     
     /*************************************   OPERACIONES CRUD   *********************************************/
     
-    public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendatario,  JComboBox comboGarante) {
+    public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendatario,  JComboBox comboGarante, JComboBox comboConyuge) {
     CConexion objetoConexion = new CConexion();
 
-    String consulta = "INSERT INTO contrato (id_rent_calculation, id_mantenimiento_arrendador,  id_mantenimiento_garante) VALUES (?, ?, ?, ?)";
+    String consulta = "INSERT INTO contrato (id_rent_calculation, id_mantenimiento_arrendador,  id_mantenimiento_garante, id_datos_cli_prov_conyuge) VALUES (?, ?, ?, ?)";
 
     try {
         int idArrendatario = (int) comboArrendatario.getClientProperty(comboArrendatario.getSelectedItem());
         int idArrendador = (int) comboArrendador.getClientProperty(comboArrendador.getSelectedItem());
         int idGarante = (int) comboGarante.getClientProperty(comboGarante.getSelectedItem());
+        int idConyuge = (int) comboConyuge.getClientProperty(comboConyuge.getSelectedItem());
 
         CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
         cs.setInt(1, idArrendatario);
         cs.setInt(2, idArrendador);
         cs.setInt(3, idGarante);
+        cs.setInt(4, idConyuge);
         cs.executeUpdate();
 
         JOptionPane.showMessageDialog(null, "Contrato insertado exitosamente");
