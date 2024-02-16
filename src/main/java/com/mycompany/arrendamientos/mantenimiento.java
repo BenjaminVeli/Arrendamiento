@@ -11,7 +11,23 @@ public class mantenimiento extends javax.swing.JFrame {
         txtid.setEnabled(false);
         Limpiar();
         
-        
+        txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+         @Override
+         public void insertUpdate(javax.swing.event.DocumentEvent e) {
+            filterTable();
+         }
+
+        @Override
+        public void removeUpdate(javax.swing.event.DocumentEvent e) {
+            filterTable();
+        }
+
+        @Override
+        public void changedUpdate(javax.swing.event.DocumentEvent e) {
+            filterTable();
+        }
+
+    });
         
         
         
@@ -391,7 +407,14 @@ public class mantenimiento extends javax.swing.JFrame {
     private void txtrolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtrolActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtrolActionPerformed
-
+    
+    
+    private void filterTable() {
+    String searchText = txtSearch.getText().trim();
+     MantenimientoDAO objetoMantenimiento = new MantenimientoDAO();
+    objetoMantenimiento.FiltrarArrendadores(tbTotalMantenimiento, searchText);
+    }
+    
    
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

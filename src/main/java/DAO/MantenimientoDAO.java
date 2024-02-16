@@ -61,7 +61,7 @@ public class MantenimientoDAO {
     TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
     paramTablaMantenimiento.setRowSorter(ordenarTabla);
 
-    String[] columnasMostradas = {"Id","Nombre", "DNI","rol"};
+    String[] columnasMostradas = {"Id","Nombre", "DNI","Rol"};
     String[] columnasBD = {"id", "nombre", "dni","rol", "celular","direccion","departamento","provincia","distrito"};
 
     for (int i = 0; i < columnasMostradas.length; i++) {
@@ -199,6 +199,49 @@ public class MantenimientoDAO {
         JOptionPane.showMessageDialog(null, "No se pudo eliminar el registro de mantenimiento, error: " + e.toString());
     }
 }
+    
+    public void FiltrarArrendadores(JTable paramtbTotalMantenimiento, String searchText){
+        CConexion objetoConexion = new CConexion();
+        DefaultTableModel modelo = new DefaultTableModel();
+        TableRowSorter<TableModel> OrdenarTabla = new TableRowSorter<TableModel>(modelo);
+        paramtbTotalMantenimiento.setRowSorter(OrdenarTabla);
+        
+        String sql = "";
+        
+        modelo.addColumn("Id");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("DNI");
+        modelo.addColumn("Rol");
+        
+        paramtbTotalMantenimiento.setModel(modelo);
+        
+        if (!searchText.isEmpty()) {
+        sql = "SELECT * FROM mantenimiento WHERE nombre LIKE '%" + searchText + "%' OR dni LIKE '%" + searchText + "%' OR rol LIKE '%" + searchText +  "%'";
+        } else {
+            sql = "SELECT * FROM mantenimiento";
+        }
+        
+        String[] datos = new String[4];
+        Statement st;
 
+        try {
+            st = objetoConexion.estableceConexion().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                datos[0] = rs.getString(1); 
+                datos[1] = rs.getString(2); 
+                datos[2] = rs.getString(3); 
+                datos[3] = rs.getString(4); 
+   
+                modelo.addRow(datos);
+            }
+
+            paramtbTotalMantenimiento.setModel(modelo);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "No se pudo mostrar los registros, error :  " + e.toString());
+        }
+    }
 
 }
