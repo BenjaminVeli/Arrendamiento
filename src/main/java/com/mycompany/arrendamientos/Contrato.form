@@ -430,9 +430,9 @@
                                   <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtdireccionArrendador" alignment="0" min="-2" pref="320" max="-2" attributes="0"/>
-                                  <Component id="cbArrendador" alignment="0" min="-2" pref="280" max="-2" attributes="0"/>
                                   <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtDniArrendador" alignment="0" min="-2" pref="130" max="-2" attributes="0"/>
+                                  <Component id="cbArrendador" alignment="0" min="-2" pref="278" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -456,7 +456,7 @@
                                       </Group>
                                       <EmptySpace max="32767" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="txtTeleConyuge" min="-2" pref="155" max="-2" attributes="0"/>
+                                          <Component id="txtCelularConyuge" min="-2" pref="155" max="-2" attributes="0"/>
                                           <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -464,8 +464,8 @@
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                                          <Component id="cbConyuge" min="-2" pref="280" max="-2" attributes="0"/>
                                           <Component id="txtCiudad" alignment="0" min="-2" pref="321" max="-2" attributes="0"/>
+                                          <Component id="txtConyuge" alignment="0" min="-2" pref="278" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
@@ -581,7 +581,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="cbGarante" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbConyuge" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtConyuge" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
@@ -603,7 +603,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="txtDniConyuge" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtTeleConyuge" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtCelularConyuge" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -767,16 +767,6 @@
                 <Property name="text" type="java.lang.String" value="Nombre :"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="cbConyuge">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="0"/>
-                </Property>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
             <Component class="javax.swing.JComboBox" name="cbGarante">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
@@ -843,9 +833,11 @@
                 <Property name="text" type="java.lang.String" value="Direcci&#xf3;n :"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtTeleConyuge">
+            <Component class="javax.swing.JTextField" name="txtCelularConyuge">
             </Component>
             <Component class="javax.swing.JTextField" name="txtDireccionGarante">
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtConyuge">
             </Component>
           </SubComponents>
         </Container>

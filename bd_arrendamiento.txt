@@ -103,11 +103,9 @@ rol VARCHAR(100)
 CREATE TABLE contrato (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_rent_calculation INT,
-    id_datos_cli_prov_conyuge INT,
     id_mantenimiento_arrendador INT,
     id_mantenimiento_garante INT,
     FOREIGN KEY (id_rent_calculation) REFERENCES rent_calculation(id),
     FOREIGN KEY (id_mantenimiento_arrendador) REFERENCES mantenimiento(id),
-    FOREIGN KEY (id_mantenimiento_garante) REFERENCES mantenimiento(id),
-    FOREIGN KEY (id_datos_cli_prov_conyuge) REFERENCES datos_cli_prov(id)
+    FOREIGN KEY (id_mantenimiento_garante) REFERENCES mantenimiento(id)
 );
