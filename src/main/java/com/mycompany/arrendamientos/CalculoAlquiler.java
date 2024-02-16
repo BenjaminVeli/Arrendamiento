@@ -82,6 +82,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
         
         DefaultTableModel modelo = dao.MostrarCalculos(
+            fecha_finaltxt,
             txtSumCapital,
             txtSumInteres,
             txtSumMensual,
