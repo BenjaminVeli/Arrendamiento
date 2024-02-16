@@ -636,29 +636,34 @@ public class Contrato extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     
-     public void exportarAWord() {
+public void exportarAWord() {
     try {
         XWPFDocument documento = new XWPFDocument();
 
         XWPFParagraph parrafo1 = documento.createParagraph();
-        parrafo1.setAlignment(ParagraphAlignment.CENTER); 
+        parrafo1.setAlignment(ParagraphAlignment.CENTER);
 
         XWPFRun run1 = parrafo1.createRun();
         run1.setText("CONTRATO DE ALQUILER");
         run1.setBold(true); // Establecer negrita
-        run1.setUnderline(UnderlinePatterns.SINGLE); 
-        run1.setFontSize(13); 
+        run1.setUnderline(UnderlinePatterns.SINGLE);
+        run1.setFontSize(13);
 
-        
-        
         XWPFParagraph parrafo2 = documento.createParagraph();
         parrafo2.setAlignment(ParagraphAlignment.LEFT);
 
         XWPFRun run2 = parrafo2.createRun();
-        run2.setText("---------------------------------------------------------");
-        run2.setFontSize(9); // Establecer tamaño de fuente
-        
+        run2.setText("Conste por el presente documento, el CONTRATO DE ARRENDAMIENTO, que celebran de una parte, el Sr. ");
+        run2.setFontSize(9);
+
         Object arrendadorSeleccionado = cbArrendador.getSelectedItem();
+        String dniArrendador = txtDniArrendador.getText(); 
+        String direccionArrendador = txtdireccionArrendador.getText();
+
+        if (arrendadorSeleccionado != null) {
+            String contenidoArrendador = arrendadorSeleccionado.toString();
+            run2.setText(contenidoArrendador + " identificado con DNI N.° " + dniArrendador + ", con domicilio en " + direccionArrendador); 
+        }
 
         if (arrendadorSeleccionado != null) {
             String contenidoArrendador = arrendadorSeleccionado.toString();
@@ -667,25 +672,30 @@ public class Contrato extends javax.swing.JFrame {
             parrafo3.setAlignment(ParagraphAlignment.LEFT);
 
             XWPFRun run3 = parrafo3.createRun();
-            run3.setText(contenidoArrendador);
+            run3.setText("---------------------------------------------------------");
             run3.setFontSize(9);
-        }
 
-        String dniArrendador = txtDniArrendador.getText(); 
-        XWPFParagraph parrafo4 = documento.createParagraph();
-        parrafo4.setAlignment(ParagraphAlignment.LEFT);
-            
-        XWPFRun run4 = parrafo4.createRun();
-        run4.setText("DNI: " + dniArrendador);
-        run4.setFontSize(9);
+            XWPFParagraph parrafo4 = documento.createParagraph();
+            parrafo4.setAlignment(ParagraphAlignment.LEFT);
+
+            XWPFRun run4 = parrafo4.createRun();
+            run4.setText(contenidoArrendador);
+            run4.setFontSize(9);
+        }
 
         XWPFParagraph parrafo5 = documento.createParagraph();
         parrafo5.setAlignment(ParagraphAlignment.LEFT);
 
-        XWPFRun run5 = parrafo5.createRun(); 
-        run5.setText("EL ARRENDADOR");
+        XWPFRun run5 = parrafo5.createRun();
+        run5.setText("DNI: " + dniArrendador); 
         run5.setFontSize(9);
-        
+
+        XWPFParagraph parrafo6 = documento.createParagraph();
+        parrafo6.setAlignment(ParagraphAlignment.LEFT);
+
+        XWPFRun run6 = parrafo6.createRun();
+        run6.setText("EL ARRENDADOR");
+        run6.setFontSize(9);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         documento.write(out);
@@ -707,6 +717,8 @@ public class Contrato extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "Error al crear el documento de Word: " + e.getMessage());
     }
 }
+
+
 
 
      private void filterTable() {
