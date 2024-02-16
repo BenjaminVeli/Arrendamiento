@@ -531,7 +531,7 @@ public class CalcularAlquilerDAO {
         
     }
 
-    public void MostrarImporteDiario(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public DefaultTableModel MostrarImporteDiario(JTextField fecha_finaltxt, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -540,6 +540,7 @@ public class CalcularAlquilerDAO {
         modelo.addColumn("Importe");
         
         double totalCuotas = cuotas * 30;
+        java.util.Date ultimaFecha = null; // Variable para almacenar la última fecha
         
         for (int i = 1; i <= totalCuotas; i++) {
             
@@ -551,6 +552,9 @@ public class CalcularAlquilerDAO {
             
             //Formatear la fecha en dia mes año
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            
+            // Establecer la última fecha en cada iteración
+            ultimaFecha = calendar.getTime();
             
             modelo.addRow(new Object[] { 
                 i, 
@@ -570,10 +574,15 @@ public class CalcularAlquilerDAO {
         
         System.out.println("importeDiario :" + importeDiario);
         
-        tbCalculoImporte.setModel(modelo);
+        // Devolver la última fecha
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+   
+        String fechita = dateFormat.format(ultimaFecha);
+        fecha_finaltxt.setText(String.valueOf(fechita));
+        return  modelo;
     }
     
-    public void MostrarImporteSemanal(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public DefaultTableModel MostrarImporteSemanal(JTextField fecha_finaltxt, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -582,6 +591,7 @@ public class CalcularAlquilerDAO {
         modelo.addColumn("Importe");
         
         double totalCuotas = cuotas * 4;
+        java.util.Date ultimaFecha = null; // Variable para almacenar la última fecha
         
         for (int i = 1; i <= totalCuotas; i++) {
             
@@ -594,14 +604,15 @@ public class CalcularAlquilerDAO {
             //Formatear la fecha en dia mes año
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
             
+            // Establecer la última fecha en cada iteración
+            ultimaFecha = calendar.getTime();
+            
             modelo.addRow(new Object[] { 
                 i, 
                 dateFormat.format(calendar.getTime()), 
                 "",
             });
-            
         }
-        
         double importeSemanal = calcularImporteSemanal(sumaCapital, sumaInteres, cuotas);
         importeSemanal = Math.round(importeSemanal * 100.0) / 100.0;
         
@@ -609,13 +620,17 @@ public class CalcularAlquilerDAO {
         for (int i = 0; i < modelo.getRowCount(); i++) {
             modelo.setValueAt(importeSemanal, i, 2); // 2 es el índice de la columna "importe"
         }
-        
         System.out.println("importeSemanal :" + importeSemanal);
         
-        tbCalculoImporte.setModel(modelo);
+        // Devolver la última fecha
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        
+        String fechita = dateFormat.format(ultimaFecha);
+        fecha_finaltxt.setText(String.valueOf(fechita));
+        return  modelo;
     }
         
-    public void MostrarImporteQuincenal(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public DefaultTableModel MostrarImporteQuincenal(JTextField fecha_finaltxt, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -624,6 +639,7 @@ public class CalcularAlquilerDAO {
         modelo.addColumn("Importe");
         
         double totalCuotas = cuotas * 2;
+        java.util.Date ultimaFecha = null; // Variable para almacenar la última fecha
         
          for (int i = 1; i <= totalCuotas; i++) {
             
@@ -636,6 +652,9 @@ public class CalcularAlquilerDAO {
             
             //Formatear la fecha en dia mes año
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            
+            // Establecer la última fecha en cada iteración
+            ultimaFecha = calendar.getTime();
             
             modelo.addRow(new Object[] { 
                 i, 
@@ -655,16 +674,23 @@ public class CalcularAlquilerDAO {
         
         System.out.println("importeQuincenal :" + importeQuincenal);
         
-        tbCalculoImporte.setModel(modelo);
+        // Devolver la última fecha
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        
+        String fechita = dateFormat.format(ultimaFecha);
+        fecha_finaltxt.setText(String.valueOf(fechita));
+        return  modelo;
     }
     
-    public void MostrarImporteMensual(JTable tbCalculoImporte, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public DefaultTableModel MostrarImporteMensual(JTextField fecha_finaltxt, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
         modelo.addColumn("Orden");
         modelo.addColumn("Fecha");
         modelo.addColumn("Importe");
+        
+        java.util.Date ultimaFecha = null; // Variable para almacenar la última fecha
         
          for (int i = 1; i <= cuotas; i++) {
             
@@ -682,6 +708,9 @@ public class CalcularAlquilerDAO {
             
             //Formatear la fecha en dia mes año
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            
+            // Establecer la última fecha en cada iteración
+            ultimaFecha = calendar.getTime();
             
             modelo.addRow(new Object[] { 
                 i, 
@@ -701,7 +730,12 @@ public class CalcularAlquilerDAO {
         
         System.out.println("importeMensual :" + importeMensual);
         
-        tbCalculoImporte.setModel(modelo);
+        // Devolver la última fecha
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        
+        String fechita = dateFormat.format(ultimaFecha);
+        fecha_finaltxt.setText(String.valueOf(fechita));
+        return  modelo;
     }
     
     public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler,JTextField paramId, JTextField paramDni, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JTextField paramRuc, JTextField paramDireccion, JTextField paramCelular) {
