@@ -54,7 +54,7 @@ public class mantenimiento extends javax.swing.JFrame {
         btnLimpiar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        txtSearch = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -287,14 +287,14 @@ public class mantenimiento extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -350,7 +350,7 @@ public class mantenimiento extends javax.swing.JFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
        MantenimientoDAO objetoMantenimiento = new MantenimientoDAO();
-       objetoMantenimiento.InsertarMantenimiento(txtnombre, txtdireccion, txtdni, txtcelular, txtrol);
+       objetoMantenimiento.InsertarMantenimiento(txtnombre, txtdireccion, txtdni, txtcelular, txtrol,txtprovincia,txtdepartamento,txtdistrito);
        objetoMantenimiento.MostrarMantenimiento(tbTotalMantenimiento);
        
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -373,12 +373,12 @@ public class mantenimiento extends javax.swing.JFrame {
 
     private void tbTotalMantenimientoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalMantenimientoMouseClicked
        MantenimientoDAO objetoMantenimiento = new MantenimientoDAO();
-       objetoMantenimiento.SeleccionarMantenimiento(tbTotalMantenimiento, txtid, txtnombre, txtdireccion, txtdni, txtcelular,txtrol);
+       objetoMantenimiento.SeleccionarMantenimiento(tbTotalMantenimiento, txtid, txtnombre, txtdireccion, txtdni, txtcelular,txtrol,txtprovincia,txtdepartamento,txtdistrito);
     }//GEN-LAST:event_tbTotalMantenimientoMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         MantenimientoDAO objetoMantenimiento = new MantenimientoDAO();
-        objetoMantenimiento.ModificarMantenimiento(txtid, txtnombre, txtdireccion, txtdni, txtcelular,txtrol);
+        objetoMantenimiento.ModificarMantenimiento(txtid, txtnombre, txtdireccion, txtdni, txtcelular,txtrol,txtprovincia,txtdepartamento,txtdistrito);
         objetoMantenimiento.MostrarMantenimiento(tbTotalMantenimiento);
     }//GEN-LAST:event_btnModificarActionPerformed
 
@@ -444,8 +444,8 @@ public class mantenimiento extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTable tbTotalMantenimiento;
+    private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtcelular;
     private javax.swing.JTextField txtdepartamento;
     private javax.swing.JTextField txtdireccion;
@@ -463,5 +463,8 @@ public class mantenimiento extends javax.swing.JFrame {
         txtdni.setText("");
         txtcelular.setText("");
         txtrol.setSelectedIndex(-1);
+        txtdepartamento.setText("");
+        txtdistrito.setText("");
+        txtprovincia.setText("");
     }
 }

@@ -15,16 +15,19 @@ import javax.swing.table.TableRowSorter;
 
 
 public class MantenimientoDAO {
-    public void InsertarMantenimiento(JTextField paramNombre, JTextField paramDireccion, JTextField paramDni, JTextField paramCelular, JComboBox paramRol) {
+    public void InsertarMantenimiento(JTextField paramNombre, JTextField paramDireccion, JTextField paramDni, JTextField paramCelular, JComboBox paramRol, JTextField paramProvincia, JTextField paramDepartamento, JTextField paramDistrito) {
         Mantenimiento mantenimiento = new Mantenimiento();
         mantenimiento.setNombre(paramNombre.getText());
         mantenimiento.setDireccion(paramDireccion.getText());
         mantenimiento.setDni(paramDni.getText());
         mantenimiento.setCelular(Integer.parseInt(paramCelular.getText()));
         mantenimiento.setRol((String) paramRol.getSelectedItem());
+        mantenimiento.setProvincia(paramProvincia.getText());
+        mantenimiento.setDepartamento(paramDepartamento.getText());
+        mantenimiento.setDistrito(paramDistrito.getText());
 
         CConexion objetoConexion = new CConexion();
-        String consulta = "INSERT INTO mantenimiento (nombre, direccion, dni, celular, rol) VALUES (?, ?, ?, ?, ?)";
+        String consulta = "INSERT INTO mantenimiento (nombre, direccion, dni, celular, rol, provincia, departamento, distrito) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
@@ -33,15 +36,18 @@ public class MantenimientoDAO {
             cs.setString(3, mantenimiento.getDni());
             cs.setInt(4, mantenimiento.getCelular());
             cs.setString(5, mantenimiento.getRol());
+            cs.setString(6, mantenimiento.getProvincia());
+            cs.setString(7, mantenimiento.getDepartamento());
+            cs.setString(8, mantenimiento.getDistrito());
 
-            cs.execute();
-            JOptionPane.showMessageDialog(null, "Se insertó correctamente");
-        } catch (SQLIntegrityConstraintViolationException e) {
-        JOptionPane.showMessageDialog(null, "El DNI ingresado ya esta registrado", "Error", JOptionPane.ERROR_MESSAGE);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
+                cs.execute();
+                JOptionPane.showMessageDialog(null, "Se insertó correctamente");
+            } catch (SQLIntegrityConstraintViolationException e) {
+            JOptionPane.showMessageDialog(null, "El DNI ingresado ya esta registrado", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
+        }
     }
-}
     
     public void MostrarMantenimiento(JTable paramTablaMantenimiento) {
     CConexion objetoConexion = new CConexion();
@@ -56,7 +62,7 @@ public class MantenimientoDAO {
     paramTablaMantenimiento.setRowSorter(ordenarTabla);
 
     String[] columnasMostradas = {"Id","Nombre", "DNI","rol"};
-    String[] columnasBD = {"id", "nombre", "dni","rol", "celular","direccion",};
+    String[] columnasBD = {"id", "nombre", "dni","rol", "celular","direccion","departamento","provincia","distrito"};
 
     for (int i = 0; i < columnasMostradas.length; i++) {
         modelo.addColumn(columnasMostradas[i]);
@@ -88,7 +94,7 @@ public class MantenimientoDAO {
     }
 }
     
-    public void SeleccionarMantenimiento(JTable paramTablaMantenimiento, JTextField paramId, JTextField paramNombre, JTextField paramDireccion, JTextField paramDni, JTextField paramCelular, JComboBox paramRol) {
+    public void SeleccionarMantenimiento(JTable paramTablaMantenimiento, JTextField paramId, JTextField paramNombre, JTextField paramDireccion, JTextField paramDni, JTextField paramCelular, JComboBox paramRol, JTextField paramProvincia, JTextField paramDepartamento, JTextField paramDistrito) {
     try {
         int fila = paramTablaMantenimiento.getSelectedRow();
         if (fila >= 0) {
@@ -116,6 +122,10 @@ public class MantenimientoDAO {
                     }
                 }
                 paramRol.setSelectedIndex(index);
+                
+                paramProvincia.setText(rs.getString("provincia"));
+                paramDepartamento.setText(rs.getString("departamento"));
+                paramDistrito.setText(rs.getString("distrito"));
             }
         } else {
             JOptionPane.showMessageDialog(null, "Fila no seleccionada");
@@ -126,7 +136,7 @@ public class MantenimientoDAO {
 }
 
 
-    public void ModificarMantenimiento(JTextField paramCodigo, JTextField paramNombre, JTextField paramDireccion, JTextField paramDni, JTextField paramCelular, JComboBox paramRol) {
+    public void ModificarMantenimiento(JTextField paramCodigo, JTextField paramNombre, JTextField paramDireccion, JTextField paramDni, JTextField paramCelular, JComboBox paramRol, JTextField paramProvincia, JTextField paramDepartamento, JTextField paramDistrito) {
     Mantenimiento mantenimiento = new Mantenimiento();
     mantenimiento.setCodigo(Integer.parseInt(paramCodigo.getText()));
     mantenimiento.setNombre(paramNombre.getText());
@@ -134,10 +144,13 @@ public class MantenimientoDAO {
     mantenimiento.setDni(paramDni.getText());
     mantenimiento.setCelular(Integer.parseInt(paramCelular.getText()));
     mantenimiento.setRol((String) paramRol.getSelectedItem());
+    mantenimiento.setProvincia(paramProvincia.getText());
+    mantenimiento.setDepartamento(paramDepartamento.getText());
+    mantenimiento.setDistrito(paramDistrito.getText());
 
     CConexion objetoConexion = new CConexion();
 
-    String consulta = "UPDATE mantenimiento SET nombre=?, direccion=?, dni=?, celular=?, rol=? WHERE id=?";
+    String consulta = "UPDATE mantenimiento SET nombre=?, direccion=?, dni=?, celular=?, rol=?, provincia=?, departamento=?, distrito=? WHERE id=?";
 
     try {
         java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
@@ -146,8 +159,11 @@ public class MantenimientoDAO {
         cs.setString(2, mantenimiento.getDireccion());
         cs.setString(3, mantenimiento.getDni());
         cs.setInt(4, mantenimiento.getCelular());
-        cs.setString(5 , mantenimiento.getRol());
-        cs.setInt(6, mantenimiento.getCodigo());
+        cs.setString(5, mantenimiento.getRol());
+        cs.setString(6, mantenimiento.getProvincia());
+        cs.setString(7, mantenimiento.getDepartamento());
+        cs.setString(8, mantenimiento.getDistrito());
+        cs.setInt(9, mantenimiento.getCodigo());
 
         int filasAfectadas = cs.executeUpdate();
 
@@ -158,7 +174,7 @@ public class MantenimientoDAO {
         }
 
     } catch (SQLIntegrityConstraintViolationException e) {
-        JOptionPane.showMessageDialog(null, "No es posible modificar al cliente , ya que el DNI  ya esta registrado.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "No es posible modificar al cliente, ya que el DNI ya está registrado.", "Error", JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "No se pudo modificar, error: " + e.toString());
     }
