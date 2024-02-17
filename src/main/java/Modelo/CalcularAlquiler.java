@@ -19,7 +19,7 @@ public class CalcularAlquiler {
     BigDecimal pagoDiario;
     BigDecimal pagoSem;
     BigDecimal Quincenal;
-    String FechaFinal;
+    Date FechaFinal;
     
     public String getTipoPago() {
         return tipoPago;
@@ -154,11 +154,11 @@ public class CalcularAlquiler {
         this.mensual = mensual;
     }
     
-    public String getFechaFinal() {
+    public Date getFechaFinal() {
         return FechaFinal;
     }
 
-    public void setFechaFinal(String FechaFinal) {
+    public void setFechaFinal(Date FechaFinal) {
         this.FechaFinal = FechaFinal;
     }
 }

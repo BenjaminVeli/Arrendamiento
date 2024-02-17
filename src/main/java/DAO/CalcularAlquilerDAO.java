@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -166,7 +167,7 @@ public class CalcularAlquilerDAO {
     }
     
     /********************************** OPERACIONES CRUD **********************************/
-    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual, JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JTextField paramFechaFinal) {
+    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual, JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JDateChooser paramFechaFinal) {
         CalcularAlquiler ca = new CalcularAlquiler();
        
         String nombreCliente = (String) paramNombreCliente.getSelectedItem();
@@ -203,7 +204,7 @@ public class CalcularAlquilerDAO {
         ca.setPagoDiario(new BigDecimal(parampagoDiario.getText()));
         ca.setPagoSem(new BigDecimal(parampagoSem.getText()));
         ca.setQuincenal(new BigDecimal(paramQuincenal.getText()));
-        ca.setFechaFinal(paramFechaFinal.getText());
+        ca.setFechaFinal(new Date(paramFechaFinal.getDate().getTime()));
 
         CConexion objetoConexion = new CConexion();
         String consulta = "INSERT INTO rent_calculation (client_id, rent, garantia, total, total_rent, floor_id, room_id,interes,mensual, fecha, fecha_ingreso, tipo_pago, pago_diario, pago_sem, quincenal,fechafinal) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?)";
@@ -226,7 +227,7 @@ public class CalcularAlquilerDAO {
             cs.setBigDecimal(13, ca.getPagoDiario());
             cs.setBigDecimal(14, ca.getPagoSem());
             cs.setBigDecimal(15, ca.getQuincenal());
-            cs.setString(16, ca.getFechaFinal());
+            cs.setDate(16, ca.getFechaFinal());
 
             cs.execute();
             JOptionPane.showMessageDialog(null, "Cálculo de alquiler insertado exitosamente");
@@ -440,7 +441,7 @@ public class CalcularAlquilerDAO {
         }
     }
   
-    public DefaultTableModel  MostrarCalculos(JTextField fecha_finaltxt, JTextField txtSumCapital, JTextField txtSumInteres, 
+    public DefaultTableModel  MostrarCalculos(JDateChooser fecha_finaltxt, JTextField txtSumCapital, JTextField txtSumInteres, 
                                                                              JTextField txtSumMensual, int cuotas, Date fecha, double total_rent, double interes){
         
         DefaultTableModel modelo = new DefaultTableModel();
@@ -537,12 +538,19 @@ public class CalcularAlquilerDAO {
         // Devolver la última fecha
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
    
-        String fechita = dateFormat.format(ultimaFecha);
-        fecha_finaltxt.setText(String.valueOf(fechita));
+        String fechaFormateada = dateFormat.format(ultimaFecha);
+        java.util.Date fechaUtil = null;
+        try {
+            fechaUtil = dateFormat.parse(fechaFormateada);
+        } catch (ParseException e) {
+            e.printStackTrace(); // Otra acción para manejar la excepción, como mostrar un mensaje de error
+        }
+        fecha_finaltxt.setDate(fechaUtil);
+
         return  modelo;
     }
 
-    public DefaultTableModel MostrarImporteDiario(JTextField fecha_finaltxt, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public DefaultTableModel MostrarImporteDiario(int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -583,7 +591,7 @@ public class CalcularAlquilerDAO {
         return  modelo;
     }
     
-    public DefaultTableModel MostrarImporteSemanal(JTextField fecha_finaltxt, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public DefaultTableModel MostrarImporteSemanal(int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -621,7 +629,7 @@ public class CalcularAlquilerDAO {
         return  modelo;
     }
         
-    public DefaultTableModel MostrarImporteQuincenal(JTextField fecha_finaltxt, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public DefaultTableModel MostrarImporteQuincenal(int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
@@ -663,7 +671,7 @@ public class CalcularAlquilerDAO {
         return  modelo;
     }
     
-    public DefaultTableModel MostrarImporteMensual(JTextField fecha_finaltxt, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public DefaultTableModel MostrarImporteMensual(int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
         DefaultTableModel modelo = new DefaultTableModel();
         
