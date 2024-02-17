@@ -166,7 +166,7 @@ public class CalcularAlquilerDAO {
     }
     
     /********************************** OPERACIONES CRUD **********************************/
-    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual, JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal) {
+    public void insertarCalculoAlquiler(JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual, JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JTextField paramFechaFinal) {
         CalcularAlquiler ca = new CalcularAlquiler();
        
         String nombreCliente = (String) paramNombreCliente.getSelectedItem();
@@ -203,9 +203,10 @@ public class CalcularAlquilerDAO {
         ca.setPagoDiario(new BigDecimal(parampagoDiario.getText()));
         ca.setPagoSem(new BigDecimal(parampagoSem.getText()));
         ca.setQuincenal(new BigDecimal(paramQuincenal.getText()));
+        ca.setFechaFinal(paramFechaFinal.getText());
 
         CConexion objetoConexion = new CConexion();
-        String consulta = "INSERT INTO rent_calculation (client_id, rent, garantia, total, total_rent, floor_id, room_id,interes,mensual, fecha, fecha_ingreso, tipo_pago, pago_diario, pago_sem, quincenal) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?)";
+        String consulta = "INSERT INTO rent_calculation (client_id, rent, garantia, total, total_rent, floor_id, room_id,interes,mensual, fecha, fecha_ingreso, tipo_pago, pago_diario, pago_sem, quincenal,fechafinal) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
@@ -225,6 +226,7 @@ public class CalcularAlquilerDAO {
             cs.setBigDecimal(13, ca.getPagoDiario());
             cs.setBigDecimal(14, ca.getPagoSem());
             cs.setBigDecimal(15, ca.getQuincenal());
+            cs.setString(16, ca.getFechaFinal());
 
             cs.execute();
             JOptionPane.showMessageDialog(null, "Cálculo de alquiler insertado exitosamente");

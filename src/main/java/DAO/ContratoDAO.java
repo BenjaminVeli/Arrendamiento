@@ -26,7 +26,7 @@ public class ContratoDAO {
         this.idArrendador = idArrendador;
     }
     
-    public void MostrarArrendadorCombo(JComboBox comboArrendador, JTextField txtdireccionArrendador, JTextField txtDniArrendador, JTextField txtTeleArrendador) {
+    public void MostrarArrendadorCombo(JComboBox comboArrendador, JTextField txtdireccionArrendador, JTextField txtDniArrendador, JTextField txtTeleArrendador, JTextField txtProvincia, JTextField txtDepartamento, JTextField txtDistrito) {
     CConexion objetoConexion = new CConexion(); 
     
     String sql = "SELECT * FROM mantenimiento WHERE rol = 'Arrendador'";
@@ -42,6 +42,9 @@ public class ContratoDAO {
             String direccion = rs.getString("direccion");
             String dni = rs.getString("dni");
             String celular = rs.getString("celular");
+            String provincia = rs.getString("provincia");
+            String departamento = rs.getString("departamento");
+            String distrito = rs.getString("distrito");
             
             comboArrendador.addItem(nombreArrendador);
             comboArrendador.putClientProperty(nombreArrendador, idArrendador);
@@ -52,7 +55,7 @@ public class ContratoDAO {
                 String selectedName = (String) comboArrendador.getSelectedItem();
                 if (selectedName != null) {
                     // Realizar consulta para obtener los detalles del arrendador seleccionado
-                    String query = "SELECT direccion, dni, celular FROM mantenimiento WHERE nombre = ?";
+                    String query = "SELECT direccion, dni, celular , provincia, departamento, distrito FROM mantenimiento WHERE nombre = ?";
                     try (PreparedStatement statement = objetoConexion.estableceConexion().prepareStatement(query)) {
                         statement.setString(1, selectedName);
                         ResultSet resultSet = statement.executeQuery();
@@ -60,6 +63,10 @@ public class ContratoDAO {
                             txtdireccionArrendador.setText(resultSet.getString("direccion"));
                             txtDniArrendador.setText(resultSet.getString("dni"));
                             txtTeleArrendador.setText(resultSet.getString("celular"));
+                            txtProvincia.setText(resultSet.getString("provincia"));
+                            txtDepartamento.setText(resultSet.getString("departamento"));
+                            txtDistrito.setText(resultSet.getString("distrito"));
+
                         }
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(null, "Error al obtener detalles del arrendador: " + ex.toString());
@@ -136,10 +143,10 @@ public class ContratoDAO {
         this.idArrendatario = idArrendatario;
     }
     
-    public void MostrarArrendatario(JComboBox comboArrendatario, JTextField txtdireccionPropietario, JTextField txtDniPropietario, JTextField txtTelePropietario, JTextField txtMensualidad, JTextField txtFecha, JTextField txtNombrePiso, JTextField txtNombreCuarto, JTextField txtGarantia, JTextField txtMetraje, JTextField txtConyuge, JTextField txtDniConyuge, JTextField txtCelularConyuge, JTextField txtCiudad) {
+    public void MostrarArrendatario(JComboBox comboArrendatario, JTextField txtdireccionPropietario, JTextField txtDniPropietario, JTextField txtTelePropietario, JTextField txtMensualidad, JTextField txtFecha, JTextField txtNombrePiso, JTextField txtNombreCuarto, JTextField txtGarantia, JTextField txtMetraje, JTextField txtConyuge, JTextField txtDniConyuge, JTextField txtCelularConyuge, JTextField txtCiudad , JTextField txtProvincia, JTextField txtDepartamento, JTextField txtDistrito) {
     CConexion objetoConexion = new CConexion(); 
     
-    String sql = "SELECT datos_cli_prov.nombre, datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.dni_conyuge,datos_cli_prov.celular_conyuge,datos_cli_prov.ciudad,datos_cli_prov.celular, datos_cli_prov.conyuge ,rent_calculation.id, rent_calculation.mensual, rent_calculation.fecha " +
+    String sql = "SELECT datos_cli_prov.nombre, datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.provincia , datos_cli_prov.departamento , datos_cli_prov.distrito, datos_cli_prov.dni_conyuge,datos_cli_prov.celular_conyuge,datos_cli_prov.ciudad,datos_cli_prov.celular, datos_cli_prov.conyuge ,rent_calculation.id, rent_calculation.mensual, rent_calculation.fecha " +
                  "FROM datos_cli_prov " +
                  "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id";
     Statement st;
@@ -160,7 +167,7 @@ public class ContratoDAO {
                 String selectedName = (String) comboArrendatario.getSelectedItem();
                 if (selectedName != null) {
                     // Realizar consulta para obtener los detalles del arrendatario seleccionado
-                    String query = "SELECT datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.celular, datos_cli_prov.dni_conyuge,datos_cli_prov.celular_conyuge,datos_cli_prov.ciudad,datos_cli_prov.conyuge, rent_calculation.mensual, rent_calculation.fecha, piso.piso AS nombre_piso, cuarto.numcuarto AS nombre_cuarto, rent_calculation.garantia, cuarto.metraje AS area " +
+                    String query = "SELECT datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.celular, datos_cli_prov.dni_conyuge,datos_cli_prov.celular_conyuge,datos_cli_prov.provincia , datos_cli_prov.departamento , datos_cli_prov.distrito,datos_cli_prov.ciudad,datos_cli_prov.conyuge, rent_calculation.mensual, rent_calculation.fecha, piso.piso AS nombre_piso, cuarto.numcuarto AS nombre_cuarto, rent_calculation.garantia, cuarto.metraje AS area " +
                                             "FROM datos_cli_prov " +
                                             "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id " +
                                             "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
@@ -183,6 +190,9 @@ public class ContratoDAO {
                             txtDniConyuge.setText(resultSet.getString("dni_conyuge"));
                             txtCelularConyuge.setText(resultSet.getString("celular_conyuge"));
                             txtCiudad.setText(resultSet.getString("ciudad"));
+                            txtProvincia.setText(resultSet.getString("provincia"));
+                            txtDepartamento.setText(resultSet.getString("departamento"));
+                            txtDistrito.setText(resultSet.getString("distrito"));
                         }
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(null, "Error al obtener detalles del arrendatario: " + ex.toString());

@@ -1096,7 +1096,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             // Obtener la opción seleccionada en el JComboBox "selectPago"
             String tiposPago = (String) selectPago.getSelectedItem();
             
-            dao.insertarCalculoAlquiler(search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
+            dao.insertarCalculoAlquiler(search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,fecha_finaltxt);
             // Llamar al método para insertar los datos mensuales
             dao.insertarImporteMensual(search.getSelectedItem().toString(), cuotas, fecha, total_rent, interes, txtSumCapital, txtSumInteres, txtSumMensual);
             

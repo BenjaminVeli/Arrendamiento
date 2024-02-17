@@ -62,6 +62,7 @@ CREATE TABLE rent_calculation (
   pago_diario DECIMAL(10,2),
   pago_sem DECIMAL(10,2),
   quincenal DECIMAL(10,2),
+  fechafinal VARCHAR(30),
   FOREIGN KEY (floor_id) REFERENCES piso(id),
   FOREIGN KEY (room_id) REFERENCES cuarto(id)
 );
