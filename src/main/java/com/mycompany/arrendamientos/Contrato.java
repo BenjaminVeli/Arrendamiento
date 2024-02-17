@@ -6,12 +6,15 @@ import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.math.BigInteger;
 import javax.swing.JOptionPane;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 
 
 
@@ -47,7 +50,7 @@ public class Contrato extends javax.swing.JFrame {
          DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
          objetoContrato.MostrarArrendadorCombo(cbArrendador, txtdireccionArrendador, txtDniArrendador, txtTeleArrendador,txtProvinciaArrendador,txtDepartamentoArrendador,txtDistritoArrendador);
          objetoContrato.MostrarGaranteCombo(cbGarante,txtDireccionGarante,txtDniGarante,txtTeleGarante);
-         objetoContrato.MostrarArrendatario(cbArrendatario,txtDireccionArrendatario,txtDniArrendatario,txtTeleArrendatario,txtmensualidad,txtfecha,txtpiso,txtcuarto,txtgarantia,txtarea,txtConyuge,txtDniConyuge,txtCelularConyuge,txtCiudad,txtProvinciaArrendatario,txtDepartamentoArrendatario,txtDistritoArrendatario);
+         objetoContrato.MostrarArrendatario(cbArrendatario,txtDireccionArrendatario,txtDniArrendatario,txtTeleArrendatario,txtmensualidad,txtfecha,txtpiso,txtcuarto,txtgarantia,txtarea,txtConyuge,txtDniConyuge,txtCelularConyuge,txtCiudad,txtProvinciaArrendatario,txtDepartamentoArrendatario,txtDistritoArrendatario,txtfechafinal,txtestadocivil);
 
           
          objetoContrato.MostrarContrato(tbAlquiler);
@@ -77,7 +80,7 @@ public class Contrato extends javax.swing.JFrame {
         jTextField13 = new javax.swing.JTextField();
         jLabel26 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
-        txtvenccontrato = new javax.swing.JTextField();
+        txtfechafinal = new javax.swing.JTextField();
         jLabel28 = new javax.swing.JLabel();
         txtmensualidad = new javax.swing.JTextField();
         jLabel29 = new javax.swing.JLabel();
@@ -147,6 +150,8 @@ public class Contrato extends javax.swing.JFrame {
         txtDistritoArrendador = new javax.swing.JTextField();
         jLabel36 = new javax.swing.JLabel();
         txtDistritoArrendatario = new javax.swing.JTextField();
+        jLabel37 = new javax.swing.JLabel();
+        txtestadocivil = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -211,7 +216,7 @@ public class Contrato extends javax.swing.JFrame {
                                     .addComponent(jLabel26))
                                 .addGap(26, 26, 26)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtvenccontrato, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                    .addComponent(txtfechafinal, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
                                     .addComponent(txtfecha)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel28)
@@ -248,7 +253,7 @@ public class Contrato extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel24)
                             .addComponent(jLabel27)
-                            .addComponent(txtvenccontrato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtfechafinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel30)
                             .addComponent(txtpiso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -413,6 +418,9 @@ public class Contrato extends javax.swing.JFrame {
         jLabel36.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel36.setText("Distrito :");
 
+        jLabel37.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel37.setText("Estado Civil :");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -472,16 +480,6 @@ public class Contrato extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(jLabel3)
                     .addComponent(txtDireccionArrendatario)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addComponent(txtDniArrendatario, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(35, 35, 35)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel11)
-                            .addComponent(txtTeleArrendatario, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                            .addComponent(jLabel32)
-                            .addComponent(txtProvinciaArrendatario)))
                     .addComponent(jLabel12)
                     .addComponent(jLabel15)
                     .addComponent(cbArrendatario, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -490,15 +488,35 @@ public class Contrato extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel17)
                             .addComponent(txtDniGarante, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel19)
                             .addComponent(txtTeleGarante, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel21)
                     .addComponent(txtDireccionGarante)
-                    .addComponent(txtDepartamentoArrendatario, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel36)
-                    .addComponent(txtDistritoArrendatario))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel10)
+                                        .addComponent(txtDniArrendatario, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(35, 35, 35))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel36)
+                                    .addGap(113, 113, 113)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtDistritoArrendatario, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtDepartamentoArrendatario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
+                                .addGap(35, 35, 35)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel11)
+                            .addComponent(txtTeleArrendatario)
+                            .addComponent(jLabel32)
+                            .addComponent(txtProvinciaArrendatario)
+                            .addComponent(txtestadocivil, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel37))))
                 .addGap(26, 26, 26))
         );
         jPanel1Layout.setVerticalGroup(
@@ -549,9 +567,13 @@ public class Contrato extends javax.swing.JFrame {
                             .addComponent(txtDepartamentoArrendatario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtProvinciaArrendatario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel36)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel36)
+                            .addComponent(jLabel37))
                         .addGap(12, 12, 12)
-                        .addComponent(txtDistritoArrendatario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtDistritoArrendatario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtestadocivil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel8)
@@ -711,7 +733,22 @@ public void exportarAWord() {
 
         XWPFParagraph parrafo1 = documento.createParagraph();
         parrafo1.setAlignment(ParagraphAlignment.CENTER);
+        
+        int margenSuperior = 560; // 1 cm
+        int margenIzquierdo = 560; // 1 cm
+        int margenEncuadernacion = 0; // 0 cm
+        int margenInferior = 560; // 1 cm
+        int margenDerecho = 560; // 1 cm
 
+        CTSectPr sectPr = documento.getDocument().getBody().addNewSectPr();
+        CTPageMar pageMar = sectPr.addNewPgMar();
+        pageMar.setTop(BigInteger.valueOf(margenSuperior));
+        pageMar.setLeft(BigInteger.valueOf(margenIzquierdo));
+        pageMar.setGutter(BigInteger.valueOf(margenEncuadernacion));
+        pageMar.setBottom(BigInteger.valueOf(margenInferior));
+        pageMar.setRight(BigInteger.valueOf(margenDerecho));
+        
+        
         XWPFRun run1 = parrafo1.createRun();
         run1.setText("CONTRATO DE ALQUILER");
         run1.setBold(true); // Establecer negrita
@@ -728,27 +765,38 @@ public void exportarAWord() {
         Object arrendadorSeleccionado = cbArrendador.getSelectedItem();
         String dniArrendador = txtDniArrendador.getText(); 
         String direccionArrendador = txtdireccionArrendador.getText();
-
+        String provinciaArrendador = txtProvinciaArrendador.getText();
+        Object arrendatarioSeleccionado = cbArrendatario.getSelectedItem();  
+        String dniArrendatario = txtDniArrendatario.getText();
+        String direccionArrendatario = txtDireccionArrendatario.getText();
+        String provinciaArrendatario = txtProvinciaArrendatario.getText();
+        String estadocivilArrendatario = txtestadocivil.getText();
+        String contenidoArrendatario = arrendatarioSeleccionado.toString();       
+        String contenidoArrendador = arrendadorSeleccionado.toString();
+        String dniConyuge = txtDniConyuge.getText();
+        String nombreConyuge = txtConyuge.getText();
+        
         if (arrendadorSeleccionado != null) {
-            String contenidoArrendador = arrendadorSeleccionado.toString();
-            run2.setText(contenidoArrendador + " identificado con DNI N.° " + dniArrendador + ", con domicilio en " + direccionArrendador); 
+            run2.setText(contenidoArrendador + " identificado con DNI N.° " + dniArrendador + ", con domicilio en " + direccionArrendador + " , " + provinciaArrendador + " , el cual de aquí en adelante se le denominará EL ARRENDADOR y "
+                    + "por otra parte el Sr. (a)(ta) " + contenidoArrendatario + " , identificado con " + dniArrendatario +  " , con domicilio en " + direccionArrendatario + " , " + provinciaArrendatario + " , con estado civil " + estadocivilArrendatario+
+                    " , quien en adelante se le denominará EL ARRENDATARIO en los términos y condiciones siguientes: .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-."); 
         }
 
         if (arrendadorSeleccionado != null) {
-            String contenidoArrendador = arrendadorSeleccionado.toString();
+
 
             XWPFParagraph parrafo3 = documento.createParagraph();
             parrafo3.setAlignment(ParagraphAlignment.LEFT);
 
             XWPFRun run3 = parrafo3.createRun();
-            run3.setText("---------------------------------------------------------");
+            run3.setText("--------------------------------------------            ------------------------------------------------------        -----------------------------------------------------");
             run3.setFontSize(9);
 
             XWPFParagraph parrafo4 = documento.createParagraph();
             parrafo4.setAlignment(ParagraphAlignment.LEFT);
 
             XWPFRun run4 = parrafo4.createRun();
-            run4.setText(contenidoArrendador);
+            run4.setText(contenidoArrendador +"                      " + contenidoArrendatario+"                      " + nombreConyuge);
             run4.setFontSize(9);
         }
 
@@ -756,14 +804,14 @@ public void exportarAWord() {
         parrafo5.setAlignment(ParagraphAlignment.LEFT);
 
         XWPFRun run5 = parrafo5.createRun();
-        run5.setText("DNI: " + dniArrendador); 
+        run5.setText("DNI: " + dniArrendador+"                                                  "+ "DNI: " + dniArrendatario+"                                                               "+ "DNI: " + dniConyuge); 
         run5.setFontSize(9);
 
         XWPFParagraph parrafo6 = documento.createParagraph();
         parrafo6.setAlignment(ParagraphAlignment.LEFT);
 
         XWPFRun run6 = parrafo6.createRun();
-        run6.setText("EL ARRENDADOR");
+        run6.setText("EL ARRENDADOR" + "                                              EL ARRENDATARIO"+"                                                        CONYUGE DEL");
         run6.setFontSize(9);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -868,6 +916,7 @@ public void exportarAWord() {
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -903,11 +952,12 @@ public void exportarAWord() {
     private javax.swing.JTextField txtarea;
     private javax.swing.JTextField txtcuarto;
     private javax.swing.JTextField txtdireccionArrendador;
+    private javax.swing.JTextField txtestadocivil;
     private javax.swing.JTextField txtfecha;
+    private javax.swing.JTextField txtfechafinal;
     private javax.swing.JTextField txtgarantia;
     private javax.swing.JTextField txtmensualidad;
     private javax.swing.JTextField txtpiso;
-    private javax.swing.JTextField txtvenccontrato;
     // End of variables declaration//GEN-END:variables
 
     private void Limpiar() {
@@ -930,7 +980,7 @@ public void exportarAWord() {
         txtpiso.setText("");
         txtcuarto.setText("");
         txtfecha.setText("");
-        txtvenccontrato.setText("");
+        txtfechafinal.setText("");
         txtmensualidad.setText("");
         txtgarantia.setText("");
         txtarea.setText("");

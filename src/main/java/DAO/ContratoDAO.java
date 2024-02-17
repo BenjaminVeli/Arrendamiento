@@ -143,36 +143,38 @@ public class ContratoDAO {
         this.idArrendatario = idArrendatario;
     }
     
-    public void MostrarArrendatario(JComboBox comboArrendatario, JTextField txtdireccionPropietario, JTextField txtDniPropietario, JTextField txtTelePropietario, JTextField txtMensualidad, JTextField txtFecha, JTextField txtNombrePiso, JTextField txtNombreCuarto, JTextField txtGarantia, JTextField txtMetraje, JTextField txtConyuge, JTextField txtDniConyuge, JTextField txtCelularConyuge, JTextField txtCiudad , JTextField txtProvincia, JTextField txtDepartamento, JTextField txtDistrito) {
-    CConexion objetoConexion = new CConexion(); 
-    
-    String sql = "SELECT datos_cli_prov.nombre, datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.provincia , datos_cli_prov.departamento , datos_cli_prov.distrito, datos_cli_prov.dni_conyuge,datos_cli_prov.celular_conyuge,datos_cli_prov.ciudad,datos_cli_prov.celular, datos_cli_prov.conyuge ,rent_calculation.id, rent_calculation.mensual, rent_calculation.fecha " +
-                 "FROM datos_cli_prov " +
-                 "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id";
-    Statement st;
+    public void MostrarArrendatario(JComboBox comboArrendatario, JTextField txtdireccionPropietario, JTextField txtDniPropietario, JTextField txtTelePropietario, JTextField txtMensualidad, JTextField txtFecha, JTextField txtNombrePiso, JTextField txtNombreCuarto, JTextField txtGarantia, JTextField txtMetraje, JTextField txtConyuge, JTextField txtDniConyuge, JTextField txtCelularConyuge, JTextField txtCiudad, JTextField txtProvincia, JTextField txtDepartamento, JTextField txtDistrito, JTextField txtFechaFinal , JTextField txtEstadoCivil) {
+    CConexion objetoConexion = new CConexion();
+
+    String sql = "SELECT datos_cli_prov.nombre, datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.provincia, datos_cli_prov.departamento, datos_cli_prov.estado_civil, datos_cli_prov.distrito, datos_cli_prov.dni_conyuge, datos_cli_prov.celular_conyuge, datos_cli_prov.ciudad, datos_cli_prov.celular, datos_cli_prov.conyuge, rent_calculation.id, rent_calculation.mensual, rent_calculation.fecha, rent_calculation.fechafinal, piso.piso AS nombre_piso, cuarto.numcuarto AS nombre_cuarto, rent_calculation.garantia, cuarto.metraje AS area " +
+            "FROM datos_cli_prov " +
+            "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id " +
+            "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+            "INNER JOIN piso ON cuarto.piso_id = piso.id";
+
     try {
-        st = objetoConexion.estableceConexion().createStatement();
+        Statement st = objetoConexion.estableceConexion().createStatement();
         ResultSet rs = st.executeQuery(sql);
         comboArrendatario.removeAllItems();
-        
+
         while (rs.next()) {
             String nombreArrendatario = rs.getString("nombre");
             int idArrendatario = rs.getInt("id");
             comboArrendatario.addItem(nombreArrendatario);
             comboArrendatario.putClientProperty(nombreArrendatario, idArrendatario);
         }
-        
+
         comboArrendatario.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedName = (String) comboArrendatario.getSelectedItem();
                 if (selectedName != null) {
                     // Realizar consulta para obtener los detalles del arrendatario seleccionado
-                    String query = "SELECT datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.celular, datos_cli_prov.dni_conyuge,datos_cli_prov.celular_conyuge,datos_cli_prov.provincia , datos_cli_prov.departamento , datos_cli_prov.distrito,datos_cli_prov.ciudad,datos_cli_prov.conyuge, rent_calculation.mensual, rent_calculation.fecha, piso.piso AS nombre_piso, cuarto.numcuarto AS nombre_cuarto, rent_calculation.garantia, cuarto.metraje AS area " +
-                                            "FROM datos_cli_prov " +
-                                            "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id " +
-                                            "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
-                                            "INNER JOIN piso ON cuarto.piso_id = piso.id " +
-                                            "WHERE datos_cli_prov.nombre = ?";
+                    String query = "SELECT datos_cli_prov.direccion_propietario, datos_cli_prov.dni_propietario, datos_cli_prov.celular, datos_cli_prov.dni_conyuge, datos_cli_prov.celular_conyuge, datos_cli_prov.provincia, datos_cli_prov.departamento, datos_cli_prov.estado_civil ,datos_cli_prov.distrito, datos_cli_prov.ciudad, datos_cli_prov.conyuge, rent_calculation.fechafinal, rent_calculation.mensual, rent_calculation.fecha, piso.piso AS nombre_piso, cuarto.numcuarto AS nombre_cuarto, rent_calculation.garantia, cuarto.metraje AS area " +
+                            "FROM datos_cli_prov " +
+                            "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id " +
+                            "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+                            "INNER JOIN piso ON cuarto.piso_id = piso.id " +
+                            "WHERE datos_cli_prov.nombre = ?";
                     try (PreparedStatement statement = objetoConexion.estableceConexion().prepareStatement(query)) {
                         statement.setString(1, selectedName);
                         ResultSet resultSet = statement.executeQuery();
@@ -193,6 +195,8 @@ public class ContratoDAO {
                             txtProvincia.setText(resultSet.getString("provincia"));
                             txtDepartamento.setText(resultSet.getString("departamento"));
                             txtDistrito.setText(resultSet.getString("distrito"));
+                            txtFechaFinal.setText(resultSet.getString("fechafinal"));
+                            txtEstadoCivil.setText(resultSet.getString("estado_civil"));
                         }
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(null, "Error al obtener detalles del arrendatario: " + ex.toString());
@@ -200,11 +204,12 @@ public class ContratoDAO {
                 }
             }
         });
-        
+
     } catch (SQLException e) {
         JOptionPane.showMessageDialog(null, "Error al mostrar al arrendador: " + e.toString());
     }
 }
+
 
 
 

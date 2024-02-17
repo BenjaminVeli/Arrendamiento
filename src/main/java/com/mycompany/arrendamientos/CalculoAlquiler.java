@@ -53,6 +53,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         dnitxt.setEnabled(false);
         telefonotxt.setEnabled(false);
         idtxt.setEnabled(false);
+        fecha_finaltxt.setEnabled(false);
         CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
         dao.MostrarAlquiler(tbTotalCalculo);
         btnExportar.addActionListener(new ActionListener() {
@@ -712,12 +713,14 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel9)
                                     .addComponent(jLabel10)
-                                    .addComponent(jLabel2))
-                                .addGap(18, 18, 18)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel22))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(mensualtxt, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(fechatxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
-                                    .addComponent(cuartostxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(cuartostxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(fecha_finaltxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(13, 13, 13)
                         .addComponent(Separator, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -741,30 +744,23 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                                     .addComponent(telefonotxt, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(pagoDiariotxt, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(direcciontxt, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel17)
-                                    .addComponent(jLabel15)
-                                    .addComponent(jLabel18)
-                                    .addComponent(jLabel16))
-                                .addGap(26, 26, 26)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(dnitxt, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(pagoSemtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(pagoQuincenaltxt, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel22)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(fecha_finaltxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(8, 8, 8)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel15)
+                            .addComponent(jLabel18)
+                            .addComponent(jLabel16))
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(dnitxt, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pagoSemtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pagoQuincenaltxt, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(26, 26, 26)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(search, 0, 495, Short.MAX_VALUE)
+                        .addComponent(search, 0, 498, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(registroClientebtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10)))
@@ -805,7 +801,11 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(cuartostxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2)))
+                                    .addComponent(jLabel2))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(fecha_finaltxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel22)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(garantiatxt, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -859,17 +859,10 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(pagoDiariotxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel14))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(direcciontxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jLabel22)))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(fecha_finaltxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(direcciontxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13))))
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
@@ -1144,7 +1137,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
     private void tbTotalCalculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCalculoMouseClicked
        CalcularAlquilerDAO dao = new CalcularAlquilerDAO();
-       dao.SeleccionarCalculoAlquiler(tbTotalCalculo,idtxt, dnitxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,ructxt,direcciontxt,telefonotxt);
+       dao.SeleccionarCalculoAlquiler(tbTotalCalculo,idtxt, dnitxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,ructxt,direcciontxt,telefonotxt,fecha_finaltxt);
 
     }//GEN-LAST:event_tbTotalCalculoMouseClicked
 
@@ -1169,7 +1162,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         
         
         // Llamar al método ModificarCalculoAlquiler del DAO para actualizar el cálculo de alquiler
-        dao.ModificarCalculoAlquiler(tbTotalCalculo,idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt);
+        dao.ModificarCalculoAlquiler(tbTotalCalculo,idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,fecha_finaltxt);
         
         switch (tiposPago) {
             case "Diario" -> importeVariadoDao.recalcularCalculosDiarios(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
@@ -1630,6 +1623,7 @@ private void exportarAExcel() {
         txtSumImporte.setText("");
         telefonotxt.setText("");
         direcciontxt.setText("");
+        fecha_finaltxt.setDate(null); 
         
         // Limpiar la tabla
         DefaultTableModel model = new DefaultTableModel();

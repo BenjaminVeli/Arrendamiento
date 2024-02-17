@@ -254,7 +254,7 @@ public class CalcularAlquilerDAO {
     tbTotalCalculo.setRowSorter(ordenarTabla);
 
     String[] columnasMostradas = {"Id", "Cliente","Alquiler", "Cuotas", "Piso", "Cuarto", "Tipo de Pago"};
-    String[] columnasBD = {"id", "nombre_cliente", "rent", "total",  "nombre_piso", "numcuarto", "tipo_pago", "interes","mensual", "fecha", "fecha_ingreso" ,"total_rent",  "garantia" , "pago_diario" , "pago_sem" , "quincenal","dni_propietario","ruc","direccion_propietario","celular"};
+    String[] columnasBD = {"id", "nombre_cliente", "rent", "total",  "nombre_piso", "numcuarto", "tipo_pago", "interes","mensual", "fecha", "fecha_ingreso" ,"total_rent",  "garantia" , "pago_diario" , "pago_sem" , "quincenal","dni_propietario","ruc","direccion_propietario","celular","fechafinal"};
 
     for (int i = 0; i < columnasMostradas.length; i++) {
         modelo.addColumn(columnasMostradas[i]);
@@ -262,7 +262,7 @@ public class CalcularAlquilerDAO {
 
     tbTotalCalculo.setModel(modelo);
 
-    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, datos_cli_prov.dni_propietario, datos_cli_prov.ruc, datos_cli_prov.direccion_propietario, datos_cli_prov.celular, rent, garantia,interes,mensual, pago_diario, tipo_pago, pago_sem, quincenal, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
+    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre as nombre_cliente, datos_cli_prov.dni_propietario, datos_cli_prov.ruc, datos_cli_prov.direccion_propietario, datos_cli_prov.celular, rent, garantia,interes,mensual, pago_diario, tipo_pago, fechafinal,pago_sem, quincenal, fecha, rent_calculation.fecha_ingreso, total, total_rent, piso.piso as nombre_piso, cuarto.numcuarto FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN piso ON rent_calculation.floor_id = piso.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id";
 
     try (Statement st = objetoConexion.estableceConexion().createStatement();
          ResultSet rs = st.executeQuery(sql)) {
@@ -716,7 +716,7 @@ public class CalcularAlquilerDAO {
         return  modelo;
     }
     
-    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler,JTextField paramId, JTextField paramDni, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JTextField paramRuc, JTextField paramDireccion, JTextField paramCelular) {
+    public void SeleccionarCalculoAlquiler(JTable paramTablaCalculosAlquiler,JTextField paramId, JTextField paramDni, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JTextField paramRuc, JTextField paramDireccion, JTextField paramCelular, JDateChooser paramFechaFinal) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
@@ -781,8 +781,10 @@ public class CalcularAlquilerDAO {
                 // Manejo de fechas
                 java.util.Date fecha = rs.getDate("fecha");
                 java.util.Date fechaIngreso = rs.getDate("fecha_ingreso");
+                java.util.Date FechaFinal = rs.getDate("fechafinal");
                 paramFecha.setDate(fecha);
                 paramFechaIngreso.setDate(fechaIngreso);
+                paramFechaFinal.setDate(FechaFinal);
                 String direccionPropietario = rs.getString("direccion_propietario");
                 paramDireccion.setText(direccionPropietario);
                 String celular = rs.getString("celular");
@@ -796,7 +798,7 @@ public class CalcularAlquilerDAO {
     }
 }
 
-    public void ModificarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal) {
+    public void ModificarCalculoAlquiler(JTable paramTablaCalculosAlquiler, JTextField paramId, JComboBox<String> paramNombreCliente, JTextField paramRent, JTextField paramGarantia, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto, JTextField paramInteres, JTextField paramTotal, JTextField paramTotalAlquiler, JDateChooser paramFecha, JDateChooser paramFechaIngreso, JTextField paramMensual , JComboBox paramtipoPago, JTextField parampagoDiario, JTextField parampagoSem, JTextField paramQuincenal, JDateChooser paramFechaFinal) {
     try {
         int fila = paramTablaCalculosAlquiler.getSelectedRow();
         if (fila >= 0) {
@@ -808,7 +810,7 @@ public class CalcularAlquilerDAO {
 
             // Actualizar el cálculo de alquiler
             CConexion objetoConexion = new CConexion();
-            String actualizarCalculo = "UPDATE rent_calculation SET client_id=?, rent=?, garantia=?, total=?, total_rent=?, floor_id=?, room_id=?, interes=?, mensual=?, fecha=?, fecha_ingreso=?, tipo_pago=?, pago_diario=?, pago_sem=?, quincenal=? WHERE id=?";
+            String actualizarCalculo = "UPDATE rent_calculation SET client_id=?, rent=?, garantia=?, total=?, total_rent=?, floor_id=?, room_id=?, interes=?, mensual=?, fecha=?, fecha_ingreso=?, tipo_pago=?, pago_diario=?, pago_sem=?, quincenal=? , fechafinal=? WHERE id=?";
 
             PreparedStatement psActualizarCalculo = objetoConexion.estableceConexion().prepareStatement(actualizarCalculo);
 
@@ -827,7 +829,8 @@ public class CalcularAlquilerDAO {
             psActualizarCalculo.setBigDecimal(13, new BigDecimal(parampagoDiario.getText()));
             psActualizarCalculo.setBigDecimal(14, new BigDecimal(parampagoSem.getText()));
             psActualizarCalculo.setBigDecimal(15, new BigDecimal(paramQuincenal.getText()));
-            psActualizarCalculo.setInt(16, Integer.parseInt(idSeleccionado));
+            psActualizarCalculo.setDate(16, new Date(paramFechaFinal.getDate().getTime()));
+            psActualizarCalculo.setInt(17, Integer.parseInt(idSeleccionado));
 
             psActualizarCalculo.executeUpdate();
 
