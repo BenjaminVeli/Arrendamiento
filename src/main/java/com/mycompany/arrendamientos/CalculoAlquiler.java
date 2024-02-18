@@ -387,6 +387,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         btnExportar = new javax.swing.JButton();
         btnMantenimiento = new javax.swing.JButton();
         btnContrato = new javax.swing.JButton();
+        btnPagoAlquiler = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -988,12 +989,22 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             }
         });
 
+        btnPagoAlquiler.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnPagoAlquiler.setText("PagoAlquiler");
+        btnPagoAlquiler.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPagoAlquilerActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnPagoAlquiler)
+                .addGap(18, 18, 18)
                 .addComponent(btnContrato)
                 .addGap(18, 18, 18)
                 .addComponent(btnMantenimiento)
@@ -1014,7 +1025,8 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                     .addComponent(crearCuartobtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnExportar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnMantenimiento)
-                    .addComponent(btnContrato))
+                    .addComponent(btnContrato)
+                    .addComponent(btnPagoAlquiler))
                 .addContainerGap())
         );
 
@@ -1023,13 +1035,13 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(13, 13, 13)
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1230,6 +1242,12 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         m2.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnMantenimientoActionPerformed
+
+    private void btnPagoAlquilerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagoAlquilerActionPerformed
+        PagoAlquiler pagoAlquiler = new PagoAlquiler();
+        pagoAlquiler.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnPagoAlquilerActionPerformed
     
     private void calcularYActualizarTotal() {
         // Obtener valores de los campos
@@ -1537,6 +1555,7 @@ private void exportarAExcel() {
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnMantenimiento;
     private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnPagoAlquiler;
     private javax.swing.JButton crearCuartobtn;
     private javax.swing.JButton crearPisotxt;
     private javax.swing.JComboBox<String> cuartostxt;

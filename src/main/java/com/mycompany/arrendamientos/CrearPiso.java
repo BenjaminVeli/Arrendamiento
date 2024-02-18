@@ -36,6 +36,7 @@ public class CrearPiso extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         tbTotalPisos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
