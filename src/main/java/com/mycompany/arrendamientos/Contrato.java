@@ -782,12 +782,23 @@ public void exportarAWord() {
         String mensualidad = txtmensualidad.getText();
         String garantia = txtgarantia.getText();
         String persona = txtpersonas.getText();
+        String distritoArrendador = txtDistritoArrendador.getText();
+        String departamentoArrendador = txtDepartamentoArrendador.getText();
+        String nombrePiso = txtpiso.getText();
+        String nombreArea = txtarea.getText();
 
         
         if (arrendadorSeleccionado != null) {
             run2.setText(contenidoArrendador + " identificado con DNI N.° " + dniArrendador + ", con domicilio en " + direccionArrendador + " , " + provinciaArrendador + " , el cual de aquí en adelante se le denominará EL ARRENDADOR y "
                     + "por otra parte el Sr. (a)(ta) " + contenidoArrendatario + " , identificado con " + dniArrendatario +  " , con domicilio en " + direccionArrendatario + " , " + provinciaArrendatario + " , con estado civil " + estadocivilArrendatario+
                     " , quien en adelante se le denominará EL ARRENDATARIO en los términos y condiciones siguientes: .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("PRIMERO.- El ARRENDADOR, es propietario del local sito en la "+  direccionArrendador + " del distrito de " + distritoArrendador +" Provincia de "+ provinciaArrendador + " y Departamento de " + departamentoArrendador + ". .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("SEGUNDO.- Por el presente contrato EL ARRENDADOR da en calidad de Arrendamiento a EL ARRENDATARIO, una parte del local del "
+                    + nombrePiso + " , indicado en la cláusula anterior, Primero, " + direccionArrendador + " , que consta de un área de " + nombreArea + ". Con una entrada quedando en el interior de la vivienda, para ser utilizado como Dormitorio y vivienda. Del mismo que EL ARRENDATARIO, declara y conocer y recibir en perfecto estado, siendo la toma del ambiente, es prueba de aceptación de las referidas condiciones y correcto funcionamiento de los servicios, Así mismo ambas partes convienen en que los servicios de Agua y Desagüe, así como de Energía Eléctrica serán cancelados por parte del Arrendatario, muy aparte de la Mereced Conductiva,  de acuerdo a su consumo, mensual, quedamos tajantemente prohibido la crianza de todo tipo de animales. .-.-.");
             run2.addBreak();
             run2.addBreak();
             run2.setText("TERCERO.- La Merced Conductiva mensual, convenida de mutuo y común acuerdo entre las partes contratantes para el local y sus servicios cuyo objeto de este contrato es de S/ "+mensualidad+ " Soles mensuales, monto que El ARRENDATARIO los abonará con toda puntualidad por adelantado, en el caso de incumplimiento el pago de 1 mensualidad ocasionará RESCISIÓN del presente contrato comprometiéndose EL ARRENDATARIO a devolver el local y sus servicios, en perfecto estado conforme los entrego al momento del ambiente..-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-");

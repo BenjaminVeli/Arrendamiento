@@ -3,12 +3,10 @@ package DAO;
 import Conexion.CConexion;
 import Modelo.Arrendamientos;
 import com.toedter.calendar.JDateChooser;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -27,16 +25,28 @@ public class ArrendamientosDAO {
         java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
         cs.setString(1, paramNombre.getText());
-        cs.setString(2, paramRuc.getText());
+        if (!paramRuc.getText().isEmpty()) {
+            cs.setString(2, paramRuc.getText());
+        } else {
+            cs.setNull(2, java.sql.Types.VARCHAR);
+        }
         cs.setString(3, paramDireccion_propietario.getText());
         cs.setInt(4, Integer.parseInt(paramCelular.getText()));
         cs.setDate(5, new java.sql.Date(paramNacimiento.getDate().getTime()));
-        cs.setString(6, paramDni_propietario.getText());
+        if (!paramDni_propietario.getText().isEmpty()) {
+            cs.setString(6, paramDni_propietario.getText());
+        } else {
+            cs.setNull(6, java.sql.Types.VARCHAR);
+        }
         cs.setTimestamp(7, new java.sql.Timestamp(paramFecha_ingreso.getDate().getTime()));
         cs.setString(8, paramCorreo.getText());
         cs.setString(9, (String) paramEstado_civil.getSelectedItem());
         cs.setString(10, paramConyuge.getText());
-        cs.setString(11, paramDni_conyuge.getText());
+        if (!paramDni_conyuge.getText().isEmpty()) {
+            cs.setString(11, paramDni_conyuge.getText());
+        } else {
+            cs.setNull(11, java.sql.Types.VARCHAR);
+        }
         cs.setString(12, paramCiudad.getText());
         cs.setInt(13, Integer.parseInt(paramCelularConyuge.getText()));
         cs.setString(14, paramProvincia.getText());
@@ -51,6 +61,8 @@ public class ArrendamientosDAO {
         JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
     }
 }
+
+
 
     
     public void MostrarCliente(JTable paramTablaTotalClientes) {
@@ -179,16 +191,28 @@ public class ArrendamientosDAO {
         java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
         cs.setString(1, arrendamientos.getNombre());
-        cs.setString(2, arrendamientos.getRuc());
+        if (!paramRuc.getText().isEmpty()) {
+            cs.setString(2, arrendamientos.getRuc());
+        } else {
+            cs.setNull(2, java.sql.Types.VARCHAR);
+        }
         cs.setString(3, arrendamientos.getDireccion_propietario());
         cs.setInt(4, arrendamientos.getCelular());
         cs.setDate(5, arrendamientos.getNacimiento());
-        cs.setString(6, arrendamientos.getDni_propietario());
+        if (!paramDni_propietario.getText().isEmpty()) {
+            cs.setString(6, arrendamientos.getDni_propietario());
+        } else {
+            cs.setNull(6, java.sql.Types.VARCHAR);
+        }
         cs.setTimestamp(7, arrendamientos.getFechaIngreso());
         cs.setString(8, arrendamientos.getCorreo());
         cs.setString(9, arrendamientos.getEstado_civil());
         cs.setString(10, arrendamientos.getConyuge());
-        cs.setString(11, arrendamientos.getDni_conyuge());
+        if (!paramDni_conyuge.getText().isEmpty()) {
+            cs.setString(11, arrendamientos.getDni_conyuge());
+        } else {
+            cs.setNull(11, java.sql.Types.VARCHAR);
+        }
         cs.setString(12, arrendamientos.getCiudad());
         cs.setInt(13, arrendamientos.getCelular_conyuge());
         cs.setString(14, arrendamientos.getProvincia());
@@ -210,6 +234,7 @@ public class ArrendamientosDAO {
         JOptionPane.showMessageDialog(null, "No se pudo modificar, error: " + e.toString());
     }
 }
+
 
 
     

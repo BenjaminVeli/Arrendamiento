@@ -213,7 +213,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         );
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel12.setText("Nac :");
+        jLabel12.setText("Nacmnto :");
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel13.setText("Ingreso :");
