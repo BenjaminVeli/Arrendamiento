@@ -77,7 +77,7 @@ public class Contrato extends javax.swing.JFrame {
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
-        jTextField13 = new javax.swing.JTextField();
+        txtpersonas = new javax.swing.JTextField();
         jLabel26 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         txtfechafinal = new javax.swing.JTextField();
@@ -206,7 +206,7 @@ public class Contrato extends javax.swing.JFrame {
                             .addComponent(jLabel25))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField13, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                            .addComponent(txtpersonas, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
                             .addComponent(txtpiso)
                             .addComponent(txtcuarto))
                         .addGap(18, 18, 18)
@@ -247,7 +247,7 @@ public class Contrato extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel23)
-                            .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtpersonas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel26)
                             .addComponent(txtfecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -375,7 +375,7 @@ public class Contrato extends javax.swing.JFrame {
         jLabel13.setText("Datos del Cónyuge ");
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel12.setText("Datos del Garante");
+        jLabel12.setText("Datos del Garante o Verificador");
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel14.setText("Nombre :");
@@ -706,18 +706,18 @@ public class Contrato extends javax.swing.JFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
-        objetoContrato.InsertarContrato(cbArrendador, cbArrendatario,cbGarante);
+        objetoContrato.InsertarContrato(cbArrendador, cbArrendatario,cbGarante,txtpersonas);
         objetoContrato.MostrarContrato(tbAlquiler);
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void tbAlquilerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbAlquilerMouseClicked
         DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
-        objetoContrato.SeleccionarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,cbGarante);
+        objetoContrato.SeleccionarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,cbGarante, txtpersonas);
     }//GEN-LAST:event_tbAlquilerMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         DAO.ContratoDAO objetoContrato = new DAO.ContratoDAO();
-        objetoContrato.ModificarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,  cbGarante);
+        objetoContrato.ModificarContrato(tbAlquiler, idtxt, cbArrendador, cbArrendatario,  cbGarante, txtpersonas);
         objetoContrato.MostrarContrato(tbAlquiler);
     }//GEN-LAST:event_btnModificarActionPerformed
 
@@ -776,11 +776,50 @@ public void exportarAWord() {
         String contenidoArrendador = arrendadorSeleccionado.toString();
         String dniConyuge = txtDniConyuge.getText();
         String nombreConyuge = txtConyuge.getText();
+        String nombreCuarto = txtcuarto.getText();
+        String nombreFecha = txtfecha.getText();
+        String nombreFechaFinal = txtfechafinal.getText();
+        String mensualidad = txtmensualidad.getText();
+        String garantia = txtgarantia.getText();
+        String persona = txtpersonas.getText();
+
         
         if (arrendadorSeleccionado != null) {
             run2.setText(contenidoArrendador + " identificado con DNI N.° " + dniArrendador + ", con domicilio en " + direccionArrendador + " , " + provinciaArrendador + " , el cual de aquí en adelante se le denominará EL ARRENDADOR y "
                     + "por otra parte el Sr. (a)(ta) " + contenidoArrendatario + " , identificado con " + dniArrendatario +  " , con domicilio en " + direccionArrendatario + " , " + provinciaArrendatario + " , con estado civil " + estadocivilArrendatario+
-                    " , quien en adelante se le denominará EL ARRENDATARIO en los términos y condiciones siguientes: .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-."); 
+                    " , quien en adelante se le denominará EL ARRENDATARIO en los términos y condiciones siguientes: .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("TERCERO.- La Merced Conductiva mensual, convenida de mutuo y común acuerdo entre las partes contratantes para el local y sus servicios cuyo objeto de este contrato es de S/ "+mensualidad+ " Soles mensuales, monto que El ARRENDATARIO los abonará con toda puntualidad por adelantado, en el caso de incumplimiento el pago de 1 mensualidad ocasionará RESCISIÓN del presente contrato comprometiéndose EL ARRENDATARIO a devolver el local y sus servicios, en perfecto estado conforme los entrego al momento del ambiente..-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("CUARTO.- El plazo del presente contrato es por tiempo de 01(UN) Año, el cual empieza el " + nombreFecha+ " el mismo que tendrá vigencia de terminó al " + nombreFechaFinal+" como a rescindir antes a solicitud de ambas partes con una anticipación de 30 días.-.-.-");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("QUINTO.- El ARRENDATARIO declara que conoce que toda vez, si es que considere necesario EL ARRENDADOR y/o su representante Administradora, podrá verificar el ambiente con el consentimiento de EL ARRENDATARIO su estado de conservación y el uso del Local Arrendado. .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("SEXTO.- El ARRENDADOR recibe la cantidad de S/ "+mensualidad+ " Soles que corresponde al pago del mes adelantado, y una GARANTÍA de S/ "+garantia+" Soles, cantidad que no generara los intereses y será devuelto al momento de la entrega del local o caso contrario deducirá de este depósito por alguna de la deuda pendiente que podría presentarse en el local arrendada .-");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("SEPTIMO. - De conformidad al Art.5 de la Ley 30201, que modifica el Art.594 del Código Procesal Civil, El arrendatario se allana desde ya a la demanda judicial para desocupar el inmueble por las causales de vencimiento de contrato de arrendamiento o por incumplimiento del pago de la renta de 2 meses y quince días. De acuerdo con lo establecido en el art.330 y siguientes del Código Procesal Civil.");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("OCTAVO.- De conformidad a la Ley Nro. 30933 \" Ley  que regula el procedimiento especial de desalojo con intervención notarial \" que tiene por objeto establecer y regular  el procedimiento especial de desalojo mediante la intervención del notario dentro de la competencia funcional dentro de la provincia en que se ubica el predio arrendado y con ejecución judicial del Juez de Paz Letrado del distrito donde se ubica el inmueble, expresamente ambas partes  ( arrendador y arrendatario) nos sometemos dentro de los alcances del mismo, con capacidad de ejercicio plena y con conocimiento expreso de los alcances del mismo.");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("NOVENO.- Que, ambas partes convienen de mutuo acuerdo para celebrar del Local y sus servicios cuyos objetos de este contrato de arrendamiento, que el Arrendatario "
+                    + "debe responder por tres meses de la merced conductiva del contrato por alguna excepción quiere retirarse del ambiente antes de 03 meses, para las prevalencias del caso. Y cuando falla  del pagos, será causal automático de  nulidad de puro derecho del presente Contrato, la falta de pago de 1 mes, con plazo de 15 días o la mala conducta de EL ARRENDATARIO, el ARRENDADOR procederá a desalojar en caso de resistencia, se procederá con todas las de Ley...-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("DECIMO.- Quedando de acuerdo con el arrendatario, que ocuparan "+ persona + " personas dicho cuarto, en caso de exceder más personas a lo tratado, se procederá a incrementar el precio del alquiler del cuarto.");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("DECIMO PRIMERO.- Ambas partes renunciamos al fuero de sus domicilios y se someten en caso de surgir Controversias referente del presente Contrato de Arrendamiento,"
+                    + " las partes se someterán a la competencia de un centro de Arbitraje RECONOCIDOS POR ley para todos los efectos del presente Contrato...-.-.-.-.-.-.-.-.-.--.-.-.-.-.-.-");
+            run2.addBreak();
+            run2.addBreak();
+            run2.setText("De conformidad en las cláusulas estipuladas en el presente Contrato de Arrendamiento firmamos por duplicado estampando nuestras huellas digitales en señal de Conformidad del presente contrato " + nombreFecha);
         }
 
         if (arrendadorSeleccionado != null) {
@@ -814,7 +853,14 @@ public void exportarAWord() {
         XWPFRun run6 = parrafo6.createRun();
         run6.setText("EL ARRENDADOR" + "                                              EL ARRENDATARIO"+"                                                        CONYUGE DEL");
         run6.setFontSize(9);
-
+        
+        XWPFParagraph parrafo7 = documento.createParagraph();
+        parrafo7.setAlignment(ParagraphAlignment.LEFT);
+        
+        XWPFRun run7 = parrafo7.createRun();
+        run7.setText("CUARTO #  " + nombreCuarto + "          Se hace entrega de .");
+        run7.setFontSize(9);
+        
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         documento.write(out);
 
@@ -929,7 +975,6 @@ public void exportarAWord() {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField13;
     private javax.swing.JTable tbAlquiler;
     private javax.swing.JTextField txtCelularConyuge;
     private javax.swing.JTextField txtCiudad;
@@ -958,6 +1003,7 @@ public void exportarAWord() {
     private javax.swing.JTextField txtfechafinal;
     private javax.swing.JTextField txtgarantia;
     private javax.swing.JTextField txtmensualidad;
+    private javax.swing.JTextField txtpersonas;
     private javax.swing.JTextField txtpiso;
     // End of variables declaration//GEN-END:variables
 
@@ -977,7 +1023,7 @@ public void exportarAWord() {
         txtdireccionArrendador.setText("");
         txtDniArrendador.setText("");
         txtTeleArrendador.setText("");
-        jTextField13.setText("");
+        txtpersonas.setText("");
         txtpiso.setText("");
         txtcuarto.setText("");
         txtfecha.setText("");
@@ -985,6 +1031,13 @@ public void exportarAWord() {
         txtmensualidad.setText("");
         txtgarantia.setText("");
         txtarea.setText("");
-
+        txtConyuge.setText("");
+        txtDepartamentoArrendador.setText("");
+        txtProvinciaArrendador.setText("");
+        txtDistritoArrendador.setText("");
+        txtDepartamentoArrendatario.setText("");
+        txtProvinciaArrendatario.setText("");
+        txtDistritoArrendatario.setText("");
+        txtestadocivil.setText("");
     }
 }

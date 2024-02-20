@@ -119,7 +119,7 @@
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jTextField13" pref="110" max="32767" attributes="0"/>
+                              <Component id="txtpersonas" pref="110" max="32767" attributes="0"/>
                               <Component id="txtpiso" max="32767" attributes="0"/>
                               <Component id="txtcuarto" max="32767" attributes="0"/>
                           </Group>
@@ -173,7 +173,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel23" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextField13" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtpersonas" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel26" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtfecha" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -242,7 +242,7 @@
             <Property name="text" type="java.lang.String" value="# Cuarto :"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="jTextField13">
+        <Component class="javax.swing.JTextField" name="txtpersonas">
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel26">
           <Properties>
@@ -817,7 +817,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Datos del Garante"/>
+                <Property name="text" type="java.lang.String" value="Datos del Garante o Verificador"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel14">
