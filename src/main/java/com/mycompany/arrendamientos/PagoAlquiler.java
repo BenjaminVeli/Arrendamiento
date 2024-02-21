@@ -1,18 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.arrendamientos;
 
-/**
- *
- * @author diego
- */
+import DAO.PagoAlquilerDAO;
+import java.util.ArrayList;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+
 public class PagoAlquiler extends javax.swing.JFrame {
 
     public PagoAlquiler() {
         initComponents();
         this.setLocationRelativeTo(null);
+        cargarNombresClientes();
+    }
+    
+        private void cargarNombresClientes() {
+        PagoAlquilerDAO objetoNombres = new PagoAlquilerDAO();
+        ArrayList<String> cliente = objetoNombres.obtenerNombresClientes();
+        
+        for (String nombre : cliente) {
+            ListaClientesJCBox.addItem(nombre);
+        }
+
+        AutoCompleteDecorator.decorate(ListaClientesJCBox);
     }
 
     @SuppressWarnings("unchecked")
@@ -21,7 +29,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        ListaClientesJCBox = new javax.swing.JComboBox<>();
         btnMore = new javax.swing.JButton();
         btnLess = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -32,7 +40,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         txtAntes1 = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        MostrarAlquileresTable = new javax.swing.JTable();
+        tbMostrarAlquileres = new javax.swing.JTable();
         Soles = new javax.swing.JLabel();
         txtSoles = new javax.swing.JTextField();
         Dolares = new javax.swing.JLabel();
@@ -40,7 +48,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        MostrarCalculosTable = new javax.swing.JTable();
+        tbMostrarCalculos = new javax.swing.JTable();
         Dolares1 = new javax.swing.JLabel();
         txtTotal = new javax.swing.JTextField();
         btnNuevo = new javax.swing.JButton();
@@ -48,7 +56,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         btnRecuperar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbImportes = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         btnReporteCreditos = new javax.swing.JButton();
         btnInteres = new javax.swing.JButton();
@@ -70,8 +78,12 @@ public class PagoAlquiler extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Clientes:");
 
-        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ListaClientesJCBox.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        ListaClientesJCBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ListaClientesJCBoxActionPerformed(evt);
+            }
+        });
 
         btnMore.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnMore.setText("+");
@@ -105,7 +117,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ListaClientesJCBox, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnMore)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -130,7 +142,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 .addContainerGap(9, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ListaClientesJCBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnMore)
                     .addComponent(btnLess)
                     .addComponent(jLabel2)
@@ -144,18 +156,18 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        MostrarAlquileresTable.setModel(new javax.swing.table.DefaultTableModel(
+        tbMostrarAlquileres.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Cuotas", "Fecha", "Importe", "Saldo", "Vencimiento", "Interes"
+
             }
         ));
-        jScrollPane1.setViewportView(MostrarAlquileresTable);
+        jScrollPane1.setViewportView(tbMostrarAlquileres);
 
         Soles.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         Soles.setText("Soles");
@@ -194,21 +206,22 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Soles)
-                    .addComponent(txtSoles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(Dolares)
-                        .addComponent(txtDolares, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtDolares, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Soles)
+                        .addComponent(txtSoles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setText("Amortificaciones");
+        jLabel5.setText("Amortizaciones");
 
-        MostrarCalculosTable.setModel(new javax.swing.table.DefaultTableModel(
+        tbMostrarCalculos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -219,7 +232,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 "Numero", "Fecha", "Detalle", "Importe"
             }
         ));
-        jScrollPane2.setViewportView(MostrarCalculosTable);
+        jScrollPane2.setViewportView(tbMostrarCalculos);
 
         Dolares1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         Dolares1.setText("Total");
@@ -279,7 +292,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbImportes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -290,9 +303,9 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 "Ord", "Vencimiento", "Importe", "Pago", "Saldo", "Estado"
             }
         ));
-        jScrollPane3.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(40);
+        jScrollPane3.setViewportView(tbImportes);
+        if (tbImportes.getColumnModel().getColumnCount() > 0) {
+            tbImportes.getColumnModel().getColumn(0).setPreferredWidth(40);
         }
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -448,6 +461,14 @@ public class PagoAlquiler extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_btnSalirActionPerformed
 
+    private void ListaClientesJCBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ListaClientesJCBoxActionPerformed
+        PagoAlquilerDAO pa_dao = new PagoAlquilerDAO();
+        // Obtener el nombre seleccionado
+        String nombreSeleccionado = (String) ListaClientesJCBox.getSelectedItem();
+        // Mostrar los registros de rent_calculation relacionados al nombre seleccionado
+        pa_dao.MostrarAlquiler(tbMostrarAlquileres, nombreSeleccionado);
+    }//GEN-LAST:event_ListaClientesJCBoxActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -486,8 +507,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Dolares;
     private javax.swing.JLabel Dolares1;
-    private javax.swing.JTable MostrarAlquileresTable;
-    private javax.swing.JTable MostrarCalculosTable;
+    private javax.swing.JComboBox<String> ListaClientesJCBox;
     private javax.swing.JLabel Soles;
     private javax.swing.JButton btnCobranza;
     private javax.swing.JButton btnCobranzaGlobal;
@@ -505,7 +525,6 @@ public class PagoAlquiler extends javax.swing.JFrame {
     private javax.swing.JButton btnReporteCreditos;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnTodoCredito;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -519,7 +538,9 @@ public class PagoAlquiler extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tbImportes;
+    private javax.swing.JTable tbMostrarAlquileres;
+    private javax.swing.JTable tbMostrarCalculos;
     private javax.swing.JTextField txtAntes;
     private javax.swing.JTextField txtAntes1;
     private javax.swing.JTextField txtDolares;

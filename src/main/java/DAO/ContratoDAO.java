@@ -79,8 +79,6 @@ public class ContratoDAO {
         JOptionPane.showMessageDialog(null, "Error al mostrar al arrendador: " + e.toString());
     }
 }
-
-   
     
     int idGarante;
     
@@ -135,8 +133,6 @@ public class ContratoDAO {
         }
     }
 
-
-   
     int idArrendatario;
     
     public void establecerIdArrendatario(int idArrendatario) {
@@ -209,10 +205,6 @@ public class ContratoDAO {
         JOptionPane.showMessageDialog(null, "Error al mostrar al arrendador: " + e.toString());
     }
 }
-
-
-
-
     
     /*************************************   OPERACIONES CRUD   *********************************************/
     
@@ -260,11 +252,6 @@ public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendata
     }
 }
 
-
-
-
-
-    
    public void MostrarContrato(JTable tbAlquiler) {
     CConexion objetoConexion = new CConexion();
     DefaultTableModel modelo = new DefaultTableModel() {
@@ -318,10 +305,6 @@ public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendata
     }
 }
 
-
-
-
-
  public void SeleccionarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboGarante, JTextField paramPersona) {
     try {
         int fila = tbAlquiler.getSelectedRow();
@@ -347,10 +330,6 @@ public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendata
     }
 }
 
-
-
-
-   
    public void ModificarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario,  JComboBox comboGarante, JTextField paramPersona) {
         CConexion objetoConexion = new CConexion();
         String consulta = "UPDATE contrato SET id_rent_calculation=?, id_mantenimiento_arrendador=?,  id_mantenimiento_garante=? , personas=? WHERE id=?";
@@ -384,9 +363,6 @@ public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendata
         }
     }
 
-
-
-
    public void EliminarContrato(JTextField id) {
         CConexion objetoConexion = new CConexion();
         String consulta = "DELETE FROM contrato WHERE id=?";
@@ -401,8 +377,6 @@ public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendata
         }
     }
 
-    
-   
    public void FiltrarClientes(JTable tbAlquiler, String searchText) {
     CConexion objetoConexion = new CConexion();
     DefaultTableModel modelo = (DefaultTableModel) tbAlquiler.getModel();

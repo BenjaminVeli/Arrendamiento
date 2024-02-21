@@ -62,7 +62,7 @@ CREATE TABLE rent_calculation (
   pago_diario DECIMAL(10,2),
   pago_sem DECIMAL(10,2),
   quincenal DECIMAL(10,2),
-  fechafinal DATE,
+  fechafinal VARCHAR(30),
   FOREIGN KEY (floor_id) REFERENCES piso(id),
   FOREIGN KEY (room_id) REFERENCES cuarto(id)
 );
@@ -109,6 +109,7 @@ CREATE TABLE contrato (
     id_rent_calculation INT,
     id_mantenimiento_arrendador INT,
     id_mantenimiento_garante INT,
+    personas INT,
     FOREIGN KEY (id_rent_calculation) REFERENCES rent_calculation(id),
     FOREIGN KEY (id_mantenimiento_arrendador) REFERENCES mantenimiento(id),
     FOREIGN KEY (id_mantenimiento_garante) REFERENCES mantenimiento(id)
