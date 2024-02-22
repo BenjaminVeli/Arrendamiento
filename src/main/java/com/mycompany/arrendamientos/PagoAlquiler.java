@@ -1,7 +1,14 @@
 package com.mycompany.arrendamientos;
 
 import DAO.PagoAlquilerDAO;
+import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
+import java.util.HashSet;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class PagoAlquiler extends javax.swing.JFrame {
@@ -10,13 +17,26 @@ public class PagoAlquiler extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         cargarNombresClientes();
+        
+        // Aplicar el renderizador de celdas para cambiar el color de fondo según el valor de la columna "Pago"
+        applyCellRenderer(tbImporteVariado);
     }
     
         private void cargarNombresClientes() {
         PagoAlquilerDAO objetoNombres = new PagoAlquilerDAO();
         ArrayList<String> cliente = objetoNombres.obtenerNombresClientes();
         
+        // Limpiar los elementos existentes en el JComboBox antes de agregar nuevos
+        ListaClientesJCBox.removeAllItems();
+
+        // Usar un HashSet para almacenar nombres únicos
+        HashSet<String> nombresUnicos = new HashSet<>();
         for (String nombre : cliente) {
+            nombresUnicos.add(nombre);
+        }
+
+        // Agregar los nombres únicos al JComboBox
+        for (String nombre : nombresUnicos) {
             ListaClientesJCBox.addItem(nombre);
         }
 
@@ -56,7 +76,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         btnRecuperar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tbImportes = new javax.swing.JTable();
+        tbImporteVariado = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         btnReporteCreditos = new javax.swing.JButton();
         btnInteres = new javax.swing.JButton();
@@ -167,6 +187,11 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
             }
         ));
+        tbMostrarAlquileres.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbMostrarAlquileresMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbMostrarAlquileres);
 
         Soles.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -292,21 +317,18 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        tbImportes.setModel(new javax.swing.table.DefaultTableModel(
+        tbImporteVariado.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Ord", "Vencimiento", "Importe", "Pago", "Saldo", "Estado"
+
             }
         ));
-        jScrollPane3.setViewportView(tbImportes);
-        if (tbImportes.getColumnModel().getColumnCount() > 0) {
-            tbImportes.getColumnModel().getColumn(0).setPreferredWidth(40);
-        }
+        jScrollPane3.setViewportView(tbImporteVariado);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -469,9 +491,33 @@ public class PagoAlquiler extends javax.swing.JFrame {
         pa_dao.MostrarAlquiler(tbMostrarAlquileres, nombreSeleccionado);
     }//GEN-LAST:event_ListaClientesJCBoxActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void tbMostrarAlquileresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbMostrarAlquileresMouseClicked
+    // Llama al método para mostrar el importe variado cuando se hace clic en una fila de la tabla tbMostrarAlquileres
+    PagoAlquilerDAO pa_dao = new PagoAlquilerDAO();
+    pa_dao.SeleccionaryMostrarImporteVariado(tbMostrarAlquileres, tbImporteVariado);
+    }//GEN-LAST:event_tbMostrarAlquileresMouseClicked
+
+    private void applyCellRenderer(JTable table) {
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                // Obtiene el valor de "Estado"
+                String estadoStr = (String) table.getModel().getValueAt(row, 4);
+
+                // Cambia el color de la fila basándote en el valor de "Estado"
+                if (estadoStr.equals("No cancelado")) {
+                    c.setBackground(Color.RED);
+                } else {
+                    c.setBackground(table.getBackground());
+                }
+
+                return c;
+            }
+        });
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -538,7 +584,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable tbImportes;
+    private javax.swing.JTable tbImporteVariado;
     private javax.swing.JTable tbMostrarAlquileres;
     private javax.swing.JTable tbMostrarCalculos;
     private javax.swing.JTextField txtAntes;

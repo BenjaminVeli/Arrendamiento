@@ -89,7 +89,9 @@ CREATE TABLE importe_variado (
   ord INT,
   fecha DATE,
   importe DECIMAL(10,2),
-  sum_importe DECIMAL(10,2)
+  sum_importe DECIMAL(10,2),
+  pago DECIMAL(10,2) DEFAULT 0.0,
+  estado BOOLEAN DEFAULT false
 );
 
 CREATE TABLE mantenimiento (

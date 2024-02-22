@@ -84,4 +84,46 @@ public class PagoAlquilerDAO {
         }
     }
         
+    public void SeleccionaryMostrarImporteVariado(JTable tbMostrarAlquileres, JTable tbImporteVariado) {
+        try {
+            int fila = tbMostrarAlquileres.getSelectedRow();
+
+            if (fila >= 0) {
+                String idSeleccionado = tbMostrarAlquileres.getValueAt(fila, 0).toString();
+                CConexion objetoConexion = new CConexion();
+
+                String sql = "SELECT ord, fecha, importe, pago, estado FROM importe_variado WHERE rent_calculation_id = ?";
+
+                PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                pst.setString(1, idSeleccionado);
+
+                ResultSet rs = pst.executeQuery();
+
+                DefaultTableModel modelo = new DefaultTableModel();
+                modelo.addColumn("Ord");
+                modelo.addColumn("Fecha");
+                modelo.addColumn("Importe");
+                modelo.addColumn("Pago");
+                modelo.addColumn("Estado");
+
+                while (rs.next()) {
+                    Object[] filaDatos = {
+                        rs.getString("ord"),
+                        rs.getString("fecha"),
+                        rs.getString("importe"),
+                        rs.getString("pago"),
+                        rs.getBoolean("estado") ? "Cancelado" : "No cancelado" // Modificación aquí
+                    };
+                    modelo.addRow(filaDatos);
+                }
+
+                tbImporteVariado.setModel(modelo);
+            } else {
+                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "No se puede mostrar los registros de importe variado del cliente, error: " + e.toString());
+        }
+    }
+
 }
