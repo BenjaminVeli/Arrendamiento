@@ -17,7 +17,9 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 public class ArrendamientosDAO {
-    public void InsertarCliente(JTextField paramNombre, JTextField paramRuc, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramCelular, JDateChooser txtNacimiento1, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox<String> paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad, JTextField paramCelularConyuge, JTextField paramProvincia, JTextField paramDepartamento, JTextField paramDistrito) {
+    
+    
+public void InsertarCliente(JTextField paramNombre, JTextField paramRuc, JTextField paramDireccion_propietario, JDateChooser paramNacimiento, JDateChooser paramFecha_ingreso, JTextField paramCelular, JDateChooser txtNacimiento1, JTextField paramDni_propietario, JTextField paramCorreo, JComboBox<String> paramEstado_civil, JTextField paramConyuge, JTextField paramDni_conyuge, JTextField paramCiudad, JTextField paramCelularConyuge, JTextField paramProvincia, JTextField paramDepartamento, JTextField paramDistrito) {
     CConexion objetoConexion = new CConexion();
     String consulta = "INSERT INTO datos_cli_prov (nombre, ruc, direccion_propietario, celular, nacimiento, dni_propietario, fecha_ingreso, correo, estado_civil, conyuge, dni_conyuge, ciudad, celular_conyuge, provincia, departamento, distrito) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -25,30 +27,51 @@ public class ArrendamientosDAO {
         java.sql.CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
         cs.setString(1, paramNombre.getText());
+        
         if (!paramRuc.getText().isEmpty()) {
             cs.setString(2, paramRuc.getText());
         } else {
             cs.setNull(2, java.sql.Types.VARCHAR);
         }
+        
         cs.setString(3, paramDireccion_propietario.getText());
         cs.setInt(4, Integer.parseInt(paramCelular.getText()));
         cs.setDate(5, new java.sql.Date(paramNacimiento.getDate().getTime()));
+        
         if (!paramDni_propietario.getText().isEmpty()) {
             cs.setString(6, paramDni_propietario.getText());
         } else {
             cs.setNull(6, java.sql.Types.VARCHAR);
         }
+        
         cs.setTimestamp(7, new java.sql.Timestamp(paramFecha_ingreso.getDate().getTime()));
         cs.setString(8, paramCorreo.getText());
         cs.setString(9, (String) paramEstado_civil.getSelectedItem());
-        cs.setString(10, paramConyuge.getText());
-        if (!paramDni_conyuge.getText().isEmpty()) {
-            cs.setString(11, paramDni_conyuge.getText());
+       
+        // Verifica si el estado civil seleccionado es "Casado/a"
+        if (((String) paramEstado_civil.getSelectedItem()).equalsIgnoreCase("Casado/a")) {
+            // Si es "Casado/a", se requiere la información del cónyuge
+            String conyuge = paramConyuge.getText();
+            String dniConyuge = paramDni_conyuge.getText();
+            String ciudadConyuge = paramCiudad.getText();
+            String celularConyuge = paramCelularConyuge.getText();
+
+            // Verifica si los campos obligatorios para el cónyuge están vacíos
+            if (conyuge.isEmpty() || dniConyuge.isEmpty() || ciudadConyuge.isEmpty() || celularConyuge.isEmpty()) {
+                throw new IllegalArgumentException("Los campos del cónyuge son obligatorios para el estado civil 'Casado/a'.");
+            }
+            
+            cs.setString(10, conyuge);
+            cs.setString(11, dniConyuge);
+            cs.setString(12, ciudadConyuge);
+            cs.setInt(13, Integer.parseInt(celularConyuge));
         } else {
+            // Si no es "Casado/a", estos campos no son obligatorios, se establecen como nulos
+            cs.setNull(10, java.sql.Types.VARCHAR);
             cs.setNull(11, java.sql.Types.VARCHAR);
-        }
-        cs.setString(12, paramCiudad.getText());
-        cs.setInt(13, Integer.parseInt(paramCelularConyuge.getText()));
+            cs.setNull(12, java.sql.Types.VARCHAR);
+            cs.setNull(13, java.sql.Types.INTEGER);
+        } 
         cs.setString(14, paramProvincia.getText());
         cs.setString(15, paramDepartamento.getText());
         cs.setString(16, paramDistrito.getText());
@@ -57,10 +80,13 @@ public class ArrendamientosDAO {
         JOptionPane.showMessageDialog(null, "Se insertó correctamente");
     } catch (SQLIntegrityConstraintViolationException e) {
         JOptionPane.showMessageDialog(null, "El DNI o RUC ya están ingresados", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (IllegalArgumentException e) {
+        JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
+        JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+
 
 
 
@@ -173,12 +199,32 @@ public class ArrendamientosDAO {
     arrendamientos.setDni_propietario(paramDni_propietario.getText());
     arrendamientos.setCorreo(paramCorreo.getText());
     arrendamientos.setEstado_civil((String) paramEstado_civil.getSelectedItem());
-    arrendamientos.setConyuge(paramConyuge.getText());
-    arrendamientos.setDni_conyuge(paramDni_conyuge.getText());
-    arrendamientos.setCiudad(paramCiudad.getText());
-    java.util.Date fechaIngresoUtil = paramFecha_ingreso.getDate();
-    arrendamientos.setFechaIngreso(new Timestamp(fechaIngresoUtil.getTime()));
-    arrendamientos.setCelular_conyuge(Integer.parseInt(paramCelularConyuge.getText()));
+    
+    // Verifica si el estado civil seleccionado es "Casado/a"
+    if (((String) paramEstado_civil.getSelectedItem()).equalsIgnoreCase("Casado/a")) {
+        // Si es "Casado/a", se requiere la información del cónyuge
+        String conyuge = paramConyuge.getText();
+        String dniConyuge = paramDni_conyuge.getText();
+        String ciudadConyuge = paramCiudad.getText();
+        String celularConyuge = paramCelularConyuge.getText();
+
+        // Verifica si los campos obligatorios para el cónyuge están vacíos
+        if (conyuge.isEmpty() || dniConyuge.isEmpty() || ciudadConyuge.isEmpty() || celularConyuge.isEmpty()) {
+            throw new IllegalArgumentException("Los campos del cónyuge son obligatorios para el estado civil 'Casado/a'.");
+        }
+        
+        arrendamientos.setConyuge(conyuge);
+        arrendamientos.setDni_conyuge(dniConyuge);
+        arrendamientos.setCiudad(ciudadConyuge);
+        arrendamientos.setCelular_conyuge(Integer.parseInt(celularConyuge));
+    } else {
+        // Si no es "Casado/a", estos campos no son obligatorios, se establecen como nulos
+        arrendamientos.setConyuge(null);
+        arrendamientos.setDni_conyuge(null);
+        arrendamientos.setCiudad(null);
+        arrendamientos.setCelular_conyuge(0);
+    } 
+    
     arrendamientos.setProvincia(paramProvincia.getText());
     arrendamientos.setDepartamento(paramDepartamento.getText());
     arrendamientos.setDistrito(paramDistrito.getText());
@@ -230,10 +276,13 @@ public class ArrendamientosDAO {
 
     } catch (SQLIntegrityConstraintViolationException e) {
         JOptionPane.showMessageDialog(null, "No es posible modificar al cliente, ya que el DNI o RUC ingresado ya está registrado.", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (IllegalArgumentException e) {
+        JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "No se pudo modificar, error: " + e.toString());
     }
 }
+
 
 
 
