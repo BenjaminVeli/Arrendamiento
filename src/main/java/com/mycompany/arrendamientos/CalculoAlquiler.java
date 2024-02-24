@@ -1084,6 +1084,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             double total_rent = Double.parseDouble(totalAlquilertxt.getText());
             double sumaCapital = Double.parseDouble(txtSumCapital.getText());
             double sumaInteres = Double.parseDouble(txtSumInteres.getText());
+            double sumaPorPagar = Double.parseDouble(txtSumMensual.getText());
 
             // Convertir java.util.Date a java.sql.Date
             java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
@@ -1099,10 +1100,10 @@ public class CalculoAlquiler extends javax.swing.JFrame {
             // Condicionar el guardado de cálculos según la opción seleccionada
             
             switch (tiposPago) {
-                case "Diario" -> importeVariadoDao.insertarCalculosDiarios(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres);
-                case "Semanal" -> importeVariadoDao.insertarCalculosSemanal(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres);
-                case "Quincenal" -> importeVariadoDao.insertarCalculosQuincenal(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres);
-                case "Mensual" -> importeVariadoDao.insertarCalculosMensual(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres);
+                case "Diario" -> importeVariadoDao.insertarCalculosDiarios(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, sumaPorPagar);
+                case "Semanal" -> importeVariadoDao.insertarCalculosSemanal(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, sumaPorPagar);
+                case "Quincenal" -> importeVariadoDao.insertarCalculosQuincenal(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, sumaPorPagar);
+                case "Mensual" -> importeVariadoDao.insertarCalculosMensual(search.getSelectedItem().toString(), cuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, sumaPorPagar);
                 default -> JOptionPane.showMessageDialog(null, "Opción no válida");
             }
             
@@ -1165,6 +1166,7 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         double total_rent = Double.parseDouble(totalAlquilertxt.getText());
         double sumaCapital = Double.parseDouble(txtSumCapital.getText());
         double sumaInteres = Double.parseDouble(txtSumInteres.getText());
+        double sumaPorPagar = Double.parseDouble(txtSumMensual.getText());
 
         // Convertir java.util.Date a java.sql.Date
         java.sql.Date fecha = new java.sql.Date(utilFecha.getTime());
@@ -1177,10 +1179,10 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         dao.ModificarCalculoAlquiler(tbTotalCalculo,idtxt, search, alquilertxt,garantiatxt, pisostxt, cuartostxt,interesestxt,totaltxt,totalAlquilertxt,fechatxt,fechaingresotxt,mensualtxt, selectPago, pagoDiariotxt , pagoSemtxt, pagoQuincenaltxt,fecha_finaltxt);
         
         switch (tiposPago) {
-            case "Diario" -> importeVariadoDao.recalcularCalculosDiarios(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
-            case "Semanal" -> importeVariadoDao.recalcularCalculosSemanal(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
-            case "Quincenal" -> importeVariadoDao.recalcularCalculosQuincenal(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
-            case "Mensual" -> importeVariadoDao.recalcularCalculosMensual(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt);
+            case "Diario" -> importeVariadoDao.recalcularCalculosDiarios(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt, sumaPorPagar);
+            case "Semanal" -> importeVariadoDao.recalcularCalculosSemanal(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt, sumaPorPagar);
+            case "Quincenal" -> importeVariadoDao.recalcularCalculosQuincenal(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt, sumaPorPagar);
+            case "Mensual" -> importeVariadoDao.recalcularCalculosMensual(tbTotalCalculo, search.getSelectedItem().toString(), nuevaCuotas, fecha_ingreso, total_rent, sumaCapital, sumaInteres, totaltxt, sumaPorPagar);
             default -> JOptionPane.showMessageDialog(null, "Opción no válida");
         }
         

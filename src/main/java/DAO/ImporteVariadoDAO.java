@@ -69,7 +69,7 @@ public class ImporteVariadoDAO {
         }
     }
     
-    public void insertarCalculosDiarios(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public void insertarCalculosDiarios(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar) {
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
         
@@ -79,7 +79,8 @@ public class ImporteVariadoDAO {
             
             double totalCuotas = cuotas * 30;
             
-            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+            
             // Bucle A
             for (int i = 1; i <= totalCuotas; i++) {
             
@@ -92,6 +93,10 @@ public class ImporteVariadoDAO {
             // Obtener la fecha como java.sql.Date
             java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
             
+            // Calcular los Saldos
+            double saldos = (sumaPorPagar / totalCuotas) * (i);
+            double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+      
                 try {
                     PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
                     
@@ -100,6 +105,7 @@ public class ImporteVariadoDAO {
                     pst.setDate(3, fechaSQL); // Esta inserción esta bien
                     pst.setBigDecimal(4, new BigDecimal(0.0)); // Esta inserción esta bien
                     pst.setBigDecimal(5, new BigDecimal(0.0));
+                    pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                     
                     int resultado = pst.executeUpdate();
                     
@@ -132,7 +138,7 @@ public class ImporteVariadoDAO {
         System.out.println("Calculos del Importe Diario Insertado");
     }
     
-    public void insertarCalculosSemanal(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public void insertarCalculosSemanal(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar) {
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
         
@@ -142,7 +148,7 @@ public class ImporteVariadoDAO {
             
             double totalCuotas = cuotas * 4;
             
-            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
             // Bucle A
             for (int i = 1; i <= totalCuotas; i++) {
             
@@ -154,7 +160,11 @@ public class ImporteVariadoDAO {
             
             // Obtener la fecha como java.sql.Date
             java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
-            
+                        
+            // Calcular los Saldos
+            double saldos = (sumaPorPagar / totalCuotas) * (i);
+            double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+        
                 try {
                     PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
                     
@@ -163,6 +173,7 @@ public class ImporteVariadoDAO {
                     pst.setDate(3, fechaSQL); // Esta inserción esta bien
                     pst.setBigDecimal(4, new BigDecimal(0.0));
                     pst.setBigDecimal(5, new BigDecimal(0.0));
+                    pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                     
                     int resultado = pst.executeUpdate();
                     
@@ -195,7 +206,7 @@ public class ImporteVariadoDAO {
         System.out.println("Calculos del Importe Semanal Insertado");
     }
     
-    public void insertarCalculosQuincenal(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public void insertarCalculosQuincenal(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar) {
         
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
@@ -206,7 +217,8 @@ public class ImporteVariadoDAO {
             
             double totalCuotas = cuotas * 2;
             
-            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+            
             // Bucle A
             for (int i = 1; i <= totalCuotas; i++) {
             
@@ -220,6 +232,10 @@ public class ImporteVariadoDAO {
             // Obtener la fecha como java.sql.Date
             java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
             
+            // Calcular los Saldos
+            double saldos = (sumaPorPagar / totalCuotas) * (i);
+            double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+            
                 try {
                     PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
                     
@@ -228,6 +244,7 @@ public class ImporteVariadoDAO {
                     pst.setDate(3, fechaSQL); // Esta inserción esta bien
                     pst.setBigDecimal(4, new BigDecimal(0.0));
                     pst.setBigDecimal(5, new BigDecimal(0.0));
+                    pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                     
                     int resultado = pst.executeUpdate();
                     
@@ -260,7 +277,7 @@ public class ImporteVariadoDAO {
         System.out.println("Calculos del Importe Quincenal Insertado");
     }
     
-    public void insertarCalculosMensual(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
+    public void insertarCalculosMensual(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar) {
         
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
@@ -269,7 +286,7 @@ public class ImporteVariadoDAO {
             // Obtener el id de rent_calculation
             int clientRentId = ca.obtenerIdRentCalculation(nombreCliente);
             
-            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
             // Bucle A
             for (int i = 1; i <= cuotas; i++) {
             
@@ -282,6 +299,10 @@ public class ImporteVariadoDAO {
             // Obtener la fecha como java.sql.Date
             java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
             
+            // Calcular los Saldos
+            double saldos = (sumaPorPagar / cuotas) * (i);
+            double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+            
                 try {
                     PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
                     
@@ -290,6 +311,7 @@ public class ImporteVariadoDAO {
                     pst.setDate(3, fechaSQL); // Esta inserción esta bien
                     pst.setBigDecimal(4, new BigDecimal(0.0));
                     pst.setBigDecimal(5, new BigDecimal(0.0));
+                    pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                     
                     int resultado = pst.executeUpdate();
                     
@@ -325,7 +347,7 @@ public class ImporteVariadoDAO {
     // "Actualizar" datos hacia la tabla importe_variado
     
     public void recalcularCalculosDiarios(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas, Date fecha, double total_rent, double sumaCapital, 
-                                                                    double sumaInteres, JTextField totaltxt){
+                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar){
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
         
@@ -365,9 +387,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / totalCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+     
                         // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -377,6 +402,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -417,9 +443,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / totalCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+     
                         // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -429,6 +458,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -469,9 +499,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / totalCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+     
                         // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -481,6 +514,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -515,7 +549,7 @@ public class ImporteVariadoDAO {
     }
             
     public void recalcularCalculosSemanal(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas, Date fecha, double total_rent, double sumaCapital, 
-                                                                    double sumaInteres, JTextField totaltxt){
+                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar){
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
         
@@ -554,10 +588,13 @@ public class ImporteVariadoDAO {
 
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
-                        
+
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / totalCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+     
                         // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -567,6 +604,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -607,9 +645,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / totalCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+     
                         // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -619,6 +660,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -659,9 +701,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / totalCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+     
                         // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -671,6 +716,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -705,7 +751,7 @@ public class ImporteVariadoDAO {
     }
             
     public void recalcularCalculosQuincenal(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas, Date fecha, double total_rent, double sumaCapital, 
-                                                                    double sumaInteres, JTextField totaltxt){
+                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar){
         
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
@@ -748,9 +794,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
-                        // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / totalCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+             
+                        // Insertar a la base de datos          
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -760,6 +809,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -801,9 +851,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / totalCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+          
                         // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -813,6 +866,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -854,9 +908,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / totalCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+          
                         // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -866,6 +923,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -900,7 +958,7 @@ public class ImporteVariadoDAO {
     }
     
     public void recalcularCalculosMensual(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas, Date fecha, double total_rent, double sumaCapital, 
-                                                                    double sumaInteres, JTextField totaltxt){
+                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar){
     
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
@@ -940,9 +998,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
-                        // Insertar a la base de datos
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / nuevaCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
                         
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        // Insertar a la base de datos
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -952,6 +1013,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -990,9 +1052,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
-                        // Insertar a la base de datos
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / nuevaCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
                         
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        // Insertar a la base de datos
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -1002,6 +1067,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -1040,9 +1106,12 @@ public class ImporteVariadoDAO {
                         // Obtener la fecha como java.sql.Date
                         java.sql.Date fechaSQL = new java.sql.Date(calendar.getTimeInMillis());
                         
-                        // Insertar a la base de datos
-                        
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe) VALUES (?, ?, ?, ?, ?)";
+                        // Calcular los Saldos
+                        double saldos = (sumaPorPagar / nuevaCuotas) * (i);
+                        double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
+     
+                        // Insertar a la base de datos 
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -1052,6 +1121,7 @@ public class ImporteVariadoDAO {
                             pst.setDate(3, fechaSQL); // Esta inserción esta bien
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
+                            pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
                             
                             int resultado = pst.executeUpdate();
                             
@@ -1106,16 +1176,4 @@ public class ImporteVariadoDAO {
         }
     }
     
-    /*public void obtenerId(JTable paramTablaCalculosAlquiler){
-        CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
-    
-        int fila = paramTablaCalculosAlquiler.getSelectedRow();
-        if (fila >= 0) {
-            // Obtén el ID de la fila seleccionada
-            String idSeleccionado = paramTablaCalculosAlquiler.getValueAt(fila, 0).toString();
-            System.out.println("El id del registro seleccionado es: " + idSeleccionado);
-        } else {
-            System.out.println("No se selecciono ni una fila");
-        }
-    }*/
 }

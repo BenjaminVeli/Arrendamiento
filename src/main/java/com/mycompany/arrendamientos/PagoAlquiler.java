@@ -498,19 +498,25 @@ public class PagoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_tbMostrarAlquileresMouseClicked
 
     private void applyCellRenderer(JTable table) {
+        
+        Color customRed = new Color(255, 117, 112); // Por ejemplo, un rojo brillante
+        
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                // Obtiene el valor de "Estado"
-                String estadoStr = (String) table.getModel().getValueAt(row, 4);
+                // Obtiene el valor de "Saldos"
+                String saldosStr = (String) table.getModel().getValueAt(row, 3);
 
-                // Cambia el color de la fila basándote en el valor de "Estado"
-                if (estadoStr.equals("No cancelado")) {
-                    c.setBackground(Color.RED);
+                // Convierte el valor de "Saldos" a un double
+                double saldos = Double.parseDouble(saldosStr);
+
+                // Cambia el color de la fila basándote en el valor de "Saldos"
+                if (saldos == 0.00) {
+                    c.setBackground(Color.WHITE); // Fila blanca si los saldos son 0
                 } else {
-                    c.setBackground(table.getBackground());
+                    c.setBackground(customRed); // Fila roja si los saldos son diferentes de 0
                 }
 
                 return c;
