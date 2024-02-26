@@ -330,38 +330,54 @@ public void InsertarContrato(JComboBox comboArrendador, JComboBox comboArrendata
     }
 }
 
-   public void ModificarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario,  JComboBox comboGarante, JTextField paramPersona) {
-        CConexion objetoConexion = new CConexion();
-        String consulta = "UPDATE contrato SET id_rent_calculation=?, id_mantenimiento_arrendador=?,  id_mantenimiento_garante=? , personas=? WHERE id=?";
+   public void ModificarContrato(JTable tbAlquiler, JTextField id, JComboBox comboArrendador, JComboBox comboArrendatario, JComboBox comboGarante, JTextField paramPersona) {
+    CConexion objetoConexion = new CConexion();
+    String consulta = "UPDATE contrato SET id_rent_calculation=?, id_mantenimiento_arrendador=?,  id_mantenimiento_garante=? , personas=? WHERE id=?";
 
-        try {
-            CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
+    try {
+        CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
-            int fila = tbAlquiler.getSelectedRow();
+        int fila = tbAlquiler.getSelectedRow();
 
-            if (fila >= 0) {
-                int idContrato = Integer.parseInt(id.getText());
-                int idArrendador = (int) comboArrendador.getClientProperty(comboArrendador.getSelectedItem());
-                int idArrendatario = (int) comboArrendatario.getClientProperty(comboArrendatario.getSelectedItem());
-                int idGarante = (int) comboGarante.getClientProperty(comboGarante.getSelectedItem());
-                int personas = Integer.parseInt(paramPersona.getText());
-                
-                cs.setInt(1, idArrendatario);
-                cs.setInt(2, idArrendador);
-                cs.setInt(3, idGarante);
-                cs.setInt(4,personas);
-                cs.setInt(5, idContrato);
-                    
-                cs.executeUpdate();
+        if (fila >= 0) {
+            int idContrato = Integer.parseInt(id.getText());
+            int idArrendador = (int) comboArrendador.getClientProperty(comboArrendador.getSelectedItem());
+            int idArrendatario = (int) comboArrendatario.getClientProperty(comboArrendatario.getSelectedItem());
+            Integer idGarante = null;
 
-                JOptionPane.showMessageDialog(null, "Contrato modificado correctamente");
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al modificar contrato: No se ha seleccionado ningún contrato");
+            if (comboGarante.getSelectedItem() != null) {
+                idGarante = (int) comboGarante.getClientProperty(comboGarante.getSelectedItem());
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al modificar contrato: " + e.toString());
+
+            Integer personas = null;
+            if (!paramPersona.getText().isEmpty()) {
+                personas = Integer.parseInt(paramPersona.getText());
+            }
+
+            cs.setInt(1, idArrendatario);
+            cs.setInt(2, idArrendador);
+            if (idGarante != null) {
+                cs.setInt(3, idGarante);
+            } else {
+                cs.setNull(3, java.sql.Types.INTEGER);
+            }
+            if (personas != null) {
+                cs.setInt(4, personas);
+            } else {
+                cs.setNull(4, java.sql.Types.INTEGER);
+            }
+            cs.setInt(5, idContrato);
+
+            cs.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Contrato modificado correctamente");
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al modificar contrato: No se ha seleccionado ningún contrato");
         }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al modificar contrato: " + e.toString());
     }
+}
 
    public void EliminarContrato(JTextField id) {
         CConexion objetoConexion = new CConexion();

@@ -3,12 +3,31 @@ package com.mycompany.arrendamientos;
 import DAO.PagoAlquilerDAO;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FontUnderline;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class PagoAlquiler extends javax.swing.JFrame {
@@ -20,6 +39,12 @@ public class PagoAlquiler extends javax.swing.JFrame {
         
         // Aplicar el renderizador de celdas para cambiar el color de fondo según el valor de la columna "Pago"
         applyCellRenderer(tbImporteVariado);
+        
+        btnGeneral.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent evt) {
+                exportarAExcelGeneral();
+            }
+        });
     }
     
         private void cargarNombresClientes() {
@@ -554,6 +579,101 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 new PagoAlquiler().setVisible(true);
             }
         });
+    }
+    
+    
+    public static void exportarAExcelGeneral() {
+          try {
+            // Conexión a la base de datos
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT rent_calculation.id, datos_cli_prov.nombre AS cliente_nombre, cuarto.numcuarto, rent_calculation.mensual FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id");
+
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Alquiler Global");
+
+            XSSFCellStyle estiloProforma = workbook.createCellStyle();
+            XSSFFont fontProforma = workbook.createFont();
+            fontProforma.setFontHeightInPoints((short) 20);
+            fontProforma.setBold(true);
+            fontProforma.setUnderline(FontUnderline.SINGLE);
+            estiloProforma.setFont(fontProforma);
+            
+            
+            Row proformaRow = sheet.createRow(0);
+            Cell proformaCellC = proformaRow.createCell(0);
+            proformaCellC.setCellValue("ALQUILER GLOBAL");
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+            proformaCellC.setCellStyle(estiloProforma);
+
+            // Estilos para encabezado
+            CellStyle estiloHeadersRow = workbook.createCellStyle();
+            estiloHeadersRow.setAlignment(HorizontalAlignment.CENTER);
+            estiloHeadersRow.setBorderBottom(BorderStyle.THIN);
+            estiloHeadersRow.setBorderTop(BorderStyle.THIN);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setFontHeightInPoints((short) 13);
+
+            
+            // Estilos para filas de informacióm
+            CellStyle estiloInfoRow = workbook.createCellStyle();
+            estiloInfoRow.setAlignment(HorizontalAlignment.CENTER);
+            estiloInfoRow.setBorderBottom(BorderStyle.DASHED);
+            
+
+           
+            // Encabezados de columnas
+            Row headersRow = sheet.createRow(2);
+            headersRow.createCell(0).setCellValue("ID");
+            headersRow.createCell(1).setCellValue("Cuarto");
+            headersRow.createCell(2).setCellValue("Cliente");
+            headersRow.createCell(3).setCellValue("Mensualidad");
+            headersRow.createCell(4).setCellValue("F.Vencimiento");
+            for (Cell cell : headersRow) {
+            cell.setCellStyle(estiloHeadersRow);
+            estiloHeadersRow.setFont(fontHeader);
+
+            }
+            
+            
+            int rowNum = 4; // Empieza a escribir los datos desde la fila 3
+            while (resultSet.next()) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(resultSet.getInt("id"));
+                String numCuarto = resultSet.getString("numcuarto");
+                String textoCompleto = "CUARTO # " + numCuarto;
+                row.createCell(1).setCellValue(textoCompleto);
+                row.createCell(2).setCellValue(resultSet.getString("cliente_nombre"));
+                row.createCell(3).setCellValue(resultSet.getString("mensual"));
+                for (int i = 4; i < rowNum; i++) { // Suponiendo que las filas de datos comienzan desde la fila 4
+            Row dataRow = sheet.getRow(i);
+            for (Cell cell : dataRow) {
+                cell.setCellStyle(estiloInfoRow);
+            }
+        }
+            }
+
+            // Autoajustar el ancho de las columnas
+            for (int i = 0; i < headersRow.getLastCellNum(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Guardar el libro en un archivo temporal
+            File tempFile = File.createTempFile("detalle", ".xlsx");
+            try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
+                workbook.write(fileOut);
+                JOptionPane.showMessageDialog(null, "Datos exportados correctamente a Excel.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
+            }
+
+            // Abrir el archivo Excel recién creado
+            Desktop.getDesktop().open(tempFile);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.toString());
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
