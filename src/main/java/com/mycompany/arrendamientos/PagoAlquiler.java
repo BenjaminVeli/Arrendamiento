@@ -583,13 +583,28 @@ public class PagoAlquiler extends javax.swing.JFrame {
     
     
     public static void exportarAExcelGeneral() {
-          try {
-            // Conexión a la base de datos
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT rent_calculation.id, datos_cli_prov.nombre AS cliente_nombre, cuarto.numcuarto, rent_calculation.mensual FROM rent_calculation INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id");
+    try {
+        // Conexión a la base de datos
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
+        Statement statement = connection.createStatement();
+        String consultaCompleta = "SELECT rent_calculation.id, datos_cli_prov.nombre AS cliente_nombre, cuarto.numcuarto, rent_calculation.mensual, importe_variado.fecha , importe_variado.saldos " +
+    "FROM rent_calculation " +
+    "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+    "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+    "INNER JOIN importe_variado ON rent_calculation.id = importe_variado.rent_calculation_id " +
+    "WHERE importe_variado.fecha = (" +
+    "   SELECT fecha " +
+    "   FROM importe_variado " +
+    "   WHERE rent_calculation_id = rent_calculation.id " +
+    "   AND estado = 0 " +
+    "   AND id > (SELECT id FROM importe_variado WHERE rent_calculation_id = rent_calculation.id AND estado = 1 LIMIT 1) " +
+    "   ORDER BY id ASC " +
+    "   LIMIT 1" +
+    ")";
+ResultSet resultSet = statement.executeQuery(consultaCompleta);
 
-            XSSFWorkbook workbook = new XSSFWorkbook();
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("Alquiler Global");
 
             XSSFCellStyle estiloProforma = workbook.createCellStyle();
@@ -628,14 +643,13 @@ public class PagoAlquiler extends javax.swing.JFrame {
             headersRow.createCell(0).setCellValue("ID");
             headersRow.createCell(1).setCellValue("Cuarto");
             headersRow.createCell(2).setCellValue("Cliente");
-            headersRow.createCell(3).setCellValue("Mensualidad");
+            headersRow.createCell(3).setCellValue("Saldo");
             headersRow.createCell(4).setCellValue("F.Vencimiento");
             for (Cell cell : headersRow) {
             cell.setCellStyle(estiloHeadersRow);
             estiloHeadersRow.setFont(fontHeader);
 
             }
-            
             
             int rowNum = 4; // Empieza a escribir los datos desde la fila 3
             while (resultSet.next()) {
@@ -645,7 +659,8 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 String textoCompleto = "CUARTO # " + numCuarto;
                 row.createCell(1).setCellValue(textoCompleto);
                 row.createCell(2).setCellValue(resultSet.getString("cliente_nombre"));
-                row.createCell(3).setCellValue(resultSet.getString("mensual"));
+                row.createCell(3).setCellValue(resultSet.getString("saldos"));
+                row.createCell(4).setCellValue(resultSet.getString("fecha"));
                 for (int i = 4; i < rowNum; i++) { // Suponiendo que las filas de datos comienzan desde la fila 4
             Row dataRow = sheet.getRow(i);
             for (Cell cell : dataRow) {
@@ -668,7 +683,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
             }
 
-            // Abrir el archivo Excel recién creado
+            // Abrir el archivo Excel recién creado 
             Desktop.getDesktop().open(tempFile);
 
         } catch (Exception e) {
