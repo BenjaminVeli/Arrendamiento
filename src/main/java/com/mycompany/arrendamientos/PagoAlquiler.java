@@ -292,6 +292,11 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         btnNuevo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnNuevo.setText("Nuevo");
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
+            }
+        });
 
         btnReporte.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnReporte.setText("Reporte");
@@ -421,7 +426,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(btnObservacion)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnGeneral)
                         .addGap(27, 27, 27)
                         .addComponent(btnCobranzaGlobal)
@@ -521,6 +526,20 @@ public class PagoAlquiler extends javax.swing.JFrame {
     PagoAlquilerDAO pa_dao = new PagoAlquilerDAO();
     pa_dao.SeleccionaryMostrarImporteVariado(tbMostrarAlquileres, tbImporteVariado);
     }//GEN-LAST:event_tbMostrarAlquileresMouseClicked
+
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+                int filaSeleccionada = tbImporteVariado.getSelectedRow();
+        
+        if (filaSeleccionada >= 0) {
+            String idSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 0).toString();
+            // Abre el JFrame "Amortizaciones" y pasa el ID seleccionado como parámetro
+            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado);
+            amortizaciones.setVisible(true);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila primero.");
+        }
+    }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void applyCellRenderer(JTable table) {
         

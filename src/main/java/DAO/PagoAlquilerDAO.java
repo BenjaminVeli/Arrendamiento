@@ -11,11 +11,15 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class PagoAlquilerDAO {
     
@@ -88,7 +92,7 @@ public class PagoAlquilerDAO {
                 String idSeleccionado = tbMostrarAlquileres.getValueAt(fila, 0).toString();
                 CConexion objetoConexion = new CConexion();
 
-                String sql = "SELECT ord, fecha, importe, saldos, pago, estado FROM importe_variado WHERE rent_calculation_id = ?";
+                String sql = "SELECT id, ord, fecha, importe, pago, saldos, estado FROM importe_variado WHERE rent_calculation_id = ?";
 
                 PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
                 pst.setString(1, idSeleccionado);
@@ -96,20 +100,22 @@ public class PagoAlquilerDAO {
                 ResultSet rs = pst.executeQuery();
 
                 DefaultTableModel modelo = new DefaultTableModel();
+                modelo.addColumn("ID");
                 modelo.addColumn("Ord");
                 modelo.addColumn("Fecha");
                 modelo.addColumn("Importe");
-                modelo.addColumn("Saldos");
                 modelo.addColumn("Pago");
+                modelo.addColumn("Saldos");
                 modelo.addColumn("Estado");
 
                 while (rs.next()) {
                     Object[] filaDatos = {
+                        rs.getString("id"),
                         rs.getString("ord"),
                         rs.getString("fecha"),
                         rs.getString("importe"),
-                        rs.getString("Saldos"),
                         rs.getString("pago"),
+                        rs.getString("Saldos"),
                         rs.getBoolean("estado") ? "Cancelado" : "No cancelado" // Modificación aquí
                     };
                     modelo.addRow(filaDatos);
@@ -124,4 +130,20 @@ public class PagoAlquilerDAO {
         }
     }
 
+    public void SeleccionaryAmortización(JTable tbImporteVariado){
+        try {
+            int fila = tbImporteVariado.getSelectedRow();
+
+            if (fila >= 0) {
+                String idSeleccionado = tbImporteVariado.getValueAt(fila, 0).toString();
+                
+                System.err.println("EL numero de orden seleccionado es: " + idSeleccionado);
+            } else {
+                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "No se puede mostrar los registros de importe variado del cliente, error: " + e.toString());
+        }
+    }
+    
 }
