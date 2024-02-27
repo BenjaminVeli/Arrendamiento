@@ -17,10 +17,12 @@ public class CrearCuarto extends javax.swing.JFrame {
          initComponents();
          this.setLocationRelativeTo(null);
          txtId.setEnabled(false);
+         txtrutaimagen.setEnabled(false);
          CuartoDAO objetoCuartos = new CuartoDAO();
          objetoCuartos.MostrarPisoCombo(cbpiso);
          objetoCuartos.MostrarCuartos(tbTotalCuartos);
          Limpiar();
+         
 
     }
    
@@ -802,7 +804,7 @@ public class CrearCuarto extends javax.swing.JFrame {
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
        CuartoDAO objetoCuartos = new CuartoDAO();
-       objetoCuartos.ModificarCuartos(tbTotalCuartos, txtId, cbpiso, txtCuarto, txtMetraje);
+       objetoCuartos.ModificarCuartos(tbTotalCuartos, txtId, cbpiso, txtCuarto, txtMetraje,archivoseleccionado);
        objetoCuartos.MostrarCuartos(tbTotalCuartos);
     }//GEN-LAST:event_btnModificarActionPerformed
 
@@ -935,5 +937,6 @@ public class CrearCuarto extends javax.swing.JFrame {
         txtCuarto.setText("");
         txtMetraje.setText("");
         txtrutaimagen.setText("");
+        lblimagen.setIcon(null);
     }
 }

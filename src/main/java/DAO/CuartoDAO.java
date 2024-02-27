@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
+import java.sql.Types;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -49,35 +50,42 @@ public class CuartoDAO {
         }
         
          public void InsertarCuarto(JComboBox comboPiso, JTextField numcuarto, JTextField metraje, File foto) {
-         CConexion objetoConexion = new CConexion();
+    CConexion objetoConexion = new CConexion();
 
-         String consulta = "INSERT INTO cuarto (piso_id, numcuarto, metraje, foto) VALUES (?, ?, ?, ?)";
+    String consulta = "INSERT INTO cuarto (piso_id, numcuarto, metraje, foto) VALUES (?, ?, ?, ?)";
 
-         try {
-             FileInputStream fis = new FileInputStream(foto);
-            CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
+    try {
+        CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
-            int selectedIndex = comboPiso.getSelectedIndex();
+        int selectedIndex = comboPiso.getSelectedIndex();
 
-            if (selectedIndex != -1) {
-                int idPiso = selectedIndex + 1; 
-                cs.setInt(1, idPiso);
-                cs.setString(2, numcuarto.getText());
-                cs.setString(3, metraje.getText());
+        if (selectedIndex != -1) {
+            int idPiso = selectedIndex + 1; 
+            cs.setInt(1, idPiso);
+            cs.setString(2, numcuarto.getText());
+            cs.setString(3, metraje.getText());
+            
+            if (foto != null) {
+                FileInputStream fis = new FileInputStream(foto);
                 cs.setBinaryStream(4, fis, (int)foto.length());
-                cs.execute();
-
-                JOptionPane.showMessageDialog(null, "Cuarto insertado exitosamente");
             } else {
-                JOptionPane.showMessageDialog(null, "Seleccione un piso antes de insertar el cuarto");
+                cs.setNull(4, Types.BLOB); 
             }
+            
+            cs.execute();
 
-        } catch (SQLIntegrityConstraintViolationException e) {
-        JOptionPane.showMessageDialog(null, "El cuarto ingresado ya esta registrado. ", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Cuarto insertado exitosamente");
+        } else {
+            JOptionPane.showMessageDialog(null, "Seleccione un piso antes de insertar el cuarto");
+        }
+
+    } catch (SQLIntegrityConstraintViolationException e) {
+        JOptionPane.showMessageDialog(null, "El cuarto ingresado ya está registrado. ", "Error", JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "No se insertó correctamente, error: " + e.toString());
     }
 }
+
          
          public void MostrarCuartos(JTable tbTotalCuartos) {
         CConexion objetoConexion = new CConexion();
@@ -150,11 +158,12 @@ public class CuartoDAO {
                   }
          }
          
-         public void ModificarCuartos(JTable tbTotalCuartos, JTextField id, JComboBox comboPiso, JTextField numcuarto, JTextField metraje) {
+         public void ModificarCuartos(JTable tbTotalCuartos, JTextField id, JComboBox comboPiso, JTextField numcuarto, JTextField metraje, File foto) {
             CConexion objetoConexion = new CConexion();
-            String consulta = "UPDATE cuarto SET piso_id=?, numcuarto=?, metraje=? WHERE id=?";
+            String consulta = "UPDATE cuarto SET piso_id=?, numcuarto=?, metraje=?, foto=? WHERE id=?";
 
             try {
+                FileInputStream fis = new FileInputStream(foto);
                 CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
 
                 int selectedIndex = comboPiso.getSelectedIndex();
@@ -164,8 +173,9 @@ public class CuartoDAO {
                     cs.setInt(1, idPiso);
                     cs.setString(2, numcuarto.getText());
                     cs.setString(3, metraje.getText());
-                    cs.setInt(4, Integer.parseInt(id.getText()));
-
+                    cs.setBinaryStream(4, fis, (int) foto.length());
+                    cs.setInt(5, Integer.parseInt(id.getText()));
+                        
                     cs.execute();
 
                     JOptionPane.showMessageDialog(null, "Se modificó correctamente");
@@ -190,5 +200,12 @@ public class CuartoDAO {
             JOptionPane.showMessageDialog(null, "No se eliminó correctamente, error: " + e.toString());
         }
     }
+         
+         
+        public void LimpiarCuartos(JTextField id, JTextField numcuarto, JTextField metraje, JTextField rutaimagen, JLabel imagencontenido){
+            id.setText("");
+            numcuarto.setText("");
+            
+        }
          
 }
