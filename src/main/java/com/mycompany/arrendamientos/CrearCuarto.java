@@ -1,12 +1,31 @@
 package com.mycompany.arrendamientos;
 
 import DAO.CuartoDAO;
+import java.awt.Desktop;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FontUnderline;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class CrearCuarto extends javax.swing.JFrame {
@@ -23,6 +42,12 @@ public class CrearCuarto extends javax.swing.JFrame {
          objetoCuartos.MostrarCuartos(tbTotalCuartos);
          Limpiar();
          
+         
+         btnReporte.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent evt) {
+                exportarReporteCuartos();
+            }
+        });
 
     }
    
@@ -88,6 +113,7 @@ public class CrearCuarto extends javax.swing.JFrame {
         btnEliminar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
+        btnReporte = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbTotalCuartos = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
@@ -624,12 +650,14 @@ public class CrearCuarto extends javax.swing.JFrame {
             }
         });
 
+        btnReporte.setText("Reporte");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(17, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -649,14 +677,15 @@ public class CrearCuarto extends javax.swing.JFrame {
                     .addComponent(txtMetraje))
                 .addGap(33, 33, 33))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addGap(41, 41, 41)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnModificar, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnReporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -677,7 +706,7 @@ public class CrearCuarto extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtMetraje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(btnGuardar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnModificar)
@@ -686,8 +715,10 @@ public class CrearCuarto extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLimpiar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnReporte)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addComponent(btnSalir)
-                .addGap(19, 19, 19))
+                .addGap(20, 20, 20))
         );
 
         tbTotalCuartos.setModel(new javax.swing.table.DefaultTableModel(
@@ -785,7 +816,7 @@ public class CrearCuarto extends javax.swing.JFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -860,6 +891,118 @@ public class CrearCuarto extends javax.swing.JFrame {
             }
         });
     }
+    
+    
+ private void exportarReporteCuartos() {
+    try {
+        
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
+        Statement statement = connection.createStatement();
+         ResultSet resultSet = statement.executeQuery("SELECT \n" +
+"    cuarto.id AS cuarto_id, \n" +
+"    piso.piso AS nombre_piso,\n" +
+"    cuarto.numcuarto,\n" +
+"    IFNULL(datos_cli_prov.nombre, 'Desocupado') AS cliente_nombre\n" +
+"FROM \n" +
+"    cuarto\n" +
+"LEFT JOIN \n" +
+"    rent_calculation ON cuarto.id = rent_calculation.room_id\n" +
+"LEFT JOIN \n" +
+"    datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id\n" +
+"LEFT JOIN \n" +
+"    piso ON cuarto.piso_id = piso.id;");
+        
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Reporte de Cuartos");
+
+        XSSFCellStyle estiloProforma = workbook.createCellStyle();
+        XSSFFont fontProforma = workbook.createFont();
+        fontProforma.setFontHeightInPoints((short) 20);
+        fontProforma.setBold(true);
+        fontProforma.setUnderline(FontUnderline.SINGLE);
+        estiloProforma.setFont(fontProforma);
+
+        Row proformaRow = sheet.createRow(0);
+        Cell proformaCellC = proformaRow.createCell(0);
+        proformaCellC.setCellValue("REPORTE DE CUARTOS");
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+        proformaCellC.setCellStyle(estiloProforma);
+
+        // Estilos para encabezado
+            CellStyle estiloHeadersRow = workbook.createCellStyle();
+            estiloHeadersRow.setAlignment(HorizontalAlignment.CENTER);
+            estiloHeadersRow.setBorderBottom(BorderStyle.THIN);
+            estiloHeadersRow.setBorderTop(BorderStyle.THIN);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setFontHeightInPoints((short) 14);
+
+            
+            // Estilos para filas de informacióm
+            CellStyle estiloInfoRow = workbook.createCellStyle();
+            XSSFFont fontContenido = workbook.createFont();
+            estiloInfoRow.setAlignment(HorizontalAlignment.CENTER);
+            fontContenido.setFontHeightInPoints((short) 13);
+             estiloInfoRow.setFont(fontContenido);
+            estiloInfoRow.setBorderBottom(BorderStyle.DASHED);
+            
+           
+            Row headersRow = sheet.createRow(2);
+            headersRow.createCell(0).setCellValue("ID");
+            headersRow.createCell(1).setCellValue("Piso");
+            headersRow.createCell(2).setCellValue("Cuarto");
+            headersRow.createCell(3).setCellValue("Cliente");
+            for (Cell cell : headersRow) {
+            cell.setCellStyle(estiloHeadersRow);
+            estiloHeadersRow.setFont(fontHeader);
+
+            }
+            
+            
+            
+            
+            int rowNum = 3; // Comenzamos a escribir los datos desde la fila 3
+            while (resultSet.next()) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(resultSet.getInt("cuarto_id")); // Usamos cuarto_id en lugar de id
+                String nombrePiso = resultSet.getString("nombre_piso");
+                row.createCell(1).setCellValue(nombrePiso);
+                String numCuarto = resultSet.getString("numcuarto");
+                String textoCompleto = "CUARTO # " + numCuarto;
+                row.createCell(2).setCellValue(textoCompleto);
+                String estadoCuarto = resultSet.getString("cliente_nombre"); // Utilizamos cliente_nombre como estado_cuarto
+                row.createCell(3).setCellValue(estadoCuarto); // Mostrar el estado del cuarto en lugar del nombre del cliente
+                // Aplicamos el estilo a cada celda creada
+                for (int i = 0; i < row.getLastCellNum(); i++) {
+                    Cell cell = row.getCell(i);
+                    if (cell != null) {
+                        cell.setCellStyle(estiloInfoRow);
+                    }
+                }
+            }
+
+            // Autoajustar el ancho de las columnas
+            for (int i = 0; i < headersRow.getLastCellNum(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+        // Guardar el libro en un archivo temporal
+        File tempFile = File.createTempFile("detalle", ".xlsx");
+        try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
+            workbook.write(fileOut);
+            JOptionPane.showMessageDialog(null, "Datos exportados correctamente a Excel.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
+        }
+
+        // Abrir el archivo Excel recién creado
+        Desktop.getDesktop().open(tempFile);
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error: " + e.toString());
+    }
+}
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEliminar;
@@ -867,6 +1010,7 @@ public class CrearCuarto extends javax.swing.JFrame {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnReporte;
     private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox<String> cbpiso;
     private javax.swing.JLabel jLabel1;

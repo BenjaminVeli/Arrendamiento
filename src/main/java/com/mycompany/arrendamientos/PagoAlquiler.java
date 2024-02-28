@@ -620,7 +620,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
     "   ORDER BY id ASC " +
     "   LIMIT 1" +
     ")";
-ResultSet resultSet = statement.executeQuery(consultaCompleta);
+        ResultSet resultSet = statement.executeQuery(consultaCompleta);
 
 
         XSSFWorkbook workbook = new XSSFWorkbook();
