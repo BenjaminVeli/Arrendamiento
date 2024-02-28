@@ -7,6 +7,8 @@ package com.mycompany.arrendamientos;
 import Conexion.CConexion;
 import Modelo.Arrendamientos;
 import DAO.ArrendamientosDAO;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -15,7 +17,9 @@ import DAO.ArrendamientosDAO;
 public class RegistroDatosClientes extends javax.swing.JFrame {
     
     private Arrendamientos arrendamientos;
-
+        
+    
+    
     public RegistroDatosClientes() {
         initComponents();
         
@@ -47,7 +51,22 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         
         ArrendamientosDAO objetoArrendamientos = new ArrendamientosDAO();
         objetoArrendamientos.MostrarCliente(tbTotalClientes);
-
+        
+        
+        LocalDateTime fechaHoraActual = LocalDateTime.now();
+        
+        // Configurar el formato deseado para la fecha y hora
+        DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String fechaHoraFormateada = fechaHoraActual.format(formatoFechaHora);
+        
+        // Establecer la fecha y hora en el JDateChooser
+        try {
+            java.util.Date fechaDate = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(fechaHoraFormateada);
+           txtFecha_ingreso.setDate(fechaDate);
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        
     }
 
 
