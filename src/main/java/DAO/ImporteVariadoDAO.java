@@ -21,6 +21,7 @@ import javax.swing.table.TableRowSorter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import DAO.CalcularAlquilerDAO;
+import Modelo.ImporteVariado;
 import java.sql.SQLException;
 
 public class ImporteVariadoDAO {
@@ -69,9 +70,11 @@ public class ImporteVariadoDAO {
         }
     }
     
-    public void insertarCalculosDiarios(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar) {
+    public void insertarCalculosDiarios(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar,
+                                                              JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto) {
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
+        ImporteVariado variado = new ImporteVariado();
         
         try {
             // Obtener el id de rent_calculation
@@ -79,7 +82,20 @@ public class ImporteVariadoDAO {
             
             double totalCuotas = cuotas * 30;
             
-            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+            String nombrePiso = (String) paramNombrePiso.getSelectedItem();
+            int piso_id = ca.obtenerIdPiso(nombrePiso);
+        
+            String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
+            int cuarto_id = ca.obtenerIdCuartoPorPiso(nombreCuarto, piso_id);
+            
+            if (variado.getPiso() == null) {
+                variado.setPiso(new Piso());
+            }
+            
+            variado.getPiso().setCodigo(piso_id);
+            variado.setCuarto((String) paramNombreCuarto.getSelectedItem());
+            
+            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             
             // Bucle A
             for (int i = 1; i <= totalCuotas; i++) {
@@ -106,8 +122,13 @@ public class ImporteVariadoDAO {
                     pst.setBigDecimal(4, new BigDecimal(0.0)); // Esta inserción esta bien
                     pst.setBigDecimal(5, new BigDecimal(0.0));
                     pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                    pst.setInt(7, variado.getPiso().getCodigo());
+                    pst.setInt(8, cuarto_id);
                     
                     int resultado = pst.executeUpdate();
+                    
+                    ca.refrescarComboBoxPisos(paramNombrePiso);   
+                    ca.actualizarEstadoCuarto(cuarto_id);
                     
                      if (resultado > 0) {
                     // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
@@ -138,9 +159,11 @@ public class ImporteVariadoDAO {
         System.out.println("Calculos del Importe Diario Insertado");
     }
     
-    public void insertarCalculosSemanal(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar) {
+    public void insertarCalculosSemanal(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar,
+                                                                JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto) {
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
+        ImporteVariado variado = new ImporteVariado();
         
         try {
             // Obtener el id de rent_calculation
@@ -148,7 +171,21 @@ public class ImporteVariadoDAO {
             
             double totalCuotas = cuotas * 4;
             
-            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+            String nombrePiso = (String) paramNombrePiso.getSelectedItem();
+            int piso_id = ca.obtenerIdPiso(nombrePiso);
+        
+            String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
+            int cuarto_id = ca.obtenerIdCuartoPorPiso(nombreCuarto, piso_id);
+            
+            if (variado.getPiso() == null) {
+                variado.setPiso(new Piso());
+            }
+            
+            variado.getPiso().setCodigo(piso_id);
+            variado.setCuarto((String) paramNombreCuarto.getSelectedItem());
+            
+            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            
             // Bucle A
             for (int i = 1; i <= totalCuotas; i++) {
             
@@ -174,8 +211,13 @@ public class ImporteVariadoDAO {
                     pst.setBigDecimal(4, new BigDecimal(0.0));
                     pst.setBigDecimal(5, new BigDecimal(0.0));
                     pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                    pst.setInt(7, variado.getPiso().getCodigo());
+                    pst.setInt(8, cuarto_id);
                     
                     int resultado = pst.executeUpdate();
+                    
+                    ca.refrescarComboBoxPisos(paramNombrePiso);   
+                    ca.actualizarEstadoCuarto(cuarto_id);
                     
                      if (resultado > 0) {
                     // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
@@ -206,10 +248,12 @@ public class ImporteVariadoDAO {
         System.out.println("Calculos del Importe Semanal Insertado");
     }
     
-    public void insertarCalculosQuincenal(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar) {
+    public void insertarCalculosQuincenal(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar,
+                                                                 JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto) {
         
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
+        ImporteVariado variado = new ImporteVariado();
         
         try {
             // Obtener el id de rent_calculation
@@ -217,7 +261,20 @@ public class ImporteVariadoDAO {
             
             double totalCuotas = cuotas * 2;
             
-            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+            String nombrePiso = (String) paramNombrePiso.getSelectedItem();
+            int piso_id = ca.obtenerIdPiso(nombrePiso);
+        
+            String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
+            int cuarto_id = ca.obtenerIdCuartoPorPiso(nombreCuarto, piso_id);
+            
+            if (variado.getPiso() == null) {
+                variado.setPiso(new Piso());
+            }
+            
+            variado.getPiso().setCodigo(piso_id);
+            variado.setCuarto((String) paramNombreCuarto.getSelectedItem());
+            
+            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             
             // Bucle A
             for (int i = 1; i <= totalCuotas; i++) {
@@ -245,8 +302,13 @@ public class ImporteVariadoDAO {
                     pst.setBigDecimal(4, new BigDecimal(0.0));
                     pst.setBigDecimal(5, new BigDecimal(0.0));
                     pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                    pst.setInt(7, variado.getPiso().getCodigo());
+                    pst.setInt(8, cuarto_id);
                     
                     int resultado = pst.executeUpdate();
+                    
+                    ca.refrescarComboBoxPisos(paramNombrePiso);   
+                    ca.actualizarEstadoCuarto(cuarto_id);
                     
                      if (resultado > 0) {
                     // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
@@ -277,16 +339,32 @@ public class ImporteVariadoDAO {
         System.out.println("Calculos del Importe Quincenal Insertado");
     }
     
-    public void insertarCalculosMensual(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar) {
+    public void insertarCalculosMensual(String nombreCliente, int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres, double sumaPorPagar,
+                                                                JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto) {
         
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
+        ImporteVariado variado = new ImporteVariado();
         
         try {
             // Obtener el id de rent_calculation
             int clientRentId = ca.obtenerIdRentCalculation(nombreCliente);
             
-            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+            String nombrePiso = (String) paramNombrePiso.getSelectedItem();
+            int piso_id = ca.obtenerIdPiso(nombrePiso);
+        
+            String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
+            int cuarto_id = ca.obtenerIdCuartoPorPiso(nombreCuarto, piso_id);
+            
+            if (variado.getPiso() == null) {
+                variado.setPiso(new Piso());
+            }
+            
+            variado.getPiso().setCodigo(piso_id);
+            variado.setCuarto((String) paramNombreCuarto.getSelectedItem());
+            
+            String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            
             // Bucle A
             for (int i = 1; i <= cuotas; i++) {
             
@@ -312,8 +390,13 @@ public class ImporteVariadoDAO {
                     pst.setBigDecimal(4, new BigDecimal(0.0));
                     pst.setBigDecimal(5, new BigDecimal(0.0));
                     pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                    pst.setInt(7, variado.getPiso().getCodigo());
+                    pst.setInt(8, cuarto_id);
                     
                     int resultado = pst.executeUpdate();
+                    
+                    ca.refrescarComboBoxPisos(paramNombrePiso);   
+                    ca.actualizarEstadoCuarto(cuarto_id);
                     
                      if (resultado > 0) {
                     // JOptionPane.showMessageDialog(null, "Registro insertado correctamente en importe_mensual.");
@@ -347,9 +430,10 @@ public class ImporteVariadoDAO {
     // "Actualizar" datos hacia la tabla importe_variado
     
     public void recalcularCalculosDiarios(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas, Date fecha, double total_rent, double sumaCapital, 
-                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar){
+                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto){
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
+        ImporteVariado variado = new ImporteVariado();
         
         try {
             int fila = paramTablaCalculosAlquiler.getSelectedRow();
@@ -370,6 +454,19 @@ public class ImporteVariadoDAO {
                 
                 // Eliminar todos los cálculos de alquiler asociados al ID seleccionado
                 eliminarImporteVariado(clientRentId);
+                
+                String nombrePiso = (String) paramNombrePiso.getSelectedItem();
+                int piso_id = ca.obtenerIdPiso(nombrePiso);
+
+                String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
+                int cuarto_id = ca.obtenerIdCuartoPorPiso(nombreCuarto, piso_id);
+
+                if (variado.getPiso() == null) {
+                    variado.setPiso(new Piso());
+                }
+
+                variado.getPiso().setCodigo(piso_id);
+                variado.setCuarto((String) paramNombreCuarto.getSelectedItem());
                 
                 // Si la nueva cantidad de cuotas es mayor que la original, sucede esto:
                 if (nuevaCuotas > cuotasOriginal) {
@@ -392,7 +489,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
      
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -403,6 +500,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -448,7 +547,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
      
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -459,6 +558,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -504,7 +605,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
      
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -515,6 +616,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -549,9 +652,10 @@ public class ImporteVariadoDAO {
     }
             
     public void recalcularCalculosSemanal(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas, Date fecha, double total_rent, double sumaCapital, 
-                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar){
+                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto){
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
+        ImporteVariado variado = new ImporteVariado();
         
         try {
             int fila = paramTablaCalculosAlquiler.getSelectedRow();
@@ -572,6 +676,19 @@ public class ImporteVariadoDAO {
                 
                 // Eliminar todos los cálculos de alquiler asociados al ID seleccionado
                 eliminarImporteVariado(clientRentId);
+                
+                String nombrePiso = (String) paramNombrePiso.getSelectedItem();
+                int piso_id = ca.obtenerIdPiso(nombrePiso);
+
+                String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
+                int cuarto_id = ca.obtenerIdCuartoPorPiso(nombreCuarto, piso_id);
+
+                if (variado.getPiso() == null) {
+                    variado.setPiso(new Piso());
+                }
+
+                variado.getPiso().setCodigo(piso_id);
+                variado.setCuarto((String) paramNombreCuarto.getSelectedItem());
                 
                 // Si la nueva cantidad de cuotas es mayor que la original, sucede esto:
                 if (nuevaCuotas > cuotasOriginal) {
@@ -594,7 +711,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
      
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -605,6 +722,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -650,7 +769,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
      
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -661,6 +780,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -706,7 +827,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
      
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -717,6 +838,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -751,10 +874,11 @@ public class ImporteVariadoDAO {
     }
             
     public void recalcularCalculosQuincenal(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas, Date fecha, double total_rent, double sumaCapital, 
-                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar){
+                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto){
         
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
+        ImporteVariado variado = new ImporteVariado();
         
         try {
             int fila = paramTablaCalculosAlquiler.getSelectedRow();
@@ -777,6 +901,19 @@ public class ImporteVariadoDAO {
                 // Eliminar todos los cálculos de alquiler asociados al ID seleccionado
                 eliminarImporteVariado(clientRentId);
                 
+                String nombrePiso = (String) paramNombrePiso.getSelectedItem();
+                int piso_id = ca.obtenerIdPiso(nombrePiso);
+
+                String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
+                int cuarto_id = ca.obtenerIdCuartoPorPiso(nombreCuarto, piso_id);
+
+                if (variado.getPiso() == null) {
+                    variado.setPiso(new Piso());
+                }
+
+                variado.getPiso().setCodigo(piso_id);
+                variado.setCuarto((String) paramNombreCuarto.getSelectedItem());
+                
                 // Si la nueva cantidad de cuotas es mayor que la original, sucede esto:
                 if (nuevaCuotas > cuotasOriginal) {
                     System.out.println("Entrando en el bloque del caso de mayor cantidad de cuotas en importe_variado");
@@ -798,8 +935,8 @@ public class ImporteVariadoDAO {
                         double saldos = (sumaPorPagar / totalCuotas) * (i);
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
              
-                        // Insertar a la base de datos          
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        // Insertar a la base de datos
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -810,6 +947,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -856,7 +995,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
           
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -867,6 +1006,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -913,7 +1054,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
           
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -924,6 +1065,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -958,10 +1101,11 @@ public class ImporteVariadoDAO {
     }
     
     public void recalcularCalculosMensual(JTable paramTablaCalculosAlquiler, String nombreCliente, int nuevaCuotas, Date fecha, double total_rent, double sumaCapital, 
-                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar){
+                                                                    double sumaInteres, JTextField totaltxt, double sumaPorPagar, JComboBox<String> paramNombrePiso, JComboBox<String> paramNombreCuarto){
     
         CConexion objetoConexion = new CConexion();
         CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
+        ImporteVariado variado = new ImporteVariado();
         
         try {
             int fila = paramTablaCalculosAlquiler.getSelectedRow();
@@ -984,6 +1128,19 @@ public class ImporteVariadoDAO {
                 // Eliminar todos los cálculos de alquiler asociados al ID seleccionado
                 eliminarImporteVariado(clientRentId);
                 
+                String nombrePiso = (String) paramNombrePiso.getSelectedItem();
+                int piso_id = ca.obtenerIdPiso(nombrePiso);
+
+                String nombreCuarto = (String) paramNombreCuarto.getSelectedItem();
+                int cuarto_id = ca.obtenerIdCuartoPorPiso(nombreCuarto, piso_id);
+
+                if (variado.getPiso() == null) {
+                    variado.setPiso(new Piso());
+                }
+
+                variado.getPiso().setCodigo(piso_id);
+                variado.setCuarto((String) paramNombreCuarto.getSelectedItem());
+                
                 // Si la nueva cantidad de cuotas es mayor que la original, sucede esto:
                 if (nuevaCuotas > cuotasOriginal) {
                     System.out.println("Entrando en el bloque del caso de mayor cantidad de cuotas en importe_variado");
@@ -1003,7 +1160,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
                         
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -1014,6 +1171,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -1057,7 +1216,7 @@ public class ImporteVariadoDAO {
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
                         
                         // Insertar a la base de datos
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -1068,6 +1227,8 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
                             
                             int resultado = pst.executeUpdate();
                             
@@ -1110,8 +1271,8 @@ public class ImporteVariadoDAO {
                         double saldos = (sumaPorPagar / nuevaCuotas) * (i);
                         double SaldosRedondeado = Math.round(saldos * 100.0) / 100.0;
      
-                        // Insertar a la base de datos 
-                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos) VALUES (?, ?, ?, ?, ?, ?)";
+                        // Insertar a la base de datos
+                        String sql = "INSERT INTO importe_variado (rent_calculation_id, ord, fecha, importe, sum_importe, saldos, piso_id, cuarto_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         try {
                             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -1122,7 +1283,9 @@ public class ImporteVariadoDAO {
                             pst.setBigDecimal(4, new BigDecimal(0.0));
                             pst.setBigDecimal(5, new BigDecimal(0.0));
                             pst.setBigDecimal(6, new BigDecimal(SaldosRedondeado));
-                            
+                            pst.setInt(7, variado.getPiso().getCodigo());
+                            pst.setInt(8, cuarto_id);
+                    
                             int resultado = pst.executeUpdate();
                             
                             if (resultado > 0) {

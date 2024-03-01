@@ -232,8 +232,8 @@ public class CalcularAlquilerDAO {
             cs.execute();
             JOptionPane.showMessageDialog(null, "Cálculo de alquiler insertado exitosamente");
             
-            refrescarComboBoxPisos(paramNombrePiso);   
-            actualizarEstadoCuarto(room_id);
+      //  refrescarComboBoxPisos(paramNombrePiso);   
+      //  actualizarEstadoCuarto(room_id);
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error al insertar el cálculo de alquiler: " + e.toString());
@@ -1353,7 +1353,7 @@ public class CalcularAlquilerDAO {
         }
     }
 
-    private boolean cuartoEstaOcupado(int room_id) {
+    public boolean cuartoEstaOcupado(int room_id) {
     CConexion objetoConexion = new CConexion();
     String consulta = "SELECT ocupado FROM cuarto WHERE id = ?";
 
@@ -1373,7 +1373,7 @@ public class CalcularAlquilerDAO {
     return true; // Retorno por defecto en caso de error
 }
     
-    private void refrescarComboBoxPisos(JComboBox<String> paramNombrePiso) {
+    public void refrescarComboBoxPisos(JComboBox<String> paramNombrePiso) {
         var nombresPisos = obtenerPisos();
 
         paramNombrePiso.removeAllItems();
@@ -1408,7 +1408,7 @@ public class CalcularAlquilerDAO {
         return clientId;
     }
     
-    private int obtenerIdPiso(String nombrePiso) {
+    public int obtenerIdPiso(String nombrePiso) {
         int floorId = -1;
         CConexion objetoConexion = new CConexion();
 
@@ -1431,7 +1431,7 @@ public class CalcularAlquilerDAO {
         return floorId;
     }
     
-    private int obtenerIdCuartoPorPiso(String nombreCuarto, int idPiso) {
+    public int obtenerIdCuartoPorPiso(String nombreCuarto, int idPiso) {
         int cuartoId = -1;
         CConexion objetoConexion = new CConexion();
 
@@ -1454,7 +1454,7 @@ public class CalcularAlquilerDAO {
         return cuartoId;
     }
     
-    private void actualizarEstadoCuarto(int room_id) {
+    public void actualizarEstadoCuarto(int room_id) {
         CConexion objetoConexion = new CConexion();
         String consulta = "UPDATE cuarto SET ocupado = true WHERE id = ?";
 

@@ -92,7 +92,14 @@ CREATE TABLE importe_variado (
   sum_importe DECIMAL(10,2),
   saldos DECIMAL(10,2),
   pago DECIMAL(10,2) DEFAULT 0.0,
-  estado BOOLEAN DEFAULT false
+  estado BOOLEAN DEFAULT false,
+  fecha_amortizacion TIMESTAMP,
+  piso_id INT,
+  cuarto_id INT,
+  numero_amortizacion INT,
+  detalle VARCHAR(200),
+  FOREIGN KEY (cuarto_id) REFERENCES cuarto(id),
+  FOREIGN KEY (piso_id) REFERENCES piso(id)
 );
 
 CREATE TABLE mantenimiento (
