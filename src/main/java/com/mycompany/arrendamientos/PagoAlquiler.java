@@ -1,5 +1,6 @@
 package com.mycompany.arrendamientos;
 
+import DAO.CalcularAlquilerDAO;
 import DAO.PagoAlquilerDAO;
 import java.awt.Color;
 import java.awt.Component;
@@ -528,12 +529,17 @@ public class PagoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_tbMostrarAlquileresMouseClicked
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-                int filaSeleccionada = tbImporteVariado.getSelectedRow();
+        PagoAlquilerDAO paDAO = new PagoAlquilerDAO();
+        
+        int filaSeleccionada = tbImporteVariado.getSelectedRow();
         
         if (filaSeleccionada >= 0) {
             String idSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 0).toString();
+            // Obtén el ID del cuarto actualmente ocupado
+            int room_id_actual = paDAO.obtenerCuartoidPorImporteVariado(Integer.parseInt(idSeleccionado));
+            
             // Abre el JFrame "Amortizaciones" y pasa el ID seleccionado como parámetro
-            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado);
+            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual);
             amortizaciones.setVisible(true);
             this.setVisible(false);
         } else {

@@ -3,6 +3,7 @@ package DAO;
 import Conexion.CConexion;
 import java.sql.PreparedStatement;
 import Modelo.CalcularAlquiler;
+import Modelo.ImporteVariado;
 import Modelo.Piso;
 import com.toedter.calendar.JDateChooser;
 import java.math.BigDecimal;
@@ -131,11 +132,17 @@ public class PagoAlquilerDAO {
     }
 
     public void SeleccionaryAmortización(JTable tbImporteVariado){
+        CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
+        ImporteVariado variado = new ImporteVariado();
+        
         try {
             int fila = tbImporteVariado.getSelectedRow();
 
             if (fila >= 0) {
                 String idSeleccionado = tbImporteVariado.getValueAt(fila, 0).toString();
+                
+                // Obtén el ID del cuarto actualmente ocupado
+                int room_id_actual = obtenerCuartoidPorImporteVariado(Integer.parseInt(idSeleccionado));
                 
                 System.err.println("EL numero de orden seleccionado es: " + idSeleccionado);
             } else {
@@ -144,6 +151,26 @@ public class PagoAlquilerDAO {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "No se puede mostrar los registros de importe variado del cliente, error: " + e.toString());
         }
+    }
+    
+        public int obtenerCuartoidPorImporteVariado(int idImporteVariado) {
+            CConexion objetoConexion = new CConexion();
+            String sql = "SELECT cuarto_id FROM importe_variado WHERE id=?";
+
+            try {
+                PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                pst.setInt(1, idImporteVariado);
+                ResultSet rs = pst.executeQuery();
+
+                if (rs.next()) {
+                    return rs.getInt("cuarto_id");
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al obtener el ID del cuarto de la tabla ImporteVariado: " + e.toString());
+            }
+
+            return -1; // Retorno por defecto en caso de error
     }
     
 }

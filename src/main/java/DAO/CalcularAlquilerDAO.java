@@ -1320,7 +1320,7 @@ public class CalcularAlquilerDAO {
         return rentCalculationId;
     }
     
-    private int obtenerIdCuartoPorCalculoAlquiler(int idCalculoAlquiler) {
+    public int obtenerIdCuartoPorCalculoAlquiler(int idCalculoAlquiler) {
         CConexion objetoConexion = new CConexion();
         String sql = "SELECT room_id FROM rent_calculation WHERE id=?";
 
