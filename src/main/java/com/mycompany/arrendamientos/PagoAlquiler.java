@@ -46,6 +46,13 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 exportarAExcelGeneral();
             }
         });
+        
+         btnCobranzaGlobal.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent evt) {
+                exportarAExcelCobranzaGlobal();
+            }
+        });
+
     }
     
         private void cargarNombresClientes() {
@@ -612,7 +619,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         // Conexión a la base de datos
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
         Statement statement = connection.createStatement();
-        String consultaCompleta = "SELECT rent_calculation.id, datos_cli_prov.nombre AS cliente_nombre, cuarto.numcuarto, rent_calculation.mensual, importe_variado.fecha , importe_variado.saldos " +
+        String consultaCompleta = "SELECT rent_calculation.id, datos_cli_prov.nombre AS cliente_nombre, cuarto.numcuarto,  importe_variado.fecha , importe_variado.saldos " +
     "FROM rent_calculation " +
     "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
     "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
@@ -715,6 +722,114 @@ public class PagoAlquiler extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error: " + e.toString());
         }
     }
+    
+    
+    public static void exportarAExcelCobranzaGlobal(){
+        try {
+        // Conexión a la base de datos
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
+        Statement statement = connection.createStatement();
+        String consultaCompleta = "SELECT rent_calculation.id, datos_cli_prov.nombre AS cliente_nombre,  importe_variado.fecha , importe_variado.pago , importe_variado.fecha_amortizacion " +
+    "FROM rent_calculation " +
+    "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+    "INNER JOIN importe_variado ON rent_calculation.id = importe_variado.rent_calculation_id " +
+    "WHERE importe_variado.fecha = (" +
+    "   SELECT fecha " +
+    "   FROM importe_variado " +
+    "   WHERE rent_calculation_id = rent_calculation.id " +
+    "   AND estado = 0 " +
+    "   AND id > (SELECT id FROM importe_variado WHERE rent_calculation_id = rent_calculation.id AND estado = 1 LIMIT 1) " +
+    "   ORDER BY id ASC " +
+    "   LIMIT 1" +
+    ")";
+        ResultSet resultSet = statement.executeQuery(consultaCompleta); 
+        
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Lista Global de Cobranza");
+
+            XSSFCellStyle estiloProforma = workbook.createCellStyle();
+            XSSFFont fontProforma = workbook.createFont();
+            fontProforma.setFontHeightInPoints((short) 20);
+            fontProforma.setBold(true);
+            fontProforma.setUnderline(FontUnderline.SINGLE);
+            estiloProforma.setFont(fontProforma);
+            
+            
+            Row proformaRow = sheet.createRow(0);
+            Cell proformaCellC = proformaRow.createCell(0);
+            proformaCellC.setCellValue("LISTA GLOBAL DE COBRANZA");
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+            proformaCellC.setCellStyle(estiloProforma);
+
+            // Estilos para encabezado
+            CellStyle estiloHeadersRow = workbook.createCellStyle();
+            estiloHeadersRow.setAlignment(HorizontalAlignment.CENTER);
+            estiloHeadersRow.setBorderBottom(BorderStyle.THIN);
+            estiloHeadersRow.setBorderTop(BorderStyle.THIN);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setFontHeightInPoints((short) 13);
+
+            
+            // Estilos para filas de informacióm
+            CellStyle estiloInfoRow = workbook.createCellStyle();
+            estiloInfoRow.setAlignment(HorizontalAlignment.CENTER);
+            estiloInfoRow.setBorderBottom(BorderStyle.DASHED);
+            
+
+           
+            // Encabezados de columnas
+            Row headersRow = sheet.createRow(2);
+            headersRow.createCell(0).setCellValue("ID");
+            headersRow.createCell(1).setCellValue("Fecha");
+            headersRow.createCell(2).setCellValue("Cliente");
+            headersRow.createCell(3).setCellValue("Total_Pagos");
+            headersRow.createCell(4).setCellValue("Detalle");
+            for (Cell cell : headersRow) {
+            cell.setCellStyle(estiloHeadersRow);
+            estiloHeadersRow.setFont(fontHeader);
+
+            }
+        int rowNum = 4; // Empieza a escribir los datos desde la fila 3
+            while (resultSet.next()) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(resultSet.getInt("id"));
+                row.createCell(1).setCellValue(resultSet.getTimestamp("fecha_amortizacion"));
+                row.createCell(2).setCellValue(resultSet.getString("cliente_nombre"));
+                row.createCell(3).setCellValue(resultSet.getString("pago"));
+                String fechaVencimiento = resultSet.getString("fecha");
+                String textoVencimiento = "PAGO DEL " + fechaVencimiento;
+                row.createCell(4).setCellValue(textoVencimiento);   
+                for (int i = 4; i < rowNum; i++) { // Suponiendo que las filas de datos comienzan desde la fila 4
+            Row dataRow = sheet.getRow(i);
+            for (Cell cell : dataRow) {
+                cell.setCellStyle(estiloInfoRow);
+            }
+        }
+            }
+
+            // Autoajustar el ancho de las columnas
+            for (int i = 0; i < headersRow.getLastCellNum(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Guardar el libro en un archivo temporal
+            File tempFile = File.createTempFile("detalle", ".xlsx");
+            try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
+                workbook.write(fileOut);
+                JOptionPane.showMessageDialog(null, "Datos exportados correctamente a Excel.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
+            }
+
+            // Abrir el archivo Excel recién creado 
+            Desktop.getDesktop().open(tempFile);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.toString());
+        }
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Dolares;
