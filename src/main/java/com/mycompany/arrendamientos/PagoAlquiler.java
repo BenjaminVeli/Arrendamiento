@@ -48,7 +48,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
       
     }
     
-        private void cargarNombresClientes() {
+    private void cargarNombresClientes() {
         PagoAlquilerDAO objetoNombres = new PagoAlquilerDAO();
         ArrayList<String> cliente = objetoNombres.obtenerNombresClientes();
         
@@ -540,11 +540,18 @@ public class PagoAlquiler extends javax.swing.JFrame {
         
         if (filaSeleccionada >= 0) {
             String idSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 0).toString();
+            
+            String saldosStr = tbImporteVariado.getValueAt(filaSeleccionada, 5).toString();
+            double saldos = Double.parseDouble(saldosStr);
+            
             // Obtén el ID del cuarto actualmente ocupado
             int room_id_actual = paDAO.obtenerCuartoidPorImporteVariado(Integer.parseInt(idSeleccionado));
             
-            // Abre el JFrame "Amortizaciones" y pasa el ID seleccionado como parámetro
-            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual);
+            // Obtén el número de cuarto usando el ID del importe variado
+            String numeroCuarto = paDAO.obtenerNumeroCuartoPorImporteVariado(Integer.parseInt(idSeleccionado));
+            
+            // Abre el JFrame "Amortizaciones" y pasa los parámetro que se necesitan
+            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos);
             amortizaciones.setVisible(true);
             this.setVisible(false);
         } else {
@@ -568,7 +575,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
                 // Obtiene el valor de "Saldos"
-                String saldosStr = (String) table.getModel().getValueAt(row, 3);
+                String saldosStr = (String) table.getModel().getValueAt(row, 5);
 
                 // Convierte el valor de "Saldos" a un double
                 double saldos = Double.parseDouble(saldosStr);
@@ -615,8 +622,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 new PagoAlquiler().setVisible(true);
             }
         });
-    }
-    
+    }   
     
     public static void exportarAExcelGeneral() {
     try {
@@ -726,8 +732,6 @@ public class PagoAlquiler extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error: " + e.toString());
         }
     }
-    
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Dolares;

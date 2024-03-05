@@ -96,7 +96,7 @@ CREATE TABLE importe_variado (
   fecha_amortizacion TIMESTAMP,
   piso_id INT,
   cuarto_id INT,
-  numero_amortizacion INT,
+  numero_amortizacion VARCHAR(10),
   detalle VARCHAR(200),
   FOREIGN KEY (cuarto_id) REFERENCES cuarto(id),
   FOREIGN KEY (piso_id) REFERENCES piso(id)

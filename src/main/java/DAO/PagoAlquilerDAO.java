@@ -9,7 +9,9 @@ import com.toedter.calendar.JDateChooser;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
@@ -130,47 +132,153 @@ public class PagoAlquilerDAO {
             JOptionPane.showMessageDialog(null, "No se puede mostrar los registros de importe variado del cliente, error: " + e.toString());
         }
     }
+    
+    public int obtenerCuartoidPorImporteVariado(int idImporteVariado) {
+        CConexion objetoConexion = new CConexion();
+        String sql = "SELECT cuarto_id FROM importe_variado WHERE id=?";
 
-    public void SeleccionaryAmortización(JTable tbImporteVariado){
-        CalcularAlquilerDAO ca = new CalcularAlquilerDAO();
-        ImporteVariado variado = new ImporteVariado();
-        
         try {
-            int fila = tbImporteVariado.getSelectedRow();
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setInt(1, idImporteVariado);
+            ResultSet rs = pst.executeQuery();
 
-            if (fila >= 0) {
-                String idSeleccionado = tbImporteVariado.getValueAt(fila, 0).toString();
-                
-                // Obtén el ID del cuarto actualmente ocupado
-                int room_id_actual = obtenerCuartoidPorImporteVariado(Integer.parseInt(idSeleccionado));
-                
-                System.err.println("EL numero de orden seleccionado es: " + idSeleccionado);
-            } else {
-                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+            if (rs.next()) {
+                return rs.getInt("cuarto_id");
             }
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "No se puede mostrar los registros de importe variado del cliente, error: " + e.toString());
+            JOptionPane.showMessageDialog(null, "Error al obtener el ID del cuarto de la tabla ImporteVariado: " + e.toString());
+        }
+
+        return -1; // Retorno por defecto en caso de error
+    }
+    
+    public void insertarAmortizacion(int id_seleccionado,String num_amortizacion, double importe, String detalle, Timestamp fechaHoraSQL){
+        CConexion objetoConexion = new CConexion();
+        PagoAlquilerDAO paDAO = new PagoAlquilerDAO();
+        
+        try { 
+            String num_amortizacion_nuevo = paDAO.obtenerUltimoNumeroAmortizacion();
+            
+            // Sentencia SQL UPDATE para actualizar los registros en la base de datos
+            String sqlUpdate = "UPDATE importe_variado SET numero_amortizacion = ?, fecha_amortizacion = ?, pago = ?, detalle = ? WHERE id = ?";
+            
+            PreparedStatement psSqlUpdate = objetoConexion.estableceConexion().prepareStatement(sqlUpdate);
+            
+            psSqlUpdate.setString(1,num_amortizacion_nuevo);
+            psSqlUpdate.setTimestamp(2,fechaHoraSQL);
+            psSqlUpdate.setBigDecimal(3,new BigDecimal(importe));
+            psSqlUpdate.setString(4,detalle);
+            psSqlUpdate.setInt(5,id_seleccionado);
+            
+            psSqlUpdate.executeUpdate();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error SQL al actualizar el registro en importe_variado para la amortización: " + e.toString());
         }
     }
     
-        public int obtenerCuartoidPorImporteVariado(int idImporteVariado) {
-            CConexion objetoConexion = new CConexion();
-            String sql = "SELECT cuarto_id FROM importe_variado WHERE id=?";
+    // Método para obtener el número de cuarto basado en el ID de importe_variado
+    public String obtenerNumeroCuartoPorImporteVariado(int idImporteVariado) {
+        CConexion objetoConexion = new CConexion();
+        String sql = "SELECT cuarto.numcuarto FROM importe_variado " +
+                     "INNER JOIN cuarto ON importe_variado.cuarto_id = cuarto.id " +
+                     "WHERE importe_variado.id = ?";
 
-            try {
-                PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
-                pst.setInt(1, idImporteVariado);
-                ResultSet rs = pst.executeQuery();
+        try {
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setInt(1, idImporteVariado);
+            ResultSet rs = pst.executeQuery();
 
-                if (rs.next()) {
-                    return rs.getInt("cuarto_id");
-                }
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Error al obtener el ID del cuarto de la tabla ImporteVariado: " + e.toString());
+            if (rs.next()) {
+                return rs.getString("numcuarto");
             }
 
-            return -1; // Retorno por defecto en caso de error
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener el número de cuarto: " + e.toString());
+        }
+
+        return null; // Retorno por defecto en caso de error
     }
     
+    public String obtenerUltimoNumeroAmortizacion() {
+        CConexion objetoConexion = new CConexion();
+        String ultimoNumero = "";
+
+        try {
+            String sql = "SELECT numero_amortizacion FROM importe_variado WHERE fecha_amortizacion IS NOT NULL ORDER BY fecha_amortizacion DESC LIMIT 1";
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                ultimoNumero = rs.getString("numero_amortizacion");
+            }
+
+            // Incrementar el último número en 1 y formatearlo con ceros a la izquierda
+            int siguienteNumero = 1;
+            if (!ultimoNumero.isEmpty()) {
+                siguienteNumero = Integer.parseInt(ultimoNumero) + 1;
+            }
+            ultimoNumero = String.format("%07d", siguienteNumero);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error SQL al obtener el último número de amortización: " + e.toString());
+        }
+
+        return ultimoNumero;
+    }
+    
+    public void actualizarSaldo(int idImporteVariado, double nuevoSaldo) {
+        CConexion objetoConexion = new CConexion();
+        
+        try {
+            String sql = "UPDATE importe_variado SET saldos = ? WHERE id = ?";
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setDouble(1, nuevoSaldo);
+            pst.setInt(2, idImporteVariado);
+            
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error SQL al actualizar el saldo: " + e.toString());
+        }
+    }
+    
+    public void actualizarEstado(int idImporteVariado, boolean nuevoEstado) {
+        CConexion objetoConexion = new CConexion();
+        
+        try {
+            String sql = "UPDATE importe_variado SET estado = ? WHERE id = ?";
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setBoolean(1, nuevoEstado);
+            pst.setInt(2, idImporteVariado);
+            
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error SQL al actualizar el estado: " + e.toString());
+        }
+    }
+    
+    public void reiniciarSaldosSubsiguientes(int idImporteVariado, double nuevoSaldo, double importe) {
+        CConexion objetoConexion = new CConexion();
+        
+        try {
+            // Consulta SQL para obtener las filas subsiguientes al ID proporcionado
+            String sql = "SELECT id FROM importe_variado WHERE id > ? AND estado = 0 ORDER BY id";
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setInt(1, idImporteVariado);
+            ResultSet rs = pst.executeQuery();
+            
+            while (rs.next()) {
+                int idFila = rs.getInt("id");
+                String sqlUpdate = "UPDATE importe_variado SET saldos = ? WHERE id = ?";
+                PreparedStatement psSqlUpdate = objetoConexion.estableceConexion().prepareStatement(sqlUpdate);
+                psSqlUpdate.setDouble(1, nuevoSaldo);
+                psSqlUpdate.setInt(2, idFila);
+                psSqlUpdate.executeUpdate();
+                
+                nuevoSaldo += importe; // Sumar el importe al saldo para la siguiente fila
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error SQL al reiniciar los saldos subsiguientes: " + e.toString());
+        }
+    }
 }

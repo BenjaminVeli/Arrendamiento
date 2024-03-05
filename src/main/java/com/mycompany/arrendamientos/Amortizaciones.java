@@ -1,40 +1,48 @@
 package com.mycompany.arrendamientos;
 
+import DAO.PagoAlquilerDAO;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.JOptionPane;
 
 
 public class Amortizaciones extends javax.swing.JFrame {
 
     private String idSeleccionado;
     private int room_id_actual;
-    private static int numeroActual = 1; // Variable estática para llevar el registro del número actual
-    private boolean grabarPresionado = false;
+    private String numeroCuarto;
+    private double saldos;
     
-    public Amortizaciones(String idSeleccionado, int room_id_actual) {
+    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.idSeleccionado = idSeleccionado;
         this.room_id_actual = room_id_actual;
-        
-         LocalDateTime fechaHoraActual = LocalDateTime.now();
+        this.numeroCuarto = numeroCuarto;
+        this.saldos = saldos;
         
         // Configurar el formato deseado para la fecha y hora
+        LocalDateTime fechaHoraActual = LocalDateTime.now();
         DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String fechaHoraFormateada = fechaHoraActual.format(formatoFechaHora);
-        
-        // Configurar el número en el JTextField solo si no se presionó "Grabar" antes
-        if (!grabarPresionado) {
-            numeroTxt.setText(String.format("%07d", numeroActual));
-        }
         
         // Establecer la fecha y hora en el JDateChooser
         try {
             java.util.Date fechaDate = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(fechaHoraFormateada);
             fechaTxt.setDate(fechaDate);
+            cuartoTxt.setText(numeroCuarto);
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        
+        // Obtener y mostrar el último número de amortización
+        obtenerUltimoNumeroAmortizacion();
+    }
+    
+    private void obtenerUltimoNumeroAmortizacion() {
+        PagoAlquilerDAO paDAO = new PagoAlquilerDAO();
+        String ultimoNumero = paDAO.obtenerUltimoNumeroAmortizacion();
+        numeroTxt.setText(ultimoNumero);
     }
 
     private Amortizaciones() {
@@ -292,11 +300,6 @@ public class Amortizaciones extends javax.swing.JFrame {
 
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
         PagoAlquiler pa = new PagoAlquiler();
-
-        // Restablecer el número en el JTextField solo si se presionó "Cancelar"
-        if (!grabarPresionado) {
-            numeroTxt.setText(String.format("%07d", numeroActual));
-        }
         
         pa.setVisible(true);
         this.setVisible(false);
@@ -304,24 +307,44 @@ public class Amortizaciones extends javax.swing.JFrame {
 
     private void agregarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarBtnActionPerformed
         PagoAlquiler pa = new PagoAlquiler();
-    
-        grabarPresionado = true; // Actualizar la bandera cuando se presiona "Grabar"
+        PagoAlquilerDAO paDAO = new PagoAlquilerDAO();
         
-        // Incrementar el número solo si se presionó "Grabar"
-        if (grabarPresionado) {
-            numeroActual++;
-        }
+        // Obtener los campos del formulario
+        String num_amortizacion = numeroTxt.getText();
+        java.util.Date fechaHora = fechaTxt.getDate();
+        double importe = Double.parseDouble(importeTxt.getText());
+        String detalle = detalleTxtArea.getText();
+        int id_seleccionado =  Integer.parseInt(idSeleccionado);
+        double nuevoSaldo = saldos - importe;    boolean nuevoEstado = (nuevoSaldo == 0); // Si el nuevo saldo es cero, el estado es true (cancelado), de lo contrario es false (no cancelado)
+        
+        
+        // Convertir de java.util.Date a java.sql.Timestamp
+        java.sql.Timestamp fechaHoraSQL = new java.sql.Timestamp(fechaHora.getTime());
+        
+        paDAO.actualizarSaldo(Integer.parseInt(idSeleccionado), nuevoSaldo);
+        paDAO.actualizarEstado(Integer.parseInt(idSeleccionado), nuevoEstado);
+        paDAO.reiniciarSaldosSubsiguientes(Integer.parseInt(idSeleccionado), nuevoSaldo, importe);
         
         if (PosicionJRBTN.isSelected()) {
-            System.err.println("El id seleccionado en selección de posición es: " + idSeleccionado);
+            System.err.println("El id seleccionado en selección de posición es: " + id_seleccionado);
             System.err.println("El id del cuarto en selección de posición es: " + room_id_actual);
+            System.err.println("El numero del cuarto en selección de posición es: " + numeroCuarto);
+            
+            pa.setVisible(true);
+            this.setVisible(false);
         } else if (CursorJRBTN.isSelected()) {
-            System.err.println("El id seleccionado en selección de cursor es: " + idSeleccionado);
+            System.err.println("El id seleccionado en selección de cursor es: " + id_seleccionado);
             System.err.println("El id del cuarto en selección de cursor es: " + room_id_actual);
+            System.err.println("El numero del cuarto en selección de cursor es: " + numeroCuarto);
+            System.err.println("El saldo seleccionado es: " + nuevoSaldo);
+            
+            paDAO.insertarAmortizacion(id_seleccionado, num_amortizacion, importe, detalle, fechaHoraSQL);
+            
+            pa.setVisible(true);
+            this.setVisible(false);
+        } else if (!CursorJRBTN.isSelected() & !PosicionJRBTN.isSelected()) {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una opción de, posición o hasta el cursor.");
         }
-        
-        pa.setVisible(true);
-        this.setVisible(false);
     }//GEN-LAST:event_agregarBtnActionPerformed
 
     public static void main(String args[]) {
