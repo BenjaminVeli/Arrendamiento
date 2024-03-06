@@ -550,8 +550,11 @@ public class PagoAlquiler extends javax.swing.JFrame {
             // Obtén el número de cuarto usando el ID del importe variado
             String numeroCuarto = paDAO.obtenerNumeroCuartoPorImporteVariado(Integer.parseInt(idSeleccionado));
             
+            String nombreCliente = paDAO.obtenerNombreClientePorImporteVariado(Integer.parseInt(idSeleccionado));
+        
+            
             // Abre el JFrame "Amortizaciones" y pasa los parámetro que se necesitan
-            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos);
+            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente);
             amortizaciones.setVisible(true);
             this.setVisible(false);
         } else {

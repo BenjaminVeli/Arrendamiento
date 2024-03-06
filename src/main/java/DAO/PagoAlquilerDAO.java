@@ -201,6 +201,31 @@ public class PagoAlquilerDAO {
         return null; // Retorno por defecto en caso de error
     }
     
+    public String obtenerNombreClientePorImporteVariado(int idImporteVariado) {
+    CConexion objetoConexion = new CConexion();
+    String nombreCliente = "";
+
+    String sql = "SELECT datos_cli_prov.nombre " +
+                 "FROM importe_variado " +
+                 "INNER JOIN rent_calculation ON importe_variado.rent_calculation_id = rent_calculation.id " +
+                 "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                 "WHERE importe_variado.id = ?";
+
+    try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
+        pst.setInt(1, idImporteVariado);
+        try (ResultSet rs = pst.executeQuery()) {
+            if (rs.next()) {
+                nombreCliente = rs.getString("nombre");
+            }
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el nombre del cliente: " + e.toString());
+    }
+
+    return nombreCliente;
+}
+
+    
     public String obtenerUltimoNumeroAmortizacion() {
         CConexion objetoConexion = new CConexion();
         String ultimoNumero = "";
