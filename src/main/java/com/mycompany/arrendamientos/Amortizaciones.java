@@ -12,7 +12,10 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -40,7 +43,8 @@ public class Amortizaciones extends javax.swing.JFrame {
             String contenidoFechaHora = ftms.format(fechaTxt.getDate());
             String contenidoSoles = importeTxt.getText();
             String contenidoNumero = numeroTxt.getText();
-            exportarBoletaExcel(contenidoCliente,contenidoCuarto,contenidoFecha,contenidoSoles,contenidoFechaHora,contenidoNumero);
+            String contenidoDetalle = detalleTxtArea.getText();
+            exportarBoletaExcel(contenidoCliente,contenidoCuarto,contenidoFecha,contenidoSoles,contenidoFechaHora,contenidoNumero,contenidoDetalle);
         }
     });
         
@@ -435,7 +439,7 @@ public class Amortizaciones extends javax.swing.JFrame {
         });
     }
     
-    public static void exportarBoletaExcel(String contenidoCliente, String contenidoCuarto, String contenidoFecha, String contenidoSoles,String contenidoFechaHora, String contenidoNumero) {
+    public static void exportarBoletaExcel(String contenidoCliente, String contenidoCuarto, String contenidoFecha, String contenidoSoles,String contenidoFechaHora, String contenidoNumero,String contenidoDetalle) {
     try {
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Voucher");
@@ -456,7 +460,29 @@ public class Amortizaciones extends javax.swing.JFrame {
         XSSFFont fontSBorde = workbook.createFont();
         fontSBorde.setFontHeightInPoints((short) 14);
         estiloCeldaSinBorde.setFont(fontSBorde);
+        
+        XSSFCellStyle estiloCeldaAjustado = workbook.createCellStyle();
 
+        XSSFFont fontAjustado = workbook.createFont();
+        fontAjustado.setFontHeightInPoints((short) 14);
+        estiloCeldaAjustado.setFont(fontAjustado);
+        estiloCeldaAjustado.setWrapText(true);
+        estiloCeldaAjustado.setVerticalAlignment(VerticalAlignment.TOP);
+        
+         XSSFCellStyle estiloCeldaDerecho = workbook.createCellStyle();
+         estiloCeldaDerecho.setBorderTop(BorderStyle.THIN);
+        estiloCeldaDerecho.setBorderBottom(BorderStyle.THIN);
+        estiloCeldaDerecho.setBorderLeft(BorderStyle.THIN);
+        estiloCeldaDerecho.setBorderRight(BorderStyle.THIN);
+         
+        XSSFFont fontDerecho = workbook.createFont();
+        fontDerecho.setFontHeightInPoints((short) 14);
+        estiloCeldaDerecho.setFont(fontDerecho);
+        fontDerecho.setBold(true);
+        estiloCeldaDerecho.setWrapText(true);
+        estiloCeldaDerecho.setAlignment(HorizontalAlignment.RIGHT);
+        estiloCeldaDerecho.setVerticalAlignment(VerticalAlignment.CENTER);
+        
         Row voucherRow = sheet.createRow(0);
 
         Cell voucherLabelCell = voucherRow.createCell(0);
@@ -507,14 +533,25 @@ public class Amortizaciones extends javax.swing.JFrame {
         Cell contenidoSolesCell = pagoRow.createCell(1);
         contenidoSolesCell.setCellValue("S/." + contenidoSoles);
         contenidoSolesCell.setCellStyle(estiloCeldaSinBorde);
-
-  
-
+        
         Row fechayhoraRow = sheet.createRow(7);
-
-        Cell fechayhoraLabelCell = fechayhoraRow.createCell(3);
+        
+        for (int i = 0; i <= 5; i++) {
+            Cell cell = fechayhoraRow.createCell(i);
+            cell.setCellValue(contenidoFechaHora);
+            cell.setCellStyle(estiloCeldaDerecho);
+        }
+        
+        Cell fechayhoraLabelCell = fechayhoraRow.createCell(0);
         fechayhoraLabelCell.setCellValue(contenidoFechaHora);
-        fechayhoraLabelCell.setCellStyle(estiloCelda);
+        fechayhoraLabelCell.setCellStyle(estiloCeldaDerecho);
+        sheet.addMergedRegion(new CellRangeAddress(
+            7, // Desde la fila 8
+            7, // Hasta la fila 8 (misma fila)
+            0, // Desde la columna 1
+            5  // Hasta la columna 6
+        ));
+        fechayhoraRow.setHeightInPoints(20);
         
         for (int i = 0; i < sheet.getRow(0).getLastCellNum(); i++) {
             sheet.autoSizeColumn(i);
@@ -523,8 +560,15 @@ public class Amortizaciones extends javax.swing.JFrame {
         Row detalleRow = sheet.createRow(5);
 
         Cell detalleLabelCell = detalleRow.createCell(0);
-        detalleLabelCell.setCellValue("DETALLE PAGO DEL ");
-        detalleLabelCell.setCellStyle(estiloCeldaSinBorde);
+        detalleLabelCell.setCellValue("DETALLE : "+contenidoDetalle);
+        detalleLabelCell.setCellStyle(estiloCeldaAjustado);
+        sheet.addMergedRegion(new CellRangeAddress(
+            5, // Desde la fila 6
+            5, // Hasta la fila 6 (misma fila)
+            0, // Desde la columna 1
+            5  // Hasta la columna 6
+        ));
+        detalleRow.setHeightInPoints(65);
         
         // Guardar el libro en un archivo temporal
         File tempFile = File.createTempFile("detalle", ".xlsx");
