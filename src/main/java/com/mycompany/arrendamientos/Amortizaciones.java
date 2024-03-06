@@ -25,8 +25,9 @@ public class Amortizaciones extends javax.swing.JFrame {
     private int room_id_actual;
     private String numeroCuarto;
     private double saldos;
+    private double importes;
     
-    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente) {
+    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes) {
         initComponents();
         
        btnImprimir.addActionListener(new ActionListener() {
@@ -48,6 +49,7 @@ public class Amortizaciones extends javax.swing.JFrame {
         this.room_id_actual = room_id_actual;
         this.numeroCuarto = numeroCuarto;
         this.saldos = saldos;
+        this.importes = importes;
         
         // Configurar el formato deseado para la fecha y hora
         LocalDateTime fechaHoraActual = LocalDateTime.now();
@@ -368,15 +370,16 @@ public class Amortizaciones extends javax.swing.JFrame {
         double importe = Double.parseDouble(importeTxt.getText());
         String detalle = detalleTxtArea.getText();
         int id_seleccionado =  Integer.parseInt(idSeleccionado);
-        double nuevoSaldo = saldos - importe;    boolean nuevoEstado = (nuevoSaldo == 0); // Si el nuevo saldo es cero, el estado es true (cancelado), de lo contrario es false (no cancelado)
-        
+        double importes_tbImporteVariado = importes;
+        double nuevoSaldo = saldos - importe;    
+        boolean nuevoEstado = (nuevoSaldo == 0); // Si el nuevo saldo es cero, el estado es true (cancelado), de lo contrario es false (no cancelado)
         
         // Convertir de java.util.Date a java.sql.Timestamp
         java.sql.Timestamp fechaHoraSQL = new java.sql.Timestamp(fechaHora.getTime());
         
         paDAO.actualizarSaldo(Integer.parseInt(idSeleccionado), nuevoSaldo);
         paDAO.actualizarEstado(Integer.parseInt(idSeleccionado), nuevoEstado);
-        paDAO.reiniciarSaldosSubsiguientes(Integer.parseInt(idSeleccionado), nuevoSaldo, importe);
+        paDAO.reiniciarSaldosSubsiguientes(Integer.parseInt(idSeleccionado), importes_tbImporteVariado);
         
         if (PosicionJRBTN.isSelected()) {
             System.err.println("El id seleccionado en selección de posición es: " + id_seleccionado);
@@ -390,6 +393,7 @@ public class Amortizaciones extends javax.swing.JFrame {
             System.err.println("El id del cuarto en selección de cursor es: " + room_id_actual);
             System.err.println("El numero del cuarto en selección de cursor es: " + numeroCuarto);
             System.err.println("El saldo seleccionado es: " + nuevoSaldo);
+            System.err.println("El importe seleccionado de mi tabla tbImporteVariado es: " + importes_tbImporteVariado);
             
             paDAO.insertarAmortizacion(id_seleccionado, num_amortizacion, importe, detalle, fechaHoraSQL);
             

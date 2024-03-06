@@ -2,16 +2,27 @@ package DAO;
 
 import Conexion.CConexion;
 import java.sql.PreparedStatement;
+import Modelo.CalcularAlquiler;
+import Modelo.ImporteVariado;
+import Modelo.Piso;
+import com.toedter.calendar.JDateChooser;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class PagoAlquilerDAO {
     
@@ -76,7 +87,7 @@ public class PagoAlquilerDAO {
         }
     }
         
-    public void SeleccionaryMostrarImporteVariado(JTable tbMostrarAlquileres, JTable tbImporteVariado) {
+     public void SeleccionaryMostrarImporteVariado(JTable tbMostrarAlquileres, JTable tbImporteVariado) {
         try {
             int fila = tbMostrarAlquileres.getSelectedRow();
 
@@ -271,9 +282,9 @@ public class PagoAlquilerDAO {
         }
     }
     
-    public void reiniciarSaldosSubsiguientes(int idImporteVariado, double nuevoSaldo, double importe) {
+    public void reiniciarSaldosSubsiguientes(int idImporteVariado, double importes_tbImporteVariado) {
         CConexion objetoConexion = new CConexion();
-        
+
         try {
             // Consulta SQL para obtener las filas subsiguientes al ID proporcionado
             String sql = "SELECT id FROM importe_variado WHERE id > ? AND estado = 0 ORDER BY id";
@@ -281,15 +292,16 @@ public class PagoAlquilerDAO {
             pst.setInt(1, idImporteVariado);
             ResultSet rs = pst.executeQuery();
             
+            double saldoAcumulado = 0.00;
+
             while (rs.next()) {
                 int idFila = rs.getInt("id");
+                saldoAcumulado += importes_tbImporteVariado; // Sumar el importe actual al saldo acumulado
                 String sqlUpdate = "UPDATE importe_variado SET saldos = ? WHERE id = ?";
                 PreparedStatement psSqlUpdate = objetoConexion.estableceConexion().prepareStatement(sqlUpdate);
-                psSqlUpdate.setDouble(1, nuevoSaldo);
+                psSqlUpdate.setDouble(1, saldoAcumulado);
                 psSqlUpdate.setInt(2, idFila);
                 psSqlUpdate.executeUpdate();
-                
-                nuevoSaldo += importe; // Sumar el importe al saldo para la siguiente fila
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error SQL al reiniciar los saldos subsiguientes: " + e.toString());
