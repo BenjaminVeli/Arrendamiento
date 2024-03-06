@@ -2,27 +2,16 @@ package DAO;
 
 import Conexion.CConexion;
 import java.sql.PreparedStatement;
-import Modelo.CalcularAlquiler;
-import Modelo.ImporteVariado;
-import Modelo.Piso;
-import com.toedter.calendar.JDateChooser;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 public class PagoAlquilerDAO {
     

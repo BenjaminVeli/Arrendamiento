@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
@@ -28,12 +29,19 @@ public class Amortizaciones extends javax.swing.JFrame {
     public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente) {
         initComponents();
         
-        btnImprimir.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent evt) {
-                exportarBoletaExcel();
-            }
-        });
-        
+       btnImprimir.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            String contenidoCliente = Clientetxt.getText();
+            String contenidoCuarto = cuartoTxt.getText();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String contenidoFecha = sdf.format(fechaTxt.getDate());
+            SimpleDateFormat ftms = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String contenidoFechaHora = ftms.format(fechaTxt.getDate());
+            String contenidoSoles = importeTxt.getText();
+            String contenidoNumero = numeroTxt.getText();
+            exportarBoletaExcel(contenidoCliente,contenidoCuarto,contenidoFecha,contenidoSoles,contenidoFechaHora,contenidoNumero);
+        }
+    });
         
         this.setLocationRelativeTo(null);
         this.idSeleccionado = idSeleccionado;
@@ -220,42 +228,43 @@ public class Amortizaciones extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel3)
-                                                .addComponent(Cuarto1))
-                                            .addGap(22, 22, 22))
+                                            .addComponent(jLabel3)
+                                            .addGap(36, 36, 36))
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                             .addComponent(jLabel2)
                                             .addGap(20, 20, 20)))
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addComponent(jLabel1)
-                                        .addGap(21, 21, 21)))
+                                        .addGap(21, 21, 21))
+                                    .addComponent(jLabel4))
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(numeroTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(DocumentoJCBOX, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(fechaTxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                                        .addComponent(importeTxt, javax.swing.GroupLayout.Alignment.LEADING)))
-                                .addGap(25, 25, 25)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(Cuarto)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cuartoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(numeroTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(DocumentoJCBOX, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(fechaTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                                        .addGap(25, 25, 25)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addComponent(Cuarto)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(cuartoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addComponent(Cuarto1)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(importeTxt)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                                        .addComponent(agregarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(Clientetxt)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(agregarBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(btnImprimir)
-                                        .addComponent(cancelarBtn)))))
+                                        .addComponent(Clientetxt, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(btnImprimir)
+                                            .addComponent(cancelarBtn))))))
                         .addGap(26, 26, 26))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -277,8 +286,8 @@ public class Amortizaciones extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(DocumentoJCBOX, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(Clientetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(Cuarto1)
+                            .addComponent(importeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -286,14 +295,14 @@ public class Amortizaciones extends javax.swing.JFrame {
                         .addGap(10, 10, 10)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(Cuarto1)
-                            .addComponent(importeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(btnImprimir)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnImprimir))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(Clientetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -318,7 +327,7 @@ public class Amortizaciones extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -422,89 +431,113 @@ public class Amortizaciones extends javax.swing.JFrame {
         });
     }
     
-    public static void exportarBoletaExcel(){
-        try {
-            XSSFWorkbook workbook = new XSSFWorkbook();
-            XSSFSheet sheet = workbook.createSheet("Voucher");
-            
-            XSSFCellStyle estiloCelda = workbook.createCellStyle();
-            estiloCelda.setBorderBottom(BorderStyle.THIN);
-            estiloCelda.setBorderTop(BorderStyle.THIN);
-            estiloCelda.setBorderRight(BorderStyle.THIN);
-            estiloCelda.setBorderLeft(BorderStyle.THIN);
+    public static void exportarBoletaExcel(String contenidoCliente, String contenidoCuarto, String contenidoFecha, String contenidoSoles,String contenidoFechaHora, String contenidoNumero) {
+    try {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Voucher");
 
-            XSSFFont font = workbook.createFont();
-            font.setFontHeightInPoints((short) 12);
-            font.setBold(true);
-            estiloCelda.setFont(font);
-            
-            XSSFCellStyle estiloCeldaSinBorde = workbook.createCellStyle();
-            
-            XSSFFont fontSBorde = workbook.createFont();
-            fontSBorde.setFontHeightInPoints((short) 12);
-            estiloCeldaSinBorde.setFont(fontSBorde);
-            
-            
-            Row voucherRow = sheet.createRow(0);
-            
-            Cell voucherLabelCell = voucherRow.createCell(0);
-            voucherLabelCell.setCellValue("VOUCHER");
-            voucherLabelCell.setCellStyle(estiloCelda);
+        XSSFCellStyle estiloCelda = workbook.createCellStyle();
+        estiloCelda.setBorderBottom(BorderStyle.THIN);
+        estiloCelda.setBorderTop(BorderStyle.THIN);
+        estiloCelda.setBorderRight(BorderStyle.THIN);
+        estiloCelda.setBorderLeft(BorderStyle.THIN);
 
-            Row numeroRow = sheet.createRow(1);
-            
-            Cell numeroLabelCell = numeroRow.createCell(0);
-            numeroLabelCell.setCellValue("NUMERO");
-            numeroLabelCell.setCellStyle(estiloCeldaSinBorde);
-           
-          
-            Row nombreRow = sheet.createRow(2);
-            
-            Cell nombreLabelCell = nombreRow.createCell(0);
-            nombreLabelCell.setCellValue("NOMBRE");
-            nombreLabelCell.setCellStyle(estiloCeldaSinBorde);
-            
-            Row fechaRow = sheet.createRow(3);
-            
-            Cell fechaLabelCell = fechaRow.createCell(0);
-            fechaLabelCell.setCellValue("FECHA");
-            fechaLabelCell.setCellStyle(estiloCeldaSinBorde);
-            
-            Row pagoRow = sheet.createRow(4);
-            
-            Cell pagoLabelCell = pagoRow.createCell(0);
-            pagoLabelCell.setCellValue("aca va el importe");
-            pagoLabelCell.setCellStyle(estiloCeldaSinBorde);
-            
-            Row detalleRow = sheet.createRow(5);
-            
-            Cell detalleLabelCell = detalleRow.createCell(0);
-            detalleLabelCell.setCellValue("DETALLE PAGO DEL ");
-            detalleLabelCell.setCellStyle(estiloCeldaSinBorde);
+        XSSFFont font = workbook.createFont();
+        font.setFontHeightInPoints((short) 14);
+        font.setBold(true);
+        estiloCelda.setFont(font);
 
-            Row fechayhoraRow = sheet.createRow(7);
-            
-            Cell fechayhoraLabelCell = fechayhoraRow.createCell(0);
-            fechayhoraLabelCell.setCellValue(".... ");
-            fechayhoraLabelCell.setCellStyle(estiloCelda);
-            
-            
-            // Guardar el libro en un archivo temporal
-            File tempFile = File.createTempFile("detalle", ".xlsx");
-            try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
-                workbook.write(fileOut);
-                JOptionPane.showMessageDialog(null, "Datos exportados correctamente a Excel.");
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
-            }
+        XSSFCellStyle estiloCeldaSinBorde = workbook.createCellStyle();
 
-            // Abrir el archivo Excel recién creado
-            Desktop.getDesktop().open(tempFile);
+        XSSFFont fontSBorde = workbook.createFont();
+        fontSBorde.setFontHeightInPoints((short) 14);
+        estiloCeldaSinBorde.setFont(fontSBorde);
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.toString());
+        Row voucherRow = sheet.createRow(0);
+
+        Cell voucherLabelCell = voucherRow.createCell(0);
+        voucherLabelCell.setCellValue("VOUCHER");
+        voucherLabelCell.setCellStyle(estiloCelda);
+
+        Row numeroRow = sheet.createRow(1);
+
+        Cell numeroLabelCell = numeroRow.createCell(0);
+        numeroLabelCell.setCellValue("NUMERO");
+        numeroLabelCell.setCellStyle(estiloCeldaSinBorde);
+
+        Cell contenidoNumeroCell = numeroRow.createCell(1);
+        contenidoNumeroCell.setCellValue(contenidoNumero); 
+        contenidoNumeroCell.setCellStyle(estiloCeldaSinBorde);
+        
+        
+        Cell cuartoLabelCell = numeroRow.createCell(3);
+        cuartoLabelCell.setCellValue("CUARTO # "+contenidoCuarto);
+        cuartoLabelCell.setCellStyle(estiloCeldaSinBorde);
+        
+         Row nombreRow = sheet.createRow(2);
+
+        Cell nombreLabelCell = nombreRow.createCell(0);
+        nombreLabelCell.setCellValue("NOMBRE");
+        nombreLabelCell.setCellStyle(estiloCeldaSinBorde);
+
+        Cell contenidoClienteCell = nombreRow.createCell(1);
+        contenidoClienteCell.setCellValue(contenidoCliente);
+        contenidoClienteCell.setCellStyle(estiloCeldaSinBorde);
+
+        Row fechaRow = sheet.createRow(3);
+
+        Cell fechaLabelCell = fechaRow.createCell(0);
+        fechaLabelCell.setCellValue("FECHA");
+        fechaLabelCell.setCellStyle(estiloCeldaSinBorde);
+
+        Cell contenidoFechaCell = fechaRow.createCell(1);
+        contenidoFechaCell.setCellValue(contenidoFecha);
+        contenidoFechaCell.setCellStyle(estiloCeldaSinBorde);
+
+        Row pagoRow = sheet.createRow(4);
+
+        Cell pagoLabelCell = pagoRow.createCell(0);
+        pagoLabelCell.setCellValue("SOLES");
+        pagoLabelCell.setCellStyle(estiloCeldaSinBorde);
+
+        Cell contenidoSolesCell = pagoRow.createCell(1);
+        contenidoSolesCell.setCellValue("S/." + contenidoSoles);
+        contenidoSolesCell.setCellStyle(estiloCeldaSinBorde);
+
+  
+
+        Row fechayhoraRow = sheet.createRow(7);
+
+        Cell fechayhoraLabelCell = fechayhoraRow.createCell(3);
+        fechayhoraLabelCell.setCellValue(contenidoFechaHora);
+        fechayhoraLabelCell.setCellStyle(estiloCelda);
+        
+        for (int i = 0; i < sheet.getRow(0).getLastCellNum(); i++) {
+            sheet.autoSizeColumn(i);
         }
+        
+        Row detalleRow = sheet.createRow(5);
+
+        Cell detalleLabelCell = detalleRow.createCell(0);
+        detalleLabelCell.setCellValue("DETALLE PAGO DEL ");
+        detalleLabelCell.setCellStyle(estiloCeldaSinBorde);
+        
+        // Guardar el libro en un archivo temporal
+        File tempFile = File.createTempFile("detalle", ".xlsx");
+        try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
+            workbook.write(fileOut);
+            JOptionPane.showMessageDialog(null, "Datos exportados correctamente a Excel.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
+        }
+
+        // Abrir el archivo Excel recién creado
+        Desktop.getDesktop().open(tempFile);
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error: " + e.toString());
     }
+}
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
