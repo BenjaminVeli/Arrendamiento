@@ -224,6 +224,54 @@ public class PagoAlquilerDAO {
 
     return nombreCliente;
 }
+    
+    public String obtenerArrendador(int clientId) {
+    CConexion objetoConexion = new CConexion();
+    String arrendador = "";
+
+    String sql = "SELECT mantenimiento.nombre " +
+                 "FROM contrato " +
+                 "INNER JOIN mantenimiento ON contrato.id_mantenimiento_arrendador = mantenimiento.id " +
+                 "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
+                 "WHERE rent_calculation.client_id = ?";
+
+    try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
+        pst.setInt(1, clientId);
+        try (ResultSet rs = pst.executeQuery()) {
+            if (rs.next()) {
+                arrendador = rs.getString("nombre");
+            }
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el arrendador del cliente: " + e.toString());
+    }
+
+    return arrendador;
+}
+    
+    
+    public int obtenerClienteIdPorImporteVariado(int idImporteVariado) {
+    CConexion objetoConexion = new CConexion();
+    int clienteId = -1;
+
+    String sql = "SELECT rent_calculation.client_id " +
+                 "FROM importe_variado " +
+                 "INNER JOIN rent_calculation ON importe_variado.rent_calculation_id = rent_calculation.id " +
+                 "WHERE importe_variado.id = ?";
+
+    try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
+        pst.setInt(1, idImporteVariado);
+        try (ResultSet rs = pst.executeQuery()) {
+            if (rs.next()) {
+                clienteId = rs.getInt("client_id");
+            }
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el ID del cliente: " + e.toString());
+    }
+
+    return clienteId;
+}
 
     
     public String obtenerUltimoNumeroAmortizacion() {

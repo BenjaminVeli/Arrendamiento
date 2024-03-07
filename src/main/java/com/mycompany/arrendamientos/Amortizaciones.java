@@ -31,7 +31,7 @@ public class Amortizaciones extends javax.swing.JFrame {
     private double importes;
     private double pagos;
     
-    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, double pagos) {
+    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, String nombreArrendador) {
         initComponents();
         
        btnImprimir.addActionListener(new ActionListener() {
@@ -45,7 +45,8 @@ public class Amortizaciones extends javax.swing.JFrame {
             String contenidoSoles = importeTxt.getText();
             String contenidoNumero = numeroTxt.getText();
             String contenidoDetalle = detalleTxtArea.getText();
-            exportarBoletaExcel(contenidoCliente,contenidoCuarto,contenidoFecha,contenidoSoles,contenidoFechaHora,contenidoNumero,contenidoDetalle);
+            String contenidoArrendador = Arrendadortxt.getText();
+            exportarBoletaExcel(contenidoCliente,contenidoCuarto,contenidoFecha,contenidoSoles,contenidoFechaHora,contenidoNumero,contenidoDetalle,contenidoArrendador);
         }
     });
         
@@ -55,7 +56,6 @@ public class Amortizaciones extends javax.swing.JFrame {
         this.numeroCuarto = numeroCuarto;
         this.saldos = saldos;
         this.importes = importes;
-        this.pagos = pagos;
         
         // Configurar el formato deseado para la fecha y hora
         LocalDateTime fechaHoraActual = LocalDateTime.now();
@@ -68,6 +68,7 @@ public class Amortizaciones extends javax.swing.JFrame {
             fechaTxt.setDate(fechaDate);
             cuartoTxt.setText(numeroCuarto);
             Clientetxt.setText(nombreCliente);
+            Arrendadortxt.setText(nombreArrendador);
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
@@ -114,6 +115,8 @@ public class Amortizaciones extends javax.swing.JFrame {
         btnImprimir = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         Clientetxt = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        Arrendadortxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -223,6 +226,9 @@ public class Amortizaciones extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("Cliente:");
 
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel6.setText("Arrendador:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -245,30 +251,33 @@ public class Amortizaciones extends javax.swing.JFrame {
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                             .addComponent(jLabel2)
                                             .addGap(20, 20, 20)))
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addGap(21, 21, 21))
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel6)
                                     .addComponent(jLabel4))
+                                .addGap(15, 15, 15)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(numeroTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(DocumentoJCBOX, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(fechaTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
-                                        .addGap(25, 25, 25)
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                            .addComponent(DocumentoJCBOX, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(10, 10, 10)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                                 .addComponent(Cuarto)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(cuartoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addGap(23, 23, 23)
                                                 .addComponent(Cuarto1)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(importeTxt)))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                                                .addComponent(importeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                                         .addComponent(agregarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(Clientetxt, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(Clientetxt, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                                            .addComponent(Arrendadortxt)
+                                            .addComponent(fechaTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(btnImprimir)
@@ -309,8 +318,12 @@ public class Amortizaciones extends javax.swing.JFrame {
                         .addGap(6, 6, 6)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(Clientetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
+                            .addComponent(Clientetxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(Arrendadortxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(20, 20, 20)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -335,7 +348,7 @@ public class Amortizaciones extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -448,7 +461,7 @@ public class Amortizaciones extends javax.swing.JFrame {
         });
     }
     
-    public static void exportarBoletaExcel(String contenidoCliente, String contenidoCuarto, String contenidoFecha, String contenidoSoles,String contenidoFechaHora, String contenidoNumero,String contenidoDetalle) {
+    public static void exportarBoletaExcel(String contenidoCliente, String contenidoCuarto, String contenidoFecha, String contenidoSoles,String contenidoFechaHora, String contenidoNumero,String contenidoDetalle, String contenidoArrendador) {
     try {
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Voucher");
@@ -493,11 +506,22 @@ public class Amortizaciones extends javax.swing.JFrame {
         estiloCeldaDerecho.setVerticalAlignment(VerticalAlignment.CENTER);
         
         Row voucherRow = sheet.createRow(0);
-
-        Cell voucherLabelCell = voucherRow.createCell(0);
-        voucherLabelCell.setCellValue("VOUCHER");
-        voucherLabelCell.setCellStyle(estiloCelda);
-
+        for (int i = 0; i <= 5; i++) {
+            Cell cell = voucherRow.createCell(i);
+            cell.setCellValue(contenidoArrendador);
+            cell.setCellStyle(estiloCelda);
+        }
+        Cell contenidoArrendadorCell = voucherRow.createCell(0);
+        contenidoArrendadorCell.setCellValue(contenidoArrendador+"             VOUCHER");
+        contenidoArrendadorCell.setCellStyle(estiloCelda);
+        sheet.addMergedRegion(new CellRangeAddress(
+            0, // Desde la fila 1
+            0, // Hasta la fila 1 (misma fila)
+            0, // Desde la columna 1
+            5  // Hasta la columna 6
+        ));
+        voucherRow.setHeightInPoints(20);
+        
         Row numeroRow = sheet.createRow(1);
 
         Cell numeroLabelCell = numeroRow.createCell(0);
@@ -522,7 +546,13 @@ public class Amortizaciones extends javax.swing.JFrame {
         Cell contenidoClienteCell = nombreRow.createCell(1);
         contenidoClienteCell.setCellValue(contenidoCliente);
         contenidoClienteCell.setCellStyle(estiloCeldaSinBorde);
-
+        sheet.addMergedRegion(new CellRangeAddress(
+    nombreRow.getRowNum(),   // Desde la fila actual
+    nombreRow.getRowNum(),   // Hasta la fila actual (misma fila)
+    1,                       // Desde la columna 2 (0-indexed)
+    5                        // Hasta la columna 6 (0-indexed)
+        ));
+        
         Row fechaRow = sheet.createRow(3);
 
         Cell fechaLabelCell = fechaRow.createCell(0);
@@ -598,6 +628,7 @@ public class Amortizaciones extends javax.swing.JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField Arrendadortxt;
     private javax.swing.JTextField Clientetxt;
     private javax.swing.JLabel Cuarto;
     private javax.swing.JLabel Cuarto1;
@@ -616,6 +647,7 @@ public class Amortizaciones extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
