@@ -544,6 +544,9 @@ public class PagoAlquiler extends javax.swing.JFrame {
             String importeSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 3).toString();
             double importes = Double.parseDouble(importeSeleccionado);
             
+            String PagoSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 4).toString();
+            double pagos = Double.parseDouble(PagoSeleccionado);
+            
             String saldosStr = tbImporteVariado.getValueAt(filaSeleccionada, 5).toString();
             double saldos = Double.parseDouble(saldosStr);
             
@@ -557,7 +560,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         
             
             // Abre el JFrame "Amortizaciones" y pasa los parámetro que se necesitan
-            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes);
+            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes, pagos);
             amortizaciones.setVisible(true);
             this.setVisible(false);
         } else {

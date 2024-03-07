@@ -29,8 +29,9 @@ public class Amortizaciones extends javax.swing.JFrame {
     private String numeroCuarto;
     private double saldos;
     private double importes;
+    private double pagos;
     
-    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes) {
+    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, double pagos) {
         initComponents();
         
        btnImprimir.addActionListener(new ActionListener() {
@@ -54,6 +55,7 @@ public class Amortizaciones extends javax.swing.JFrame {
         this.numeroCuarto = numeroCuarto;
         this.saldos = saldos;
         this.importes = importes;
+        this.pagos = pagos;
         
         // Configurar el formato deseado para la fecha y hora
         LocalDateTime fechaHoraActual = LocalDateTime.now();
@@ -375,8 +377,14 @@ public class Amortizaciones extends javax.swing.JFrame {
         String detalle = detalleTxtArea.getText();
         int id_seleccionado =  Integer.parseInt(idSeleccionado);
         double importes_tbImporteVariado = importes;
+        double pagos_tbImporteVariado = pagos;
         double nuevoSaldo = saldos - importe;    
         boolean nuevoEstado = (nuevoSaldo == 0); // Si el nuevo saldo es cero, el estado es true (cancelado), de lo contrario es false (no cancelado)
+        
+        // Si el pago seleccionado es mayor a cero, sumarlo al importe
+        if (pagos_tbImporteVariado > 0) {
+            importe += pagos_tbImporteVariado;
+        }
         
         // Convertir de java.util.Date a java.sql.Timestamp
         java.sql.Timestamp fechaHoraSQL = new java.sql.Timestamp(fechaHora.getTime());
@@ -398,6 +406,7 @@ public class Amortizaciones extends javax.swing.JFrame {
             System.err.println("El numero del cuarto en selección de cursor es: " + numeroCuarto);
             System.err.println("El saldo seleccionado es: " + nuevoSaldo);
             System.err.println("El importe seleccionado de mi tabla tbImporteVariado es: " + importes_tbImporteVariado);
+            System.err.println("El pago seleccionado de mi tabla tbImporteVariado es: " + pagos_tbImporteVariado); //Este es el valor obtenido del campo pago
             
             paDAO.insertarAmortizacion(id_seleccionado, num_amortizacion, importe, detalle, fechaHoraSQL);
             
