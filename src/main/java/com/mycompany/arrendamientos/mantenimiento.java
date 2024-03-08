@@ -4,6 +4,7 @@ import DAO.MantenimientoDAO;
 
 public class mantenimiento extends javax.swing.JFrame {
 
+    private CalculoAlquiler ca;
     
     public mantenimiento() {
         initComponents();
@@ -353,10 +354,13 @@ public class mantenimiento extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    public void setCA(CalculoAlquiler ca){
+        this.ca = ca;
+    }
+    
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        CalculoAlquiler m1 = new CalculoAlquiler();
-        m1.setVisible(true);
+        ca.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnSalirActionPerformed
 

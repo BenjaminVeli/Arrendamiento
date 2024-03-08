@@ -20,7 +20,8 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 
 public class Contrato extends javax.swing.JFrame {
 
-
+    private CalculoAlquiler ca;
+    
     public Contrato() {
         initComponents();
          
@@ -693,10 +694,13 @@ public class Contrato extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    public void setCA(CalculoAlquiler ca){
+        this.ca = ca;
+    }
+    
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        CalculoAlquiler c1 = new CalculoAlquiler();
-        c1.setVisible(true);
+        ca.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnSalirActionPerformed
 

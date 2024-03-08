@@ -31,7 +31,7 @@ public class Amortizaciones extends javax.swing.JFrame {
     private double importes;
     private double pagos;
     
-    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, String nombreArrendador) {
+    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes,double pagos, String nombreArrendador) {
         initComponents();
         
        btnImprimir.addActionListener(new ActionListener() {

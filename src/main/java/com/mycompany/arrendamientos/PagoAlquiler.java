@@ -31,7 +31,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class PagoAlquiler extends javax.swing.JFrame {
-
+    
+    ReporteCredito v2 = new ReporteCredito();
+    
     public PagoAlquiler() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -565,7 +567,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
            String nombreArrendador = paDAO.obtenerArrendador(clientId);
             
             // Abre el JFrame "Amortizaciones" y pasa los parámetro que se necesitan
-            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes, nombreArrendador);
+            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes , pagos, nombreArrendador);
             amortizaciones.setVisible(true);
             this.setVisible(false);
         } else {
@@ -574,7 +576,6 @@ public class PagoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnCobranzaGlobalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCobranzaGlobalActionPerformed
-        ReporteCredito v2 = new ReporteCredito();
         v2.setV1(this);
         v2.setVisible(true);
     }//GEN-LAST:event_btnCobranzaGlobalActionPerformed

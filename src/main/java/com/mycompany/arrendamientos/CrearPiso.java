@@ -5,7 +5,8 @@ import DAO.PisoDAO;
 
 public class CrearPiso extends javax.swing.JFrame {
 
-   
+    private CalculoAlquiler ca;
+    
     public CrearPiso() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -216,9 +217,12 @@ public class CrearPiso extends javax.swing.JFrame {
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         Limpiar();
     }//GEN-LAST:event_btnLimpiarActionPerformed
-
+    
+    public void setCA(CalculoAlquiler ca){
+        this.ca = ca;
+    }
+    
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        CalculoAlquiler ca = new CalculoAlquiler();
         ca.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnSalirActionPerformed

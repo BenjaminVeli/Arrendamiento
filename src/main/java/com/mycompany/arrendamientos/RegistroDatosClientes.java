@@ -16,9 +16,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class RegistroDatosClientes extends javax.swing.JFrame {
     
-    private Arrendamientos arrendamientos;
-        
-    
+    private CalculoAlquiler ca;
     
     public RegistroDatosClientes() {
         initComponents();
@@ -515,9 +513,12 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         objetoArrendamientos.InsertarCliente(txtNombre,  txtRuc,   txtDireccion_propietario, txtNacimiento, txtFecha_ingreso, txtCelular, txtNacimiento, txtDnipropietario, txtCorreo, txtEstadocivil, txtConyuge, txtDniconyuge, txtCiudad, txtCelularConyuge,txtProvincia,txtDepartamento,txtDistrito);
         objetoArrendamientos.MostrarCliente(tbTotalClientes);
     }//GEN-LAST:event_btnGuardarActionPerformed
-
+    
+    public void setCA(CalculoAlquiler ca){
+        this.ca = ca;
+    }
+    
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        CalculoAlquiler ca = new CalculoAlquiler();
         ca.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnSalirActionPerformed

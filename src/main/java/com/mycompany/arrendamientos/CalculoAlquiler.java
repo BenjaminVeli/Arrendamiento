@@ -25,6 +25,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class CalculoAlquiler extends javax.swing.JFrame {
     
+    CrearCuarto cuarto = new CrearCuarto();
+    CrearPiso piso = new CrearPiso();
+    mantenimiento mantenimiento = new mantenimiento();
+    Contrato contrato = new Contrato();
+    RegistroDatosClientes rdc = new RegistroDatosClientes();
+    
     public CalculoAlquiler() {
          initComponents();
          
@@ -1123,9 +1129,8 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void registroClientebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registroClientebtnActionPerformed
-        RegistroDatosClientes rdc = new RegistroDatosClientes();
+        rdc.setCA(this);
         rdc.setVisible(true);
-        this.setVisible(false);
     }//GEN-LAST:event_registroClientebtnActionPerformed
 
     private void alquilertxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_alquilertxtKeyReleased
@@ -1137,15 +1142,13 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_totaltxtKeyReleased
 
     private void crearPisotxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearPisotxtActionPerformed
-        CrearPiso piso = new CrearPiso();
+        piso.setCA(this);
         piso.setVisible(true);
-        this.setVisible(false);
     }//GEN-LAST:event_crearPisotxtActionPerformed
 
     private void crearCuartobtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearCuartobtnActionPerformed
-        CrearCuarto cuarto = new CrearCuarto();
+        cuarto.setCA(this);
         cuarto.setVisible(true);
-        this.setVisible(false);
     }//GEN-LAST:event_crearCuartobtnActionPerformed
 
     private void tbTotalCalculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCalculoMouseClicked
@@ -1234,15 +1237,13 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_telefonotxtMouseClicked
 
     private void btnContratoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContratoActionPerformed
-        Contrato c2 = new Contrato();
-        c2.setVisible(true);
-        this.setVisible(false);
+        contrato.setVisible(true);
+        contrato.setCA(this);
     }//GEN-LAST:event_btnContratoActionPerformed
 
     private void btnMantenimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMantenimientoActionPerformed
-       mantenimiento m2 = new mantenimiento();
-        m2.setVisible(true);
-        this.setVisible(false);
+        mantenimiento.setCA(this);
+        mantenimiento.setVisible(true);
     }//GEN-LAST:event_btnMantenimientoActionPerformed
 
     private void btnPagoAlquilerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagoAlquilerActionPerformed
