@@ -31,7 +31,7 @@ public class Amortizaciones extends javax.swing.JFrame {
     private double importes;
     private double pagos;
     
-    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes,double pagos, String nombreArrendador) {
+    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, double pagos, String nombreArrendador) {
         initComponents();
         
        btnImprimir.addActionListener(new ActionListener() {
@@ -56,6 +56,7 @@ public class Amortizaciones extends javax.swing.JFrame {
         this.numeroCuarto = numeroCuarto;
         this.saldos = saldos;
         this.importes = importes;
+         this.pagos = pagos;
         
         // Configurar el formato deseado para la fecha y hora
         LocalDateTime fechaHoraActual = LocalDateTime.now();
