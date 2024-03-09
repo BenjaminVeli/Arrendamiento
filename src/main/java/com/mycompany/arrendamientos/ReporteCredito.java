@@ -225,7 +225,7 @@ public class ReporteCredito extends javax.swing.JFrame {
             Row proformaRow = sheet.createRow(0);
             Cell proformaCellC = proformaRow.createCell(0);
             proformaCellC.setCellValue("LISTA GLOBAL DE COBRANZA");
-            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
             proformaCellC.setCellStyle(estiloProforma);
 
             CellStyle estiloHeadersRow = workbook.createCellStyle();
