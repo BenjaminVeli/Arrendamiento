@@ -47,7 +47,13 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 exportarAExcelGeneral();
             }
         });
-      
+        
+        btnMorosos.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent evt) {
+                exportarAExcelMorosos();
+            }
+        });
+        
     }
     
     private void cargarNombresClientes() {
@@ -113,7 +119,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         btnGeneral = new javax.swing.JButton();
         btnCobranzaGlobal = new javax.swing.JButton();
         btnCobranza = new javax.swing.JButton();
-        btnMoros = new javax.swing.JButton();
+        btnMorosos = new javax.swing.JButton();
         btnTodoCredito = new javax.swing.JButton();
         btnDetallePago = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
@@ -408,8 +414,8 @@ public class PagoAlquiler extends javax.swing.JFrame {
         btnCobranza.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnCobranza.setText("Cobranza");
 
-        btnMoros.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnMoros.setText("Moros");
+        btnMorosos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnMorosos.setText("Morosos");
 
         btnTodoCredito.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnTodoCredito.setText("Todo el credito");
@@ -441,7 +447,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnCobranza)
                         .addGap(18, 18, 18)
-                        .addComponent(btnMoros)
+                        .addComponent(btnMorosos)
                         .addGap(30, 30, 30)
                         .addComponent(btnTodoCredito)
                         .addGap(18, 18, 18)
@@ -472,7 +478,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                     .addComponent(btnGeneral)
                     .addComponent(btnCobranzaGlobal)
                     .addComponent(btnCobranza)
-                    .addComponent(btnMoros)
+                    .addComponent(btnMorosos)
                     .addComponent(btnTodoCredito)
                     .addComponent(btnDetallePago))
                 .addContainerGap(16, Short.MAX_VALUE))
@@ -747,6 +753,116 @@ public class PagoAlquiler extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error: " + e.toString());
         }
     }
+    
+    
+    public static void exportarAExcelMorosos(){
+    
+        try {
+        // Conexión a la base de datos
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
+        Statement statement = connection.createStatement();
+        String consultaCompleta = "SELECT rent_calculation.id, datos_cli_prov.nombre AS cliente_nombre, cuarto.numcuarto,  importe_variado.fecha , importe_variado.saldos " +
+    "FROM rent_calculation " +
+    "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+    "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+    "INNER JOIN importe_variado ON rent_calculation.id = importe_variado.rent_calculation_id " +
+    "WHERE importe_variado.estado = 0 AND CURDATE() < importe_variado.fecha;";
+
+        ResultSet resultSet = statement.executeQuery(consultaCompleta);
+
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Alquiler Global");
+
+            XSSFCellStyle estiloProforma = workbook.createCellStyle();
+            XSSFFont fontProforma = workbook.createFont();
+            fontProforma.setFontHeightInPoints((short) 20);
+            fontProforma.setBold(true);
+            fontProforma.setUnderline(FontUnderline.SINGLE);
+            estiloProforma.setFont(fontProforma);
+            
+            
+            Row proformaRow = sheet.createRow(0);
+            Cell proformaCellC = proformaRow.createCell(0);
+            proformaCellC.setCellValue("LISTA DE MOROSOS");
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 4));
+            proformaCellC.setCellStyle(estiloProforma);
+
+            // Estilos para encabezado
+            CellStyle estiloHeadersRow = workbook.createCellStyle();
+            estiloHeadersRow.setAlignment(HorizontalAlignment.CENTER);
+            estiloHeadersRow.setBorderBottom(BorderStyle.THIN);
+            estiloHeadersRow.setBorderTop(BorderStyle.THIN);
+            estiloHeadersRow.setBorderRight(BorderStyle.THIN);
+            estiloHeadersRow.setBorderLeft(BorderStyle.THIN);
+            
+            XSSFFont fontHeader = workbook.createFont();
+            fontHeader.setFontHeightInPoints((short) 13);
+
+            
+            // Estilos para filas de informacióm
+            CellStyle estiloInfoRow = workbook.createCellStyle();
+            estiloInfoRow.setAlignment(HorizontalAlignment.CENTER);
+            estiloInfoRow.setBorderBottom(BorderStyle.DASHED);
+            
+
+           
+            // Encabezados de columnas
+            Row headersRow = sheet.createRow(2);
+            headersRow.createCell(0).setCellValue("ID");
+            headersRow.createCell(1).setCellValue("Cuarto");
+            headersRow.createCell(2).setCellValue("Cliente");
+            headersRow.createCell(3).setCellValue("Saldo");
+            headersRow.createCell(4).setCellValue("F.Vencimiento");
+            for (Cell cell : headersRow) {
+            cell.setCellStyle(estiloHeadersRow);
+            estiloHeadersRow.setFont(fontHeader);
+
+            }
+            
+            sheet.setColumnWidth(0, 7 * 256); // Columna A (ID)
+            sheet.setColumnWidth(1, 15 * 256); // Columna B (Cuarto)
+            sheet.setColumnWidth(2, 40 * 256); // Columna C (Cliente)
+            sheet.setColumnWidth(3, 10 * 256); // Columna D (Saldo)
+            sheet.setColumnWidth(4, 15 * 256); // Columna E (F.Vencimiento)
+            
+            int rowNum = 4; // Empieza a escribir los datos desde la fila 3
+            while (resultSet.next()) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(resultSet.getInt("id"));
+                String numCuarto = resultSet.getString("numcuarto");
+                String textoCompleto = "CUARTO # " + numCuarto;
+                row.createCell(1).setCellValue(textoCompleto);
+                row.createCell(2).setCellValue(resultSet.getString("cliente_nombre"));
+                row.createCell(3).setCellValue(resultSet.getString("saldos"));
+                row.createCell(4).setCellValue(resultSet.getString("fecha"));
+                for (int i = 4; i < rowNum; i++) { // Suponiendo que las filas de datos comienzan desde la fila 4
+            Row dataRow = sheet.getRow(i);
+            for (Cell cell : dataRow) {
+                cell.setCellStyle(estiloInfoRow);
+            }
+        }
+            }
+
+ 
+
+            // Guardar el libro en un archivo temporal
+            File tempFile = File.createTempFile("detalle", ".xlsx");
+            try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
+                workbook.write(fileOut);
+                JOptionPane.showMessageDialog(null, "Datos exportados correctamente a Excel.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
+            }
+
+            // Abrir el archivo Excel recién creado 
+            Desktop.getDesktop().open(tempFile);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.toString());
+        }
+        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Dolares;
@@ -761,7 +877,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
     private javax.swing.JButton btnInteres;
     private javax.swing.JButton btnLess;
     private javax.swing.JButton btnMore;
-    private javax.swing.JButton btnMoros;
+    private javax.swing.JButton btnMorosos;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnObservacion;
     private javax.swing.JButton btnRecuperar;
