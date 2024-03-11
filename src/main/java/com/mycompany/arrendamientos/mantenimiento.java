@@ -1,6 +1,7 @@
 package com.mycompany.arrendamientos;
 
 import DAO.MantenimientoDAO;
+import javax.swing.JFrame;
 
 public class mantenimiento extends javax.swing.JFrame {
 
@@ -8,6 +9,13 @@ public class mantenimiento extends javax.swing.JFrame {
     
     public mantenimiento() {
         initComponents();
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Configurar el comportamiento de cierre
+
+        // Deshabilitar el botón de cerrar (X) y la maximización
+        setResizable(false); // Deshabilitar la maximización
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
         this.setLocationRelativeTo(null);
         txtid.setEnabled(false);
         Limpiar();

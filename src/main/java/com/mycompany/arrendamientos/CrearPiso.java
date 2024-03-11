@@ -1,6 +1,7 @@
 package com.mycompany.arrendamientos;
 
 import DAO.PisoDAO;
+import javax.swing.JFrame;
 
 
 public class CrearPiso extends javax.swing.JFrame {
@@ -9,6 +10,13 @@ public class CrearPiso extends javax.swing.JFrame {
     
     public CrearPiso() {
         initComponents();
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Configurar el comportamiento de cierre
+
+        // Deshabilitar el botón de cerrar (X) y la maximización
+        setResizable(false); // Deshabilitar la maximización
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
         this.setLocationRelativeTo(null);
         txtId.setEnabled(false);
         Limpiar();

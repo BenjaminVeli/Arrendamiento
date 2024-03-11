@@ -14,6 +14,7 @@ import java.sql.Statement;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -35,6 +36,13 @@ public class CrearCuarto extends javax.swing.JFrame {
     
     public CrearCuarto() {
          initComponents();
+         
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Configurar el comportamiento de cierre
+
+        // Deshabilitar el botón de cerrar (X) y la maximización
+        setResizable(false); // Deshabilitar la maximización
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+         
          this.setLocationRelativeTo(null);
          txtId.setEnabled(false);
          txtrutaimagen.setEnabled(false);

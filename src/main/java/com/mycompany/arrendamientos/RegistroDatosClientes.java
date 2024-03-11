@@ -4,11 +4,11 @@
  */
 package com.mycompany.arrendamientos;
 
-import Conexion.CConexion;
-import Modelo.Arrendamientos;
+
 import DAO.ArrendamientosDAO;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.JFrame;
 
 /**
  *
@@ -20,6 +20,12 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
     
     public RegistroDatosClientes() {
         initComponents();
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Configurar el comportamiento de cierre
+
+        // Deshabilitar el botón de cerrar (X) y la maximización
+        setResizable(false); // Deshabilitar la maximización
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
          txtSearch.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
          @Override
