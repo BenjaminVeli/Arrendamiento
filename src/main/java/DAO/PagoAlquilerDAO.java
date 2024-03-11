@@ -87,19 +87,15 @@ public class PagoAlquilerDAO {
         }
     }
         
-     public void SeleccionaryMostrarImporteVariado(JTable tbMostrarAlquileres, JTable tbImporteVariado) {
+    public void SeleccionaryMostrarImporteVariado(JTable tbMostrarAlquileres, JTable tbImporteVariado) {
         try {
-            int fila = tbMostrarAlquileres.getSelectedRow();
+            String rentCalculationId = obtenerRentCalculationIdSeleccionado(tbMostrarAlquileres);
 
-            if (fila >= 0) {
-                String idSeleccionado = tbMostrarAlquileres.getValueAt(fila, 0).toString();
+            if (rentCalculationId != null) {
                 CConexion objetoConexion = new CConexion();
-
                 String sql = "SELECT id, ord, fecha, importe, pago, saldos, estado FROM importe_variado WHERE rent_calculation_id = ?";
-
                 PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
-                pst.setString(1, idSeleccionado);
-
+                pst.setString(1, rentCalculationId);
                 ResultSet rs = pst.executeQuery();
 
                 DefaultTableModel modelo = new DefaultTableModel();
@@ -119,14 +115,14 @@ public class PagoAlquilerDAO {
                         rs.getString("importe"),
                         rs.getString("pago"),
                         rs.getString("Saldos"),
-                        rs.getBoolean("estado") ? "Cancelado" : "No cancelado" // Modificación aquí
+                        rs.getBoolean("estado") ? "Cancelado" : "No cancelado"
                     };
                     modelo.addRow(filaDatos);
                 }
 
                 tbImporteVariado.setModel(modelo);
             } else {
-                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+                JOptionPane.showMessageDialog(null, "Por favor seleccione un alquiler primero.");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "No se puede mostrar los registros de importe variado del cliente, error: " + e.toString());
@@ -202,77 +198,75 @@ public class PagoAlquilerDAO {
     }
     
     public String obtenerNombreClientePorImporteVariado(int idImporteVariado) {
-    CConexion objetoConexion = new CConexion();
-    String nombreCliente = "";
+        CConexion objetoConexion = new CConexion();
+        String nombreCliente = "";
 
-    String sql = "SELECT datos_cli_prov.nombre " +
-                 "FROM importe_variado " +
-                 "INNER JOIN rent_calculation ON importe_variado.rent_calculation_id = rent_calculation.id " +
-                 "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
-                 "WHERE importe_variado.id = ?";
+        String sql = "SELECT datos_cli_prov.nombre " +
+                     "FROM importe_variado " +
+                     "INNER JOIN rent_calculation ON importe_variado.rent_calculation_id = rent_calculation.id " +
+                     "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                     "WHERE importe_variado.id = ?";
 
-    try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
-        pst.setInt(1, idImporteVariado);
-        try (ResultSet rs = pst.executeQuery()) {
-            if (rs.next()) {
-                nombreCliente = rs.getString("nombre");
+        try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
+            pst.setInt(1, idImporteVariado);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    nombreCliente = rs.getString("nombre");
+                }
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener el nombre del cliente: " + e.toString());
         }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Error al obtener el nombre del cliente: " + e.toString());
-    }
 
-    return nombreCliente;
-}
+        return nombreCliente;
+    }
     
     public String obtenerArrendador(int clientId) {
-    CConexion objetoConexion = new CConexion();
-    String arrendador = "";
+        CConexion objetoConexion = new CConexion();
+        String arrendador = "";
 
-    String sql = "SELECT mantenimiento.nombre " +
-                 "FROM contrato " +
-                 "INNER JOIN mantenimiento ON contrato.id_mantenimiento_arrendador = mantenimiento.id " +
-                 "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
-                 "WHERE rent_calculation.client_id = ?";
+        String sql = "SELECT mantenimiento.nombre " +
+                     "FROM contrato " +
+                     "INNER JOIN mantenimiento ON contrato.id_mantenimiento_arrendador = mantenimiento.id " +
+                     "INNER JOIN rent_calculation ON contrato.id_rent_calculation = rent_calculation.id " +
+                     "WHERE rent_calculation.client_id = ?";
 
-    try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
-        pst.setInt(1, clientId);
-        try (ResultSet rs = pst.executeQuery()) {
-            if (rs.next()) {
-                arrendador = rs.getString("nombre");
+        try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
+            pst.setInt(1, clientId);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    arrendador = rs.getString("nombre");
+                }
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener el arrendador del cliente: " + e.toString());
         }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Error al obtener el arrendador del cliente: " + e.toString());
-    }
 
-    return arrendador;
-}
-    
+        return arrendador;
+    }
     
     public int obtenerClienteIdPorImporteVariado(int idImporteVariado) {
-    CConexion objetoConexion = new CConexion();
-    int clienteId = -1;
+        CConexion objetoConexion = new CConexion();
+        int clienteId = -1;
 
-    String sql = "SELECT rent_calculation.client_id " +
-                 "FROM importe_variado " +
-                 "INNER JOIN rent_calculation ON importe_variado.rent_calculation_id = rent_calculation.id " +
-                 "WHERE importe_variado.id = ?";
+        String sql = "SELECT rent_calculation.client_id " +
+                     "FROM importe_variado " +
+                     "INNER JOIN rent_calculation ON importe_variado.rent_calculation_id = rent_calculation.id " +
+                     "WHERE importe_variado.id = ?";
 
-    try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
-        pst.setInt(1, idImporteVariado);
-        try (ResultSet rs = pst.executeQuery()) {
-            if (rs.next()) {
-                clienteId = rs.getInt("client_id");
+        try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
+            pst.setInt(1, idImporteVariado);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    clienteId = rs.getInt("client_id");
+                }
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener el ID del cliente: " + e.toString());
         }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Error al obtener el ID del cliente: " + e.toString());
+
+        return clienteId;
     }
-
-    return clienteId;
-}
-
     
     public String obtenerUltimoNumeroAmortizacion() {
         CConexion objetoConexion = new CConexion();
@@ -355,4 +349,81 @@ public class PagoAlquilerDAO {
             JOptionPane.showMessageDialog(null, "Error SQL al reiniciar los saldos subsiguientes: " + e.toString());
         }
     }
+    
+    public ArrayList<String> obtenerPosicionesDisponibles(String rentCalculationId) {
+        ArrayList<String> posiciones = new ArrayList<>();
+        CConexion objetoConexion = new CConexion();
+
+        String sql = "SELECT ord FROM importe_variado WHERE rent_calculation_id = ? AND estado = 0";
+
+        try {
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setString(1, rentCalculationId);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                posiciones.add(rs.getString("ord"));
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener las posiciones disponibles: " + e.toString());
+        }
+        return posiciones;
+    }
+    
+    public String obtenerRentCalculationIdSeleccionado(JTable tbMostrarAlquileres) {
+        int fila = tbMostrarAlquileres.getSelectedRow();
+        if (fila >= 0) {
+            return tbMostrarAlquileres.getValueAt(fila, 0).toString(); // Devuelve el ID seleccionado
+        }
+        return null; // Si no se selecciona ninguna fila, devuelve null
+    }
+
+    public String obtenerRentCalculationIdPorImporteVariado(int importeVariadoId) {
+        String rentCalculationId = null;
+        CConexion objetoConexion = new CConexion();
+
+        String sql = "SELECT rent_calculation_id FROM importe_variado WHERE id = ?";
+
+        try {
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setInt(1, importeVariadoId);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                rentCalculationId = rs.getString("rent_calculation_id");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener rent_calculation_id por importe_variado_id: " + e.toString());
+        }
+
+        return rentCalculationId;
+    }
+    
+    public void insertarAmortizacionPorSeleccion(int rentCalculation_id, String posicion1, String posicion2, String num_amortizacion, double importe, String detalle, Timestamp fechaHoraSQL){
+        CConexion objetoConexion = new CConexion();
+
+        try { 
+            String num_amortizacion_nuevo = obtenerUltimoNumeroAmortizacion();
+
+            // Sentencia SQL UPDATE para actualizar los registros en la base de datos
+            String sqlUpdate = "UPDATE importe_variado SET numero_amortizacion = ?, fecha_amortizacion = ?, pago = ?, detalle = ? WHERE rent_calculation_id = ? AND ord BETWEEN ? AND ?";
+
+            PreparedStatement psSqlUpdate = objetoConexion.estableceConexion().prepareStatement(sqlUpdate);
+
+            psSqlUpdate.setString(1, num_amortizacion_nuevo);
+            psSqlUpdate.setTimestamp(2, fechaHoraSQL);
+            psSqlUpdate.setBigDecimal(3, new BigDecimal(importe));
+            psSqlUpdate.setString(4, detalle);
+            psSqlUpdate.setInt(5, rentCalculation_id);
+            psSqlUpdate.setString(6, posicion1);
+            psSqlUpdate.setString(7, posicion2);
+
+            psSqlUpdate.executeUpdate();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error SQL al actualizar los registros en importe_variado para la amortización: " + e.toString());
+        }
+    }
+    
 }

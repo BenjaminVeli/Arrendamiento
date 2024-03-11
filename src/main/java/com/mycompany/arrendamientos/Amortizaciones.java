@@ -9,6 +9,10 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -20,18 +24,19 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class Amortizaciones extends javax.swing.JFrame {
-
     private String idSeleccionado;
+    private String rentCalculationId;
     private int room_id_actual;
     private String numeroCuarto;
     private double saldos;
     private double importes;
     private double pagos;
+    private String ordSeleccionado;
     
-    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, double pagos, String nombreArrendador) {
+    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, double pagos, String nombreArrendador, String ordSeleccionado, String rentCalculationId) {
         initComponents();
         
        btnImprimir.addActionListener(new ActionListener() {
@@ -56,7 +61,9 @@ public class Amortizaciones extends javax.swing.JFrame {
         this.numeroCuarto = numeroCuarto;
         this.saldos = saldos;
         this.importes = importes;
-         this.pagos = pagos;
+        this.pagos = pagos;
+        this.ordSeleccionado = ordSeleccionado;
+        this.rentCalculationId = rentCalculationId;
         
         // Configurar el formato deseado para la fecha y hora
         LocalDateTime fechaHoraActual = LocalDateTime.now();
@@ -355,12 +362,39 @@ public class Amortizaciones extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private HashMap<Integer, Double> filasSeleccionadas = new HashMap<>();
+    
+    private void cargarPosicion2(String rentCalculationId) {
+        PagoAlquilerDAO paDAO = new PagoAlquilerDAO();
+        ArrayList<String> posiciones = paDAO.obtenerPosicionesDisponibles(rentCalculationId);
+
+        // Limpiar el JComboBox antes de agregar los nuevos elementos
+        posicion2JCBOX.removeAllItems();
+
+        for (String ord : posiciones) {
+            posicion2JCBOX.addItem(ord);
+        }
+
+        AutoCompleteDecorator.decorate(posicion2JCBOX);
+    }
+    
     private void PosicionJRBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PosicionJRBTNActionPerformed
         if (PosicionJRBTN.isSelected()) {
-            // Mostrar el contenido de slección por posición
-            CursorJRBTN.setSelected(false);
-            posicion1JCBOX.setVisible(true);
-            posicion2JCBOX.setVisible(true);
+
+            if (rentCalculationId != null && !rentCalculationId.isEmpty()) {
+                // Mostrar el contenido de selección por posición
+                CursorJRBTN.setSelected(false);
+                posicion1JCBOX.setVisible(true);
+                posicion2JCBOX.setVisible(true);
+
+                // Rellenar el JComboBox posicion1JCBOX con el valor seleccionado
+                DefaultComboBoxModel<String> modelo1 = new DefaultComboBoxModel<>(new String[]{ordSeleccionado});
+                posicion1JCBOX.setModel(modelo1);
+
+                cargarPosicion2(rentCalculationId);
+            } else {
+                JOptionPane.showMessageDialog(null, "Por favor seleccione un alquiler primero.");
+            }
         }
     }//GEN-LAST:event_PosicionJRBTNActionPerformed
 
@@ -394,6 +428,9 @@ public class Amortizaciones extends javax.swing.JFrame {
         double pagos_tbImporteVariado = pagos;
         double nuevoSaldo = saldos - importe;    
         boolean nuevoEstado = (nuevoSaldo == 0); // Si el nuevo saldo es cero, el estado es true (cancelado), de lo contrario es false (no cancelado)
+        String posicion1 = (String) posicion1JCBOX.getSelectedItem();
+        String posicion2 = (String) posicion2JCBOX.getSelectedItem();
+        int rentCalculation_id = Integer.parseInt(rentCalculationId);
         
         // Si el pago seleccionado es mayor a cero, sumarlo al importe
         if (pagos_tbImporteVariado > 0) {
@@ -403,14 +440,15 @@ public class Amortizaciones extends javax.swing.JFrame {
         // Convertir de java.util.Date a java.sql.Timestamp
         java.sql.Timestamp fechaHoraSQL = new java.sql.Timestamp(fechaHora.getTime());
         
-        paDAO.actualizarSaldo(Integer.parseInt(idSeleccionado), nuevoSaldo);
-        paDAO.actualizarEstado(Integer.parseInt(idSeleccionado), nuevoEstado);
-        paDAO.reiniciarSaldosSubsiguientes(Integer.parseInt(idSeleccionado), importes_tbImporteVariado);
-        
         if (PosicionJRBTN.isSelected()) {
-            System.err.println("El id seleccionado en selección de posición es: " + id_seleccionado);
+            System.err.println("El id del importe seleccionado en selección de posición es: " + id_seleccionado);
+            System.err.println("El id del cliente para los importes es: " + rentCalculation_id);
             System.err.println("El id del cuarto en selección de posición es: " + room_id_actual);
             System.err.println("El numero del cuarto en selección de posición es: " + numeroCuarto);
+            System.err.println("El primer numero de orden en selección de posición es: " + posicion1);
+            System.err.println("El segundo numero de orden en selección de posición es: " + posicion2);
+            
+            paDAO.insertarAmortizacionPorSeleccion(rentCalculation_id, posicion1, posicion2, num_amortizacion, importe, detalle, fechaHoraSQL);
             
             pa.setVisible(true);
             this.setVisible(false);
@@ -421,6 +459,10 @@ public class Amortizaciones extends javax.swing.JFrame {
             System.err.println("El saldo seleccionado es: " + nuevoSaldo);
             System.err.println("El importe seleccionado de mi tabla tbImporteVariado es: " + importes_tbImporteVariado);
             System.err.println("El pago seleccionado de mi tabla tbImporteVariado es: " + pagos_tbImporteVariado); //Este es el valor obtenido del campo pago
+            
+            paDAO.actualizarSaldo(Integer.parseInt(idSeleccionado), nuevoSaldo);
+            paDAO.actualizarEstado(Integer.parseInt(idSeleccionado), nuevoEstado);
+            paDAO.reiniciarSaldosSubsiguientes(Integer.parseInt(idSeleccionado), importes_tbImporteVariado);
             
             paDAO.insertarAmortizacion(id_seleccionado, num_amortizacion, importe, detalle, fechaHoraSQL);
             
