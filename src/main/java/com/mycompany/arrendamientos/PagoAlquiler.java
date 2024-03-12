@@ -549,7 +549,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         if (filaSeleccionada >= 0) {
             String idSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 0).toString();
             
-            String ordSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 1).toString();
+            //String ordSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 1).toString();
             
             String importeSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 3).toString();
             double importes = Double.parseDouble(importeSeleccionado);
@@ -561,7 +561,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
             double saldos = Double.parseDouble(saldosStr);
             
             // Obtén el ID del rent_calculation
-            String rentCalculationId = paDAO.obtenerRentCalculationIdPorImporteVariado(Integer.parseInt(idSeleccionado));
+            //String rentCalculationId = paDAO.obtenerRentCalculationIdPorImporteVariado(Integer.parseInt(idSeleccionado));
             
             // Obtén el ID del cuarto actualmente ocupado
             int room_id_actual = paDAO.obtenerCuartoidPorImporteVariado(Integer.parseInt(idSeleccionado));
@@ -578,7 +578,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
            String nombreArrendador = paDAO.obtenerArrendador(clientId);
             
             // Abre el JFrame "Amortizaciones" y pasa los parámetro que se necesitan
-            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes , pagos, nombreArrendador, ordSeleccionado, rentCalculationId );
+            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes , pagos, nombreArrendador);
             amortizaciones.setVisible(true);
             this.setVisible(false);
         } else {

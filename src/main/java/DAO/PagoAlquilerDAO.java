@@ -89,13 +89,17 @@ public class PagoAlquilerDAO {
         
     public void SeleccionaryMostrarImporteVariado(JTable tbMostrarAlquileres, JTable tbImporteVariado) {
         try {
-            String rentCalculationId = obtenerRentCalculationIdSeleccionado(tbMostrarAlquileres);
+            int fila = tbMostrarAlquileres.getSelectedRow();
 
-            if (rentCalculationId != null) {
+            if (fila >= 0) {
+                String idSeleccionado = tbMostrarAlquileres.getValueAt(fila, 0).toString();
                 CConexion objetoConexion = new CConexion();
+
                 String sql = "SELECT id, ord, fecha, importe, pago, saldos, estado FROM importe_variado WHERE rent_calculation_id = ?";
+
                 PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
-                pst.setString(1, rentCalculationId);
+                pst.setString(1, idSeleccionado);
+
                 ResultSet rs = pst.executeQuery();
 
                 DefaultTableModel modelo = new DefaultTableModel();
@@ -115,14 +119,14 @@ public class PagoAlquilerDAO {
                         rs.getString("importe"),
                         rs.getString("pago"),
                         rs.getString("Saldos"),
-                        rs.getBoolean("estado") ? "Cancelado" : "No cancelado"
+                        rs.getBoolean("estado") ? "Cancelado" : "No cancelado" // Modificación aquí
                     };
                     modelo.addRow(filaDatos);
                 }
 
                 tbImporteVariado.setModel(modelo);
             } else {
-                JOptionPane.showMessageDialog(null, "Por favor seleccione un alquiler primero.");
+                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "No se puede mostrar los registros de importe variado del cliente, error: " + e.toString());
@@ -350,7 +354,7 @@ public class PagoAlquilerDAO {
         }
     }
     
-    public ArrayList<String> obtenerPosicionesDisponibles(String rentCalculationId) {
+   /* public ArrayList<String> obtenerPosicionesDisponibles(String rentCalculationId) {
         ArrayList<String> posiciones = new ArrayList<>();
         CConexion objetoConexion = new CConexion();
 
@@ -424,6 +428,6 @@ public class PagoAlquilerDAO {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error SQL al actualizar los registros en importe_variado para la amortización: " + e.toString());
         }
-    }
+    }*/
     
 }
