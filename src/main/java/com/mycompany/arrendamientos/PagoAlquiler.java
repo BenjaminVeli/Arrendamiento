@@ -771,7 +771,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
     "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
     "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
     "INNER JOIN importe_variado ON rent_calculation.id = importe_variado.rent_calculation_id " +
-    "WHERE importe_variado.estado = 0 AND CURDATE() < importe_variado.fecha;";
+    "WHERE importe_variado.estado = 0 AND CURDATE() > importe_variado.fecha;";
 
         ResultSet resultSet = statement.executeQuery(consultaCompleta);
 
