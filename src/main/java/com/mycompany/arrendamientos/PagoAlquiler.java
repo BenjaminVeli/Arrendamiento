@@ -48,6 +48,12 @@ public class PagoAlquiler extends javax.swing.JFrame {
             }
         });
         
+        btnTodoCredito.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent evt) {
+                exportarAExcelTodoElCredito();
+            }
+        });
+        
         btnMorosos.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent evt) {
                 exportarAExcelMorosos();
@@ -276,13 +282,14 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Soles)
-                    .addComponent(txtSoles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(Dolares)
                         .addComponent(txtDolares, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton1))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Soles)
+                        .addComponent(txtSoles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -776,6 +783,83 @@ public class PagoAlquiler extends javax.swing.JFrame {
         }
     }
     
+    public static void exportarAExcelTodoElCredito() {
+    try {
+        // Conexión a la base de datos
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
+        Statement statement = connection.createStatement();
+        String consultaCompleta = "SELECT * FROM rent_calculation";
+        ResultSet resultSet = statement.executeQuery(consultaCompleta);
+
+
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Todo el credito");
+
+            XSSFCellStyle estiloAlquiler = workbook.createCellStyle(); 
+            XSSFFont fontAlquiler = workbook.createFont(); 
+            fontAlquiler.setFontHeightInPoints((short) 20);
+            fontAlquiler.setBold(true);
+            fontAlquiler.setUnderline(FontUnderline.SINGLE);
+            estiloAlquiler.setFont(fontAlquiler);
+
+            Row proformaRow = sheet.createRow(0);
+            Cell proformaCellC = proformaRow.createCell(0);
+            proformaCellC.setCellValue("ALQUILER");
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+            proformaCellC.setCellStyle(estiloAlquiler); 
+
+            Row fila3 = sheet.createRow(2); 
+            Cell celda1 = fila3.createCell(0); 
+            celda1.setCellValue("NOMBRE : ");
+           
+            Cell celda1nm = fila3.createCell(1); 
+            celda1nm.setCellValue("aca quiero que se obtenga el nombre de dicho usuario");
+            
+            Cell celda1fc = fila3.createCell(3); 
+            celda1fc.setCellValue("Fecha : ");
+            
+            Row fila4 = sheet.createRow(3); 
+            Cell celda2 = fila4.createCell(0); 
+            celda2.setCellValue("DIRECCION : ");
+            
+            Cell celda2tl = fila4.createCell(3); 
+            celda2tl.setCellValue("Télef : ");
+            
+            Row fila5 = sheet.createRow(4); 
+            Cell celda3 = fila5.createCell(0); 
+            celda3.setCellValue("R.U.C : ");
+            
+            Cell celda3DNI = fila5.createCell(3); 
+            celda3DNI.setCellValue("DNI : ");
+            
+            Row fila6 = sheet.createRow(5); 
+            Cell celda4 = fila6.createCell(0); 
+            celda4.setCellValue("CUARTO # ");
+            
+            Cell celda4tpg = fila6.createCell(3); 
+            celda4tpg.setCellValue("Tipo de Pago : ");
+            
+            sheet.autoSizeColumn(0); // Ajusta la  columna al tamaño del contenido
+            sheet.autoSizeColumn(1);
+            sheet.autoSizeColumn(2); 
+            sheet.autoSizeColumn(3);
+            
+            // Guardar el libro en un archivo temporal
+            File tempFile = File.createTempFile("detalle", ".xlsx");
+            try (FileOutputStream fileOut = new FileOutputStream(tempFile)) {
+                workbook.write(fileOut);
+                JOptionPane.showMessageDialog(null, "Datos exportados correctamente a Excel.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
+            }
+
+            // Abrir el archivo Excel recién creado 
+            Desktop.getDesktop().open(tempFile);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.toString());
+        }
+    }
     
     public static void exportarAExcelMorosos(){
     
