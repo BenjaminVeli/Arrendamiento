@@ -64,10 +64,10 @@ public class PagoAlquilerDAO {
 
         tbMostrarAlquileres.setModel(modelo);
 
-        String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre AS nombre_cliente, rent, fecha, total, interes, tipo_pago " +
-                     "FROM rent_calculation " +
-                     "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
-                     "WHERE datos_cli_prov.nombre = ?";
+    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre AS nombre_cliente, rent, fecha, total, interes, tipo_pago " +
+                 "FROM rent_calculation " +
+                 "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                 "WHERE datos_cli_prov.nombre = ? AND rent_calculation.estado_rent_calculation = 1"; // Agregando condición del campo estado_rent_calculation
         
         try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
             pst.setString(1, nombreClienteSeleccionado);
