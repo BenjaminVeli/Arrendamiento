@@ -49,8 +49,11 @@ public class PagoAlquiler extends javax.swing.JFrame {
         });
         
         btnTodoCredito.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent evt) {
-                exportarAExcelTodoElCredito();
+             public void actionPerformed(ActionEvent evt) {
+        // Obtener el nombre del cliente seleccionado (supongamos que lo tienes en una variable llamada nombreClienteSeleccionado)
+        String nombreClienteSeleccionado = (String) ListaClientesJCBox.getSelectedItem();
+        // Llamar al método exportarAExcelTodoElCredito con el nombre del cliente seleccionado como argumento
+        exportarAExcelTodoElCredito(nombreClienteSeleccionado);
             }
         });
         
@@ -783,12 +786,19 @@ public class PagoAlquiler extends javax.swing.JFrame {
         }
     }
     
-    public static void exportarAExcelTodoElCredito() {
+    public static void exportarAExcelTodoElCredito(String nombreClienteSeleccionado) {
     try {
         // Conexión a la base de datos
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
         Statement statement = connection.createStatement();
-        String consultaCompleta = "SELECT * FROM rent_calculation";
+        String consultaCompleta = "SELECT rent_calculation.*, datos_cli_prov.direccion_propietario, datos_cli_prov.celular, datos_cli_prov.ruc, datos_cli_prov.dni_propietario, cuarto.numcuarto"
+                + " AS nombre_cuarto, rent_calculation.tipo_pago, importe_variado.ord, importe_variado.fecha, importe_variado.fecha_amortizacion, importe_variado.importe, importe_variado.pago " +
+                          "FROM rent_calculation " +
+                          "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                          "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+                          "INNER JOIN importe_variado ON rent_calculation.id = importe_variado.rent_calculation_id " +
+                          "WHERE datos_cli_prov.nombre = '" + nombreClienteSeleccionado + "'";
+
         ResultSet resultSet = statement.executeQuery(consultaCompleta);
 
 
@@ -807,13 +817,31 @@ public class PagoAlquiler extends javax.swing.JFrame {
             proformaCellC.setCellValue("ALQUILER");
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
             proformaCellC.setCellStyle(estiloAlquiler); 
+            
+            String nombre = "";
+            String direccion = "";
+            String telefono = "";
+            String ruc = "";
+            String dni = "";
+            String tpago= "";
+            String cuarto = "";
 
+        while (resultSet.next()) {
+            nombre = nombreClienteSeleccionado;
+            direccion = resultSet.getString("direccion_propietario");
+            telefono = resultSet.getString("celular");
+            ruc = resultSet.getString("ruc");
+            dni = resultSet.getString("dni_propietario");
+            tpago = resultSet.getString("tipo_pago");
+            cuarto = resultSet.getString("nombre_cuarto");
+        }
+            
             Row fila3 = sheet.createRow(2); 
             Cell celda1 = fila3.createCell(0); 
             celda1.setCellValue("NOMBRE : ");
            
             Cell celda1nm = fila3.createCell(1); 
-            celda1nm.setCellValue("aca quiero que se obtenga el nombre de dicho usuario");
+            celda1nm.setCellValue(nombre);
             
             Cell celda1fc = fila3.createCell(3); 
             celda1fc.setCellValue("Fecha : ");
@@ -822,22 +850,40 @@ public class PagoAlquiler extends javax.swing.JFrame {
             Cell celda2 = fila4.createCell(0); 
             celda2.setCellValue("DIRECCION : ");
             
+            Cell celda2fc = fila4.createCell(1); 
+            celda2fc.setCellValue(direccion);
+            
             Cell celda2tl = fila4.createCell(3); 
             celda2tl.setCellValue("Télef : ");
+            
+            Cell celda2tlf = fila4.createCell(4); 
+            celda2tlf.setCellValue(telefono);
             
             Row fila5 = sheet.createRow(4); 
             Cell celda3 = fila5.createCell(0); 
             celda3.setCellValue("R.U.C : ");
             
+            Cell celda3ruc = fila5.createCell(1); 
+            celda3ruc.setCellValue(ruc);
+            
             Cell celda3DNI = fila5.createCell(3); 
             celda3DNI.setCellValue("DNI : ");
+            
+            Cell celda3dnis = fila5.createCell(4); 
+            celda3dnis.setCellValue(dni);
             
             Row fila6 = sheet.createRow(5); 
             Cell celda4 = fila6.createCell(0); 
             celda4.setCellValue("CUARTO # ");
             
+            Cell celda4ct = fila6.createCell(1); 
+            celda4ct.setCellValue(cuarto);
+            
             Cell celda4tpg = fila6.createCell(3); 
             celda4tpg.setCellValue("Tipo de Pago : ");
+            
+            Cell celda4tpgs = fila6.createCell(4); 
+            celda4tpgs.setCellValue(tpago);
             
             sheet.autoSizeColumn(0); // Ajusta la  columna al tamaño del contenido
             sheet.autoSizeColumn(1);
