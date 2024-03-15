@@ -64,6 +64,7 @@ CREATE TABLE rent_calculation (
   quincenal DECIMAL(10,2),
   fechafinal VARCHAR(30),
   estado_rent_calculation BOOLEAN NOT NULL DEFAULT TRUE,
+  detalle_cuarto VARCHAR(200),
   FOREIGN KEY (floor_id) REFERENCES piso(id),
   FOREIGN KEY (room_id) REFERENCES cuarto(id)
 );

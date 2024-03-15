@@ -86,6 +86,46 @@ public class PagoAlquilerDAO {
             e.printStackTrace(); // Imprimir la pila de excepciones para obtener más detalles
         }
     }
+    
+    public void MostrarAlquilerTODO(JTable tbMostrarAlquileres, String nombreClienteSeleccionado) {
+        CConexion objetoConexion = new CConexion();
+
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
+        tbMostrarAlquileres.setRowSorter(ordenarTabla);
+
+        String[] columnasMostradas = {"Id", "Cliente", "Alquiler", "Fecha", "Cuotas", "interes", "Tipo de Pago"};
+        String[] columnasBD = {"id", "nombre_cliente", "rent", "fecha",  "total", "interes", "tipo_pago"};
+
+        for (int i = 0; i < columnasMostradas.length; i++) {
+            modelo.addColumn(columnasMostradas[i]);
+        }
+
+        tbMostrarAlquileres.setModel(modelo);
+
+        String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre AS nombre_cliente, rent, fecha, total, interes, tipo_pago " +
+                     "FROM rent_calculation " +
+                     "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                     "WHERE datos_cli_prov.nombre = ?";
+        
+        try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
+            pst.setString(1, nombreClienteSeleccionado);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    String[] datos = new String[columnasBD.length];
+                    for (int i = 0; i < columnasBD.length; i++) {
+                        datos[i] = rs.getString(columnasBD[i]);
+                    }
+                    modelo.addRow(datos);
+                }
+                tbMostrarAlquileres.setModel(modelo);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar cálculos de alquiler, error: " + e.toString());
+            e.printStackTrace(); // Imprimir la pila de excepciones para obtener más detalles
+        }
+    }
         
     public void SeleccionaryMostrarImporteVariado(JTable tbMostrarAlquileres, JTable tbImporteVariado) {
         try {
@@ -351,6 +391,44 @@ public class PagoAlquilerDAO {
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error SQL al reiniciar los saldos subsiguientes: " + e.toString());
+        }
+    }
+    
+    public void actualizarDatosAlquilerwa(int idAlquiler, String detalleCuarto){
+        CConexion objetoConexion = new CConexion();
+        String obtenerDatosCuarto = "SELECT floor_id, room_id FROM rent_calculation WHERE id=?";
+        
+        try {
+            // Obtener los datos del cuarto asociado al cálculo
+            PreparedStatement psDatosCuarto = objetoConexion.estableceConexion().prepareStatement(obtenerDatosCuarto);
+            psDatosCuarto.setInt(1, idAlquiler);
+            ResultSet rsDatosCuarto = psDatosCuarto.executeQuery();
+            
+             int floorId = 0;
+            int roomId = 0;
+
+            if (rsDatosCuarto.next()) {
+                floorId = rsDatosCuarto.getInt("floor_id");
+                roomId = rsDatosCuarto.getInt("room_id");
+            }
+            
+            // Liberar el cuarto asociado (marcar como desocupado)
+            String liberarCuarto = "UPDATE cuarto SET ocupado=false WHERE id=?";
+            PreparedStatement psLiberarCuarto = objetoConexion.estableceConexion().prepareStatement(liberarCuarto);
+            psLiberarCuarto.setInt(1, roomId);
+            psLiberarCuarto.executeUpdate();
+            
+            //Actualizar los campos detalle_cuarto con el texto ingresado en el TextArea, y los campos floor_id y room_id se establecerán en null y estado_rent_calculation a 0.
+            String sql = "UPDATE rent_calculation SET detalle_cuarto = ?, floor_id = NULL, room_id = NULL, estado_rent_calculation = 0 WHERE id = ?";
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setString(1, detalleCuarto);
+            pst.setInt(2, idAlquiler);
+            pst.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "Se dio de baja correctamente al cliente y se liberó el cuarto asociado.");
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al actualizar datos de alquiler: " + e.toString());
         }
     }
     
