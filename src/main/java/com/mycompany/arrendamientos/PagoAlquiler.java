@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.FontUnderline;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -822,108 +823,164 @@ public class PagoAlquiler extends javax.swing.JFrame {
     }
     
     public static void exportarAExcelTodoElCredito(String nombreClienteSeleccionado) {
-    try {
-        // Conexión a la base de datos
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
-        Statement statement = connection.createStatement();
-        String consultaCompleta = "SELECT rent_calculation.*, datos_cli_prov.direccion_propietario, datos_cli_prov.celular, datos_cli_prov.ruc, datos_cli_prov.dni_propietario, cuarto.numcuarto"
-                + " AS nombre_cuarto, rent_calculation.tipo_pago, importe_variado.ord, importe_variado.fecha, importe_variado.fecha_amortizacion, importe_variado.importe, importe_variado.pago " +
-                          "FROM rent_calculation " +
-                          "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
-                          "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
-                          "INNER JOIN importe_variado ON rent_calculation.id = importe_variado.rent_calculation_id " +
-                          "WHERE datos_cli_prov.nombre = '" + nombreClienteSeleccionado + "'";
-
-        ResultSet resultSet = statement.executeQuery(consultaCompleta);
-
+        try {
+            // Conexión a la base de datos
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
+            Statement statement = connection.createStatement();
+            String consultaCompleta = "SELECT rent_calculation.*, datos_cli_prov.direccion_propietario, datos_cli_prov.celular, datos_cli_prov.ruc, datos_cli_prov.dni_propietario, cuarto.numcuarto AS nombre_cuarto, rent_calculation.tipo_pago,"
+                    + " importe_variado.ord, importe_variado.fecha, importe_variado.fecha_amortizacion, importe_variado.importe, importe_variado.pago " +
+                    "FROM rent_calculation " +
+                    "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                    "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+                    "INNER JOIN importe_variado ON rent_calculation.id = importe_variado.rent_calculation_id " +
+                    "WHERE datos_cli_prov.nombre = '" + nombreClienteSeleccionado + "'";
+            ResultSet resultSet = statement.executeQuery(consultaCompleta);
 
             XSSFWorkbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("Todo el credito");
 
-            XSSFCellStyle estiloAlquiler = workbook.createCellStyle(); 
-            XSSFFont fontAlquiler = workbook.createFont(); 
+            XSSFCellStyle estiloAlquiler = workbook.createCellStyle();
+            XSSFFont fontAlquiler = workbook.createFont();
             fontAlquiler.setFontHeightInPoints((short) 20);
             fontAlquiler.setBold(true);
             fontAlquiler.setUnderline(FontUnderline.SINGLE);
             estiloAlquiler.setFont(fontAlquiler);
 
+            XSSFCellStyle estiloCelda = workbook.createCellStyle();
+            estiloCelda.setAlignment(HorizontalAlignment.CENTER);
+            estiloCelda.setVerticalAlignment(VerticalAlignment.CENTER);
+            estiloCelda.setBorderTop(BorderStyle.THIN);
+            estiloCelda.setBorderLeft(BorderStyle.THIN);
+            estiloCelda.setBorderRight(BorderStyle.THIN);
+            estiloCelda.setBorderBottom(BorderStyle.THIN);
+
+            XSSFFont font = workbook.createFont();
+            font.setFontHeightInPoints((short) 12);
+            estiloCelda.setFont(font);
+
             Row proformaRow = sheet.createRow(0);
             Cell proformaCellC = proformaRow.createCell(0);
             proformaCellC.setCellValue("ALQUILER");
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
-            proformaCellC.setCellStyle(estiloAlquiler); 
-            
+            proformaCellC.setCellStyle(estiloAlquiler);
+
             String nombre = "";
             String direccion = "";
             String telefono = "";
             String ruc = "";
             String dni = "";
-            String tpago= "";
+            String tpago = "";
             String cuarto = "";
 
-        while (resultSet.next()) {
-            nombre = nombreClienteSeleccionado;
-            direccion = resultSet.getString("direccion_propietario");
-            telefono = resultSet.getString("celular");
-            ruc = resultSet.getString("ruc");
-            dni = resultSet.getString("dni_propietario");
-            tpago = resultSet.getString("tipo_pago");
-            cuarto = resultSet.getString("nombre_cuarto");
-        }
-            
-            Row fila3 = sheet.createRow(2); 
-            Cell celda1 = fila3.createCell(0); 
+            // Recuperar los datos del cliente
+            if (resultSet.next()) {
+                nombre = nombreClienteSeleccionado;
+                direccion = resultSet.getString("direccion_propietario");
+                telefono = resultSet.getString("celular");
+                ruc = resultSet.getString("ruc");
+                dni = resultSet.getString("dni_propietario");
+                tpago = resultSet.getString("tipo_pago");
+                cuarto = resultSet.getString("nombre_cuarto");
+            }
+
+            Row fila3 = sheet.createRow(2);
+            Cell celda1 = fila3.createCell(0);
             celda1.setCellValue("NOMBRE : ");
-           
-            Cell celda1nm = fila3.createCell(1); 
+
+            Cell celda1nm = fila3.createCell(1);
             celda1nm.setCellValue(nombre);
-            
-            Cell celda1fc = fila3.createCell(3); 
+
+            Cell celda1fc = fila3.createCell(3);
             celda1fc.setCellValue("Fecha : ");
-            
-            Row fila4 = sheet.createRow(3); 
-            Cell celda2 = fila4.createCell(0); 
+
+            Row fila4 = sheet.createRow(3);
+            Cell celda2 = fila4.createCell(0);
             celda2.setCellValue("DIRECCION : ");
-            
-            Cell celda2fc = fila4.createCell(1); 
+
+            Cell celda2fc = fila4.createCell(1);
             celda2fc.setCellValue(direccion);
-            
-            Cell celda2tl = fila4.createCell(3); 
+
+            Cell celda2tl = fila4.createCell(3);
             celda2tl.setCellValue("Télef : ");
-            
-            Cell celda2tlf = fila4.createCell(4); 
+
+            Cell celda2tlf = fila4.createCell(4);
             celda2tlf.setCellValue(telefono);
-            
-            Row fila5 = sheet.createRow(4); 
-            Cell celda3 = fila5.createCell(0); 
+
+            Row fila5 = sheet.createRow(4);
+            Cell celda3 = fila5.createCell(0);
             celda3.setCellValue("R.U.C : ");
-            
-            Cell celda3ruc = fila5.createCell(1); 
+
+            Cell celda3ruc = fila5.createCell(1);
             celda3ruc.setCellValue(ruc);
-            
-            Cell celda3DNI = fila5.createCell(3); 
+
+            Cell celda3DNI = fila5.createCell(3);
             celda3DNI.setCellValue("DNI : ");
-            
-            Cell celda3dnis = fila5.createCell(4); 
+
+            Cell celda3dnis = fila5.createCell(4);
             celda3dnis.setCellValue(dni);
-            
-            Row fila6 = sheet.createRow(5); 
-            Cell celda4 = fila6.createCell(0); 
+
+            Row fila6 = sheet.createRow(5);
+            Cell celda4 = fila6.createCell(0);
             celda4.setCellValue("CUARTO # ");
-            
-            Cell celda4ct = fila6.createCell(1); 
+
+            Cell celda4ct = fila6.createCell(1);
             celda4ct.setCellValue(cuarto);
-            
-            Cell celda4tpg = fila6.createCell(3); 
+
+            Cell celda4tpg = fila6.createCell(3);
             celda4tpg.setCellValue("Tipo de Pago : ");
-            
-            Cell celda4tpgs = fila6.createCell(4); 
+
+            Cell celda4tpgs = fila6.createCell(4);
             celda4tpgs.setCellValue(tpago);
-            
-            sheet.autoSizeColumn(0); // Ajusta la  columna al tamaño del contenido
+
+            sheet.autoSizeColumn(0); // Ajusta la columna al tamaño del contenido
             sheet.autoSizeColumn(1);
-            sheet.autoSizeColumn(2); 
+            sheet.autoSizeColumn(2);
             sheet.autoSizeColumn(3);
+
+            String[] encabezados = {"ORD", "FECHA VENCIMIENTO", "FECHA PAGO", "IMPORTE", "PAGO"};
+
+            // Agregar encabezados de la tabla de importe_variado
+            int rowNum = 8;
+            Row headersRow = sheet.createRow(rowNum++);
+            for (int i = 0; i < encabezados.length; i++) {
+                Cell cell = headersRow.createCell(i);
+                cell.setCellValue(encabezados[i]);
+                cell.setCellStyle(estiloCelda);
+            }
+
+            // Agregar datos de importe_variado
+            do {
+                Row filaImporteVariado = sheet.createRow(rowNum++);
+                for (int i = 0; i < 5; i++) {
+                    Cell celda = filaImporteVariado.createCell(i);
+                    switch (i) {
+                        case 0:
+                            celda.setCellValue(resultSet.getInt("ord"));
+                            break;
+                        case 1:
+                            celda.setCellValue(resultSet.getDate("fecha") != null ? resultSet.getDate("fecha").toString() : "");
+                            break;
+                        case 2:
+                            celda.setCellValue(resultSet.getDate("fecha_amortizacion") != null ? resultSet.getDate("fecha_amortizacion").toString() : "");
+                            break;
+                        case 3:
+                            celda.setCellValue(resultSet.getDouble("importe"));
+                            break;
+                        case 4:
+                            celda.setCellValue(resultSet.getDouble("pago"));
+                            break;
+                        default:
+                            break;
+                    }
+                    XSSFCellStyle estiloCeldaCentrado = workbook.createCellStyle();
+                    estiloCeldaCentrado.setAlignment(HorizontalAlignment.CENTER);
+                    celda.setCellStyle(estiloCeldaCentrado);
+                }
+            } while (resultSet.next());
+            
+            for (int i = 0; i < encabezados.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
             
             // Guardar el libro en un archivo temporal
             File tempFile = File.createTempFile("detalle", ".xlsx");
@@ -934,7 +991,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Error al exportar a Excel: " + e.toString());
             }
 
-            // Abrir el archivo Excel recién creado 
+            // Abrir el archivo Excel recién creado
             Desktop.getDesktop().open(tempFile);
 
         } catch (Exception e) {
