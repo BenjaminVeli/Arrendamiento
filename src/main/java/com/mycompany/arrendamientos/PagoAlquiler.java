@@ -12,7 +12,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -828,17 +831,23 @@ public class PagoAlquiler extends javax.swing.JFrame {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
             Statement statement = connection.createStatement();
             String consultaCompleta = "SELECT rent_calculation.*, datos_cli_prov.direccion_propietario, datos_cli_prov.celular, datos_cli_prov.ruc, datos_cli_prov.dni_propietario, cuarto.numcuarto AS nombre_cuarto, rent_calculation.tipo_pago,"
-                    + " importe_variado.ord, importe_variado.fecha, importe_variado.fecha_amortizacion, importe_variado.importe, importe_variado.pago " +
-                    "FROM rent_calculation " +
-                    "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
-                    "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
-                    "INNER JOIN importe_variado ON rent_calculation.id = importe_variado.rent_calculation_id " +
-                    "WHERE datos_cli_prov.nombre = '" + nombreClienteSeleccionado + "'";
+                + " importe_variado.ord, importe_variado.fecha_amortizacion, importe_variado.importe, importe_variado.pago , importe_variado.fecha" +
+                " FROM rent_calculation " +
+                "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+                "INNER JOIN importe_variado ON rent_calculation.id = importe_variado.rent_calculation_id " +
+                "WHERE datos_cli_prov.nombre = '" + nombreClienteSeleccionado + "' ORDER BY importe_variado.ord";
+
             ResultSet resultSet = statement.executeQuery(consultaCompleta);
 
             XSSFWorkbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("Todo el credito");
-
+            
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+            String fechaActual = formatoFecha.format(new Date());
+            
+            DecimalFormat formatoDecimal = new DecimalFormat("#0.00");
+            
             XSSFCellStyle estiloAlquiler = workbook.createCellStyle();
             XSSFFont fontAlquiler = workbook.createFont();
             fontAlquiler.setFontHeightInPoints((short) 20);
@@ -853,6 +862,10 @@ public class PagoAlquiler extends javax.swing.JFrame {
             estiloCelda.setBorderLeft(BorderStyle.THIN);
             estiloCelda.setBorderRight(BorderStyle.THIN);
             estiloCelda.setBorderBottom(BorderStyle.THIN);
+            
+            CellStyle estiloCeldaCentrado = workbook.createCellStyle();
+            estiloCeldaCentrado.setAlignment(HorizontalAlignment.CENTER);
+            estiloCeldaCentrado.setVerticalAlignment(VerticalAlignment.CENTER);
 
             XSSFFont font = workbook.createFont();
             font.setFontHeightInPoints((short) 12);
@@ -892,7 +905,10 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
             Cell celda1fc = fila3.createCell(3);
             celda1fc.setCellValue("Fecha : ");
-
+            
+            Cell celdaFechaValor = fila3.createCell(4);
+        celdaFechaValor.setCellValue(fechaActual);
+            
             Row fila4 = sheet.createRow(3);
             Cell celda2 = fila4.createCell(0);
             celda2.setCellValue("DIRECCION : ");
@@ -932,7 +948,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
             Cell celda4tpgs = fila6.createCell(4);
             celda4tpgs.setCellValue(tpago);
 
-            sheet.autoSizeColumn(0); // Ajusta la columna al tamaño del contenido
+            sheet.autoSizeColumn(0); 
             sheet.autoSizeColumn(1);
             sheet.autoSizeColumn(2);
             sheet.autoSizeColumn(3);
@@ -948,35 +964,43 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 cell.setCellStyle(estiloCelda);
             }
 
-            // Agregar datos de importe_variado
-            do {
-                Row filaImporteVariado = sheet.createRow(rowNum++);
-                for (int i = 0; i < 5; i++) {
-                    Cell celda = filaImporteVariado.createCell(i);
-                    switch (i) {
-                        case 0:
-                            celda.setCellValue(resultSet.getInt("ord"));
-                            break;
-                        case 1:
-                            celda.setCellValue(resultSet.getDate("fecha") != null ? resultSet.getDate("fecha").toString() : "");
-                            break;
-                        case 2:
-                            celda.setCellValue(resultSet.getDate("fecha_amortizacion") != null ? resultSet.getDate("fecha_amortizacion").toString() : "");
-                            break;
-                        case 3:
-                            celda.setCellValue(resultSet.getDouble("importe"));
-                            break;
-                        case 4:
-                            celda.setCellValue(resultSet.getDouble("pago"));
-                            break;
-                        default:
-                            break;
-                    }
-                    XSSFCellStyle estiloCeldaCentrado = workbook.createCellStyle();
-                    estiloCeldaCentrado.setAlignment(HorizontalAlignment.CENTER);
-                    celda.setCellStyle(estiloCeldaCentrado);
+        do {
+            Row filaImporteVariado = sheet.createRow(rowNum++);
+            for (int i = 0; i < 5; i++) {
+                Cell celda = filaImporteVariado.createCell(i);
+                celda.setCellStyle(estiloCeldaCentrado);
+                switch (i) {
+                    case 0:
+                        celda.setCellValue(resultSet.getInt("importe_variado.ord"));
+                        break;
+                    case 1:
+                        Date fecha = resultSet.getDate("importe_variado.fecha");
+                        String fechaFormateada = formatoFecha.format(fecha);
+                        celda.setCellValue(fechaFormateada);
+                        break;
+                    case 2:
+                        // Formatear la fecha "fecha_amortizacion"
+                        Date fechaAmortizacion = resultSet.getDate("importe_variado.fecha_amortizacion");
+                        String fechaAmortizacionFormateada = (fechaAmortizacion != null) ? formatoFecha.format(fechaAmortizacion) : "";
+                        celda.setCellValue(fechaAmortizacionFormateada);
+                        break;
+                    case 3:
+                        // Formatear el importe
+                        double importe = resultSet.getDouble("importe_variado.importe");
+                        String importeFormateado = formatoDecimal.format(importe);
+                        celda.setCellValue(importeFormateado);
+                        break;
+                    case 4:
+                        // Formatear el pago
+                        double pago = resultSet.getDouble("importe_variado.pago");
+                        String pagoFormateado = formatoDecimal.format(pago);
+                        celda.setCellValue(pagoFormateado);
+                        break;
+                    default:
+                        break;
                 }
-            } while (resultSet.next());
+            }
+        } while (resultSet.next());
             
             for (int i = 0; i < encabezados.length; i++) {
                 sheet.autoSizeColumn(i);
