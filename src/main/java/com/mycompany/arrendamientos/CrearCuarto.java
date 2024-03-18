@@ -31,7 +31,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class CrearCuarto extends javax.swing.JFrame {
     
-    private CalculoAlquiler ca;
     public File archivoseleccionado;
     
     public CrearCuarto() {
@@ -854,13 +853,9 @@ public class CrearCuarto extends javax.swing.JFrame {
        objetoCuartos.MostrarCuartos(tbTotalCuartos);
     }//GEN-LAST:event_btnEliminarActionPerformed
 
-    public void setCA(CalculoAlquiler ca){
-        this.ca = ca;
-    }
-    
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        CalculoAlquiler ca = new CalculoAlquiler();
-        ca.setVisible(true);
+        CalculoAlquiler v1 = new CalculoAlquiler();
+        v1.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnSalirActionPerformed
 

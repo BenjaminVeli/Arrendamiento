@@ -25,11 +25,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class CalculoAlquiler extends javax.swing.JFrame {
     
-    CrearCuarto cuarto = new CrearCuarto();
-    CrearPiso piso = new CrearPiso();
-    mantenimiento mantenimiento = new mantenimiento();
-    Contrato contrato = new Contrato();
-    RegistroDatosClientes rdc = new RegistroDatosClientes();
     
     public CalculoAlquiler() {
          initComponents();
@@ -1129,8 +1124,9 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void registroClientebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registroClientebtnActionPerformed
-        rdc.setCA(this);
-        rdc.setVisible(true);
+        RegistroDatosClientes v2 = new RegistroDatosClientes();
+        v2.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_registroClientebtnActionPerformed
 
     private void alquilertxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_alquilertxtKeyReleased
@@ -1142,13 +1138,15 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_totaltxtKeyReleased
 
     private void crearPisotxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearPisotxtActionPerformed
-        piso.setCA(this);
-        piso.setVisible(true);
+        CrearPiso v2 = new CrearPiso();
+        v2.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_crearPisotxtActionPerformed
 
     private void crearCuartobtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearCuartobtnActionPerformed
-        cuarto.setCA(this);
-        cuarto.setVisible(true);
+        CrearCuarto v2 = new CrearCuarto();
+        v2.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_crearCuartobtnActionPerformed
 
     private void tbTotalCalculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCalculoMouseClicked
@@ -1237,18 +1235,20 @@ public class CalculoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_telefonotxtMouseClicked
 
     private void btnContratoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContratoActionPerformed
-        contrato.setVisible(true);
-        contrato.setCA(this);
+        Contrato v2 = new Contrato();
+        v2.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btnContratoActionPerformed
 
     private void btnMantenimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMantenimientoActionPerformed
-        mantenimiento.setCA(this);
-        mantenimiento.setVisible(true);
+        mantenimiento v2 = new mantenimiento();
+        v2.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btnMantenimientoActionPerformed
 
     private void btnPagoAlquilerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagoAlquilerActionPerformed
-        PagoAlquiler pagoAlquiler = new PagoAlquiler();
-        pagoAlquiler.setVisible(true);
+        PagoAlquiler v2 = new PagoAlquiler();
+        v2.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnPagoAlquilerActionPerformed
     

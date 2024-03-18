@@ -557,8 +557,8 @@ public class PagoAlquiler extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        CalculoAlquiler ca = new CalculoAlquiler();
-        ca.setVisible(true);
+        CalculoAlquiler v1 = new CalculoAlquiler();
+        v1.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnSalirActionPerformed
 
