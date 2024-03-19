@@ -40,8 +40,11 @@ public class PagoAlquiler extends javax.swing.JFrame {
     
     public PagoAlquiler() {
         initComponents();
+        PagoAlquilerDAO pa_dao = new PagoAlquilerDAO();
+                
         this.setLocationRelativeTo(null);
-        cargarNombresClientes();
+        cargarNombresClientesActivos();
+        pa_dao.MostrarRegistroAmortizacion(tbMostrarCalculos);
         
         // Aplicar el renderizador de celdas para cambiar el color de fondo según el valor de la columna "Pago"
         applyCellRenderer(tbImporteVariado);
@@ -69,9 +72,30 @@ public class PagoAlquiler extends javax.swing.JFrame {
         
     }
     
-    private void cargarNombresClientes() {
+    private void cargarNombresClientesActivos() {
         PagoAlquilerDAO objetoNombres = new PagoAlquilerDAO();
-        ArrayList<String> cliente = objetoNombres.obtenerNombresClientes();
+        ArrayList<String> cliente = objetoNombres.obtenerNombresClientesActivos();
+        
+        // Limpiar los elementos existentes en el JComboBox antes de agregar nuevos
+        ListaClientesJCBox.removeAllItems();
+
+        // Usar un HashSet para almacenar nombres únicos
+        HashSet<String> nombresUnicos = new HashSet<>();
+        for (String nombre : cliente) {
+            nombresUnicos.add(nombre);
+        }
+
+        // Agregar los nombres únicos al JComboBox
+        for (String nombre : nombresUnicos) {
+            ListaClientesJCBox.addItem(nombre);
+        }
+
+        AutoCompleteDecorator.decorate(ListaClientesJCBox);
+    }
+    
+    private void cargarTodosNombresClientes() {
+        PagoAlquilerDAO objetoNombres = new PagoAlquilerDAO();
+        ArrayList<String> cliente = objetoNombres.obtenerTodosNombresClientes();
         
         // Limpiar los elementos existentes en el JComboBox antes de agregar nuevos
         ListaClientesJCBox.removeAllItems();
@@ -586,6 +610,16 @@ public class PagoAlquiler extends javax.swing.JFrame {
             
             //String ordSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 1).toString();
             
+            // Obtén las fechas seleccionadas
+            String fechaActual = tbImporteVariado.getValueAt(filaSeleccionada, 2).toString();
+            
+            // Verifica si hay una fila anterior
+            int filaAnterior = filaSeleccionada - 1;
+            String fechaAnterior = null;
+            if (filaAnterior >= 0) {
+                fechaAnterior = tbImporteVariado.getValueAt(filaAnterior, 2).toString();
+            }
+            
             String importeSeleccionado = tbImporteVariado.getValueAt(filaSeleccionada, 3).toString();
             double importes = Double.parseDouble(importeSeleccionado);
             
@@ -613,7 +647,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
            String nombreArrendador = paDAO.obtenerArrendador(clientId);
             
             // Abre el JFrame "Amortizaciones" y pasa los parámetro que se necesitan
-            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes , pagos, nombreArrendador);
+            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes , pagos, nombreArrendador, fechaAnterior, fechaActual);
             amortizaciones.setVisible(true);
             this.setVisible(false);
         } else {
@@ -646,6 +680,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         // Obtener el nombre seleccionado
         String nombreSeleccionado = (String) ListaClientesJCBox.getSelectedItem();
         // Mostrar los registros de rent_calculation relacionados al nombre seleccionado
+        cargarTodosNombresClientes();
         pa_dao.MostrarAlquilerTODO(tbMostrarAlquileres, nombreSeleccionado);
     }//GEN-LAST:event_btnMoreActionPerformed
 
@@ -654,6 +689,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         // Obtener el nombre seleccionado
         String nombreSeleccionado = (String) ListaClientesJCBox.getSelectedItem();
         // Mostrar los registros de rent_calculation relacionados al nombre seleccionado
+        cargarNombresClientesActivos();
         pa_dao.MostrarAlquiler(tbMostrarAlquileres, nombreSeleccionado);
     }//GEN-LAST:event_btnLessActionPerformed
 

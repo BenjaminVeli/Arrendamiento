@@ -33,10 +33,11 @@ public class Amortizaciones extends javax.swing.JFrame {
     private double saldos;
     private double importes;
     private double pagos;
+    private String fechaAnterior;
+    private String fechaActual;
     
-    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, double pagos, String nombreArrendador) {
+    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, double pagos, String nombreArrendador, String fechaAnterior, String fechaActual) {
         initComponents();
-        
        btnImprimir.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
             String contenidoCliente = Clientetxt.getText();
@@ -60,6 +61,8 @@ public class Amortizaciones extends javax.swing.JFrame {
         this.saldos = saldos;
         this.importes = importes;
         this.pagos = pagos;
+        this.fechaAnterior = fechaAnterior;
+        this.fechaActual = fechaActual;
         
         // Configurar el formato deseado para la fecha y hora
         LocalDateTime fechaHoraActual = LocalDateTime.now();
@@ -73,6 +76,13 @@ public class Amortizaciones extends javax.swing.JFrame {
             cuartoTxt.setText(numeroCuarto);
             Clientetxt.setText(nombreCliente);
             Arrendadortxt.setText(nombreArrendador);
+            
+            if (fechaAnterior != null) {
+                detalleTxtArea.setText("PAGO DEL " + fechaAnterior + " AL " + fechaActual);
+            } else {
+                detalleTxtArea.setText("PAGO DEL " + fechaActual);
+            }
+            
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
@@ -413,13 +423,14 @@ public class Amortizaciones extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelarBtnActionPerformed
 
     private void agregarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarBtnActionPerformed
-        PagoAlquiler pa = new PagoAlquiler();
+PagoAlquiler pa = new PagoAlquiler();
         PagoAlquilerDAO paDAO = new PagoAlquilerDAO();
         
         // Obtener los campos del formulario
         String num_amortizacion = numeroTxt.getText();
         java.util.Date fechaHora = fechaTxt.getDate();
         double importe = Double.parseDouble(importeTxt.getText());
+        double importe_sin_cambios = Double.parseDouble(importeTxt.getText());
         String detalle = detalleTxtArea.getText();
         int id_seleccionado =  Integer.parseInt(idSeleccionado);
         double importes_tbImporteVariado = importes;
@@ -460,6 +471,7 @@ public class Amortizaciones extends javax.swing.JFrame {
             paDAO.reiniciarSaldosSubsiguientes(Integer.parseInt(idSeleccionado), importes_tbImporteVariado);
             
             paDAO.insertarAmortizacion(id_seleccionado, num_amortizacion, importe, detalle, fechaHoraSQL);
+            paDAO.insertarRegistroAmotizacion(num_amortizacion, importe_sin_cambios, detalle, fechaHoraSQL);
             
             pa.setVisible(true);
             this.setVisible(false);

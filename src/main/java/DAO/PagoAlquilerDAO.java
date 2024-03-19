@@ -26,12 +26,36 @@ import java.util.Calendar;
 
 public class PagoAlquilerDAO {
     
-    public ArrayList<String> obtenerNombresClientes() {
+    public ArrayList<String> obtenerTodosNombresClientes() {
         ArrayList<String> clientes = new ArrayList<>();
         CConexion objetoConexion = new CConexion();
 
         // Consulta SQL
         String sql = "SELECT datos_cli_prov.nombre FROM datos_cli_prov INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id";
+
+        try {
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                clientes.add(rs.getString("nombre"));
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener los nombres de los clientes: " + e.toString());
+        }
+
+        return clientes;
+    }
+    
+    public ArrayList<String> obtenerNombresClientesActivos() {
+        ArrayList<String> clientes = new ArrayList<>();
+        CConexion objetoConexion = new CConexion();
+
+        // Consulta SQL con condición WHERE para filtrar por estado_rent_calculation = 1
+        String sql = "SELECT datos_cli_prov.nombre " +
+                     "FROM datos_cli_prov " +
+                     "INNER JOIN rent_calculation ON datos_cli_prov.id = rent_calculation.client_id " +
+                     "WHERE rent_calculation.estado_rent_calculation = 1";
 
         try {
             PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -55,27 +79,36 @@ public class PagoAlquilerDAO {
         TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
         tbMostrarAlquileres.setRowSorter(ordenarTabla);
 
-        String[] columnasMostradas = {"Id", "Cliente", "Alquiler", "Fecha", "Cuotas", "interes", "Tipo de Pago"};
-        String[] columnasBD = {"id", "nombre_cliente", "rent", "fecha",  "total", "interes", "tipo_pago"};
-
+        String[] columnasMostradas = {"Id", "Cliente", "Alquiler", "Fecha", "Cuotas", "Interés", "Tipo de Pago"};
+        String[] columnasBD = {"id", "nombre_cliente", "rent", "fecha", "total", "interes", "tipo_pago"};
+        
         for (int i = 0; i < columnasMostradas.length; i++) {
             modelo.addColumn(columnasMostradas[i]);
         }
 
         tbMostrarAlquileres.setModel(modelo);
 
-    String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre AS nombre_cliente, rent, fecha, total, interes, tipo_pago " +
-                 "FROM rent_calculation " +
-                 "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
-                 "WHERE datos_cli_prov.nombre = ? AND rent_calculation.estado_rent_calculation = 1"; // Agregando condición del campo estado_rent_calculation
-        
+        // Definir el formato de fecha que deseas mostrar visualmente
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+        String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre AS nombre_cliente, rent, fecha, total, interes, tipo_pago " +
+                     "FROM rent_calculation " +
+                     "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
+                     "WHERE datos_cli_prov.nombre = ? AND rent_calculation.estado_rent_calculation = 1"; // Agregando condición del campo estado_rent_calculation
+
         try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
             pst.setString(1, nombreClienteSeleccionado);
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     String[] datos = new String[columnasBD.length];
                     for (int i = 0; i < columnasBD.length; i++) {
-                        datos[i] = rs.getString(columnasBD[i]);
+                        if (columnasBD[i].equals("fecha")) {
+                            // Convertir la fecha al formato deseado para visualización
+                            Date fecha = rs.getDate("fecha");
+                            datos[i] = dateFormat.format(fecha);
+                        } else {
+                            datos[i] = rs.getString(columnasBD[i]);
+                        }
                     }
                     modelo.addRow(datos);
                 }
@@ -95,8 +128,8 @@ public class PagoAlquilerDAO {
         TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
         tbMostrarAlquileres.setRowSorter(ordenarTabla);
 
-        String[] columnasMostradas = {"Id", "Cliente", "Alquiler", "Fecha", "Cuotas", "interes", "Tipo de Pago"};
-        String[] columnasBD = {"id", "nombre_cliente", "rent", "fecha",  "total", "interes", "tipo_pago"};
+        String[] columnasMostradas = {"Id", "Cliente", "Alquiler", "Fecha", "Cuotas", "Interés", "Tipo de Pago"};
+        String[] columnasBD = {"id", "nombre_cliente", "rent", "fecha", "total", "interes", "tipo_pago"};
 
         for (int i = 0; i < columnasMostradas.length; i++) {
             modelo.addColumn(columnasMostradas[i]);
@@ -104,18 +137,27 @@ public class PagoAlquilerDAO {
 
         tbMostrarAlquileres.setModel(modelo);
 
+        // Definir el formato de fecha que deseas mostrar visualmente
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
         String sql = "SELECT rent_calculation.id, datos_cli_prov.nombre AS nombre_cliente, rent, fecha, total, interes, tipo_pago " +
                      "FROM rent_calculation " +
                      "INNER JOIN datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id " +
                      "WHERE datos_cli_prov.nombre = ?";
-        
+
         try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
             pst.setString(1, nombreClienteSeleccionado);
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     String[] datos = new String[columnasBD.length];
                     for (int i = 0; i < columnasBD.length; i++) {
-                        datos[i] = rs.getString(columnasBD[i]);
+                        if (columnasBD[i].equals("fecha")) {
+                            // Convertir la fecha al formato deseado para visualización
+                            Date fecha = rs.getDate("fecha");
+                            datos[i] = dateFormat.format(fecha);
+                        } else {
+                            datos[i] = rs.getString(columnasBD[i]);
+                        }
                     }
                     modelo.addRow(datos);
                 }
@@ -151,20 +193,34 @@ public class PagoAlquilerDAO {
                 modelo.addColumn("Saldos");
                 modelo.addColumn("Estado");
 
+                // Definir el formato de fecha que deseas mostrar visualmente
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
                 while (rs.next()) {
                     Object[] filaDatos = {
                         rs.getString("id"),
                         rs.getString("ord"),
-                        rs.getString("fecha"),
+                        // Convertir la fecha al formato deseado para visualización
+                        dateFormat.format(rs.getDate("fecha")),
                         rs.getString("importe"),
                         rs.getString("pago"),
-                        rs.getString("Saldos"),
+                        rs.getString("saldos"),
                         rs.getBoolean("estado") ? "Cancelado" : "No cancelado" // Modificación aquí
                     };
                     modelo.addRow(filaDatos);
                 }
 
                 tbImporteVariado.setModel(modelo);
+
+                // Establecer el ancho deseado para cada columna
+                tbImporteVariado.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
+                tbImporteVariado.getColumnModel().getColumn(1).setPreferredWidth(50); // Ord
+                tbImporteVariado.getColumnModel().getColumn(2).setPreferredWidth(100); // Fecha
+                tbImporteVariado.getColumnModel().getColumn(3).setPreferredWidth(100); // Importe
+                tbImporteVariado.getColumnModel().getColumn(4).setPreferredWidth(100); // Pago
+                tbImporteVariado.getColumnModel().getColumn(5).setPreferredWidth(100); // Saldos
+                tbImporteVariado.getColumnModel().getColumn(6).setPreferredWidth(100); // Estado
+
             } else {
                 JOptionPane.showMessageDialog(null, "Fila no seleccionada");
             }
@@ -215,6 +271,69 @@ public class PagoAlquilerDAO {
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error SQL al actualizar el registro en importe_variado para la amortización: " + e.toString());
+        }
+    }
+    
+    public void insertarRegistroAmotizacion(String num_amortizacion, double importe, String detalle, Timestamp fechaHoraSQL) {
+        CConexion objetoConexion = new CConexion();
+
+        try { 
+            // Sentencia SQL INSERT para insertar los registros en la tabla registro_amortizaciones
+            String sqlInsert = "INSERT INTO registro_amortizaciones (numero_amortizaciones, fecha_amortizaciones, detalle_amortizaciones, importe_amortizaciones) VALUES (?, ?, ?, ?)";
+
+            PreparedStatement psSqlInsert = objetoConexion.estableceConexion().prepareStatement(sqlInsert);
+
+            psSqlInsert.setString(1, num_amortizacion);
+            psSqlInsert.setTimestamp(2, fechaHoraSQL);
+            psSqlInsert.setString(3, detalle);
+            psSqlInsert.setBigDecimal(4, BigDecimal.valueOf(importe));
+
+            psSqlInsert.executeUpdate();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error SQL al insertar el registro en la tabla registro_amortizaciones: " + e.toString());
+        }
+    }
+    
+    public void MostrarRegistroAmortizacion(JTable tbMostrarCalculos) {
+        CConexion objetoConexion = new CConexion();
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(modelo);
+        tbMostrarCalculos.setRowSorter(ordenarTabla);
+
+        String[] columnasMostradas = {"Numero", "Fecha", "Detalle", "Importe"};
+        String[] columnasBD = {"numero_amortizaciones", "fecha_amortizaciones", "detalle_amortizaciones", "importe_amortizaciones"};
+
+        for (int i = 0; i < columnasMostradas.length; i++) {
+            modelo.addColumn(columnasMostradas[i]);
+        }
+
+        tbMostrarCalculos.setModel(modelo);
+
+        // Definir la consulta SQL para seleccionar todos los registros
+        String sql = "SELECT * FROM registro_amortizaciones";
+
+        try (PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql)) {
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    String[] datos = new String[columnasBD.length];
+                    for (int i = 0; i < columnasBD.length; i++) {
+                        datos[i] = rs.getString(columnasBD[i]);
+                    }
+                    modelo.addRow(datos);
+                }
+                tbMostrarCalculos.setModel(modelo);
+                
+                // Establecer el ancho deseado para cada columna
+                tbMostrarCalculos.getColumnModel().getColumn(0).setPreferredWidth(70); // Numero
+                tbMostrarCalculos.getColumnModel().getColumn(1).setPreferredWidth(100); // Fecha
+                tbMostrarCalculos.getColumnModel().getColumn(2).setPreferredWidth(100); // Detalle
+                tbMostrarCalculos.getColumnModel().getColumn(3).setPreferredWidth(50); // Importe
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar los registros de amortización: " + e.toString());
+            e.printStackTrace(); // Imprimir la pila de excepciones para obtener más detalles
         }
     }
     

@@ -69,6 +69,14 @@ CREATE TABLE rent_calculation (
   FOREIGN KEY (room_id) REFERENCES cuarto(id)
 );
 
+CREATE TABLE registro_amortizaciones (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  numero_amortizaciones VARCHAR(10),
+  fecha_amortizaciones TIMESTAMP,
+  detalle_amortizaciones VARCHAR(200),
+  importe_amortizaciones VARCHAR(200)
+);
+
 CREATE TABLE importe_mensual (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   rent_calculation_id INT,
