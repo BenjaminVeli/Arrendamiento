@@ -487,7 +487,7 @@ public class CalcularAlquilerDAO {
             sumaInteresAcumulativa = Math.round(sumaInteresAcumulativa * 100.0) / 100.0;
             
             //Formatear la fecha en dia mes año
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             
             modelo.addRow(new Object[] { 
                 i, 

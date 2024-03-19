@@ -125,8 +125,14 @@
       </Properties>
     </Component>
     <Component class="com.toedter.calendar.JDateChooser" name="txtInicio">
+      <Properties>
+        <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
+      </Properties>
     </Component>
     <Component class="com.toedter.calendar.JDateChooser" name="txtFin">
+      <Properties>
+        <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnImprimir">
       <Properties>

@@ -388,7 +388,7 @@
         </Component>
         <Component class="com.toedter.calendar.JDateChooser" name="fechaTxt">
           <Properties>
-            <Property name="dateFormatString" type="java.lang.String" value="d MMM y hh:mm:ss"/>
+            <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy hh:mm:ss"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">

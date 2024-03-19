@@ -15,7 +15,9 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FontUnderline;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -629,6 +631,10 @@ public class CalculoAlquiler extends javax.swing.JFrame {
 
         ructxt.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        fechatxt.setDateFormatString("dd/MM/yyyy");
+
+        fechaingresotxt.setDateFormatString("dd/MM/yyyy");
+
         jLabel20.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel20.setText("Total");
 
@@ -682,6 +688,8 @@ public class CalculoAlquiler extends javax.swing.JFrame {
         jLabel22.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel22.setText("Fecha final");
 
+        fecha_finaltxt.setDateFormatString("dd/MM/yyyy");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -706,24 +714,29 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(30, 30, 30)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(18, 18, 18)
-                                .addComponent(interesestxt, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
+                                .addComponent(interesestxt, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(13, 13, 13))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jLabel22)
+                                        .addComponent(jLabel9))
+                                    .addGap(12, 12, 12)
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(fecha_finaltxt, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                                        .addComponent(mensualtxt, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                                        .addComponent(cuartostxt, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGap(7, 7, 7))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addComponent(jLabel10)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel22))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(mensualtxt, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(fechatxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
-                                    .addComponent(cuartostxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(fecha_finaltxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addGap(13, 13, 13)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(fechatxt, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(12, 12, 12))))
                         .addComponent(Separator, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -793,14 +806,12 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(fechatxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel9)
-                                    .addComponent(mensualtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel10)
-                                    .addComponent(fechatxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(mensualtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel9))
+                                .addGap(13, 13, 13)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(cuartostxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2))
@@ -811,7 +822,8 @@ public class CalculoAlquiler extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(garantiatxt, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4))
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel10))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(totaltxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1287,6 +1299,9 @@ private void exportarAExcel() {
         font.setFontHeightInPoints((short) 12);
         estiloCelda.setFont(font);
         
+        CellStyle estilo = workbook.createCellStyle();
+        estilo.setAlignment(HorizontalAlignment.RIGHT);
+        
         XSSFCellStyle estiloSinBordes = workbook.createCellStyle();
         
         XSSFCellStyle estiloProforma = workbook.createCellStyle();
@@ -1318,7 +1333,7 @@ private void exportarAExcel() {
 
         Date sqlDate = fechatxt.getDate();
         Date fecha = new Date(sqlDate.getTime());
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd MMM yyyy");
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
         String fechaFormateada = formatoFecha.format(fecha);
 
 
@@ -1401,6 +1416,23 @@ private void exportarAExcel() {
         Cell tpagoContentCell = inicialRow.createCell(5);
 
         Object selectedValue = selectPago.getSelectedItem();
+        
+        Row detalleRow = sheet.createRow(6);
+        Cell detalleLabelCell = detalleRow.createCell(0);
+        detalleLabelCell.setCellValue("Detalle :");
+        detalleLabelCell.setCellStyle(estiloSinBordes);
+        
+        Cell detalleContentCell = detalleRow.createCell(1);
+        String textoSeleccionado = cuartostxt.getSelectedItem().toString();
+        String textoCompleto = "Cuarto # " + textoSeleccionado;
+        detalleContentCell.setCellValue(textoCompleto);
+        detalleContentCell.setCellStyle(estiloSinBordes);
+        
+        Cell interesLabelCell = detalleRow.createCell(4);
+        interesLabelCell.setCellValue("Interes :");
+        
+        Cell interesContentCell = detalleRow.createCell(5);
+        interesContentCell.setCellValue(interesestxt.getText());
 
         if (selectedValue != null) {
             tpagoContentCell.setCellValue(selectedValue.toString());
@@ -1453,6 +1485,10 @@ private void exportarAExcel() {
         sumMensualValueCell.setCellStyle(estiloCelda);
         
         Row diasPorMesRow = sheet.createRow(numRows + 11); 
+        Cell diasPorMesCellLabel1 = diasPorMesRow.createCell(0);
+        diasPorMesCellLabel1.setCellValue("30");
+        diasPorMesCellLabel1.setCellStyle(estilo);
+        
         Cell diasPorMesCellLabel = diasPorMesRow.createCell(1);
         diasPorMesCellLabel.setCellValue("Días por mes :");
         diasPorMesCellLabel.setCellStyle(estiloSinBordes);
@@ -1461,7 +1497,11 @@ private void exportarAExcel() {
         diasPorMesCellContent.setCellValue(pagoDiariotxt.getText()); 
         diasPorMesCellContent.setCellStyle(estiloSinBordes);
         
-        Row quincenalRow = sheet.createRow(numRows + 12); 
+        Row quincenalRow = sheet.createRow(numRows + 12);
+        Cell quincenalCellLabel1 = quincenalRow.createCell(0);
+        quincenalCellLabel1.setCellValue("15");
+        quincenalCellLabel1.setCellStyle(estilo);
+        
         Cell quincenalCellLabel = quincenalRow.createCell(1);
         quincenalCellLabel.setCellValue("Quincenal :");
         quincenalCellLabel.setCellStyle(estiloSinBordes);
@@ -1470,7 +1510,11 @@ private void exportarAExcel() {
         quincenalCellContent.setCellValue(pagoQuincenaltxt.getText()); 
         quincenalCellContent.setCellStyle(estiloSinBordes);
         
-        Row cuotasMensualesRow = sheet.createRow(numRows + 13); 
+        Row cuotasMensualesRow = sheet.createRow(numRows + 13);
+        Cell cuotasMensualesCellLabel1 = cuotasMensualesRow.createCell(0);
+        cuotasMensualesCellLabel1.setCellValue("12");
+        cuotasMensualesCellLabel1.setCellStyle(estilo);
+        
         Cell cuotasMensualesCellLabel = cuotasMensualesRow.createCell(1);
         cuotasMensualesCellLabel.setCellValue("Cuotas mensuales :");
         cuotasMensualesCellLabel.setCellStyle(estiloSinBordes);
@@ -1480,6 +1524,10 @@ private void exportarAExcel() {
         cuotasMensualesCellContent.setCellStyle(estiloSinBordes);
         
         Row semanalRow = sheet.createRow(numRows + 14); 
+        Cell semanalCellLabel1 = semanalRow.createCell(0);
+        semanalCellLabel1.setCellValue("4");
+        semanalCellLabel1.setCellStyle(estilo);
+        
         Cell semanalCellLabel = semanalRow.createCell(1);
         semanalCellLabel.setCellValue("Semanal :");
         semanalCellLabel.setCellStyle(estiloSinBordes);

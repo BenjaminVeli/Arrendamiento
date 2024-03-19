@@ -228,7 +228,7 @@ public class Amortizaciones extends javax.swing.JFrame {
             }
         });
 
-        fechaTxt.setDateFormatString("d MMM y hh:mm:ss");
+        fechaTxt.setDateFormatString("dd/MM/yyyy hh:mm:ss");
 
         detalleTxtArea.setColumns(20);
         detalleTxtArea.setRows(5);
