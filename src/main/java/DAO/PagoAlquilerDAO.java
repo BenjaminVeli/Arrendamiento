@@ -319,17 +319,24 @@ public class PagoAlquilerDAO {
                 while (rs.next()) {
                     String[] datos = new String[columnasBD.length];
                     for (int i = 0; i < columnasBD.length; i++) {
-                        datos[i] = rs.getString(columnasBD[i]);
+                        // Si es la columna de fecha, aplicar el formato deseado
+                        if (columnasBD[i].equals("fecha_amortizaciones")) {
+                            Timestamp timestamp = rs.getTimestamp(columnasBD[i]);
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                            datos[i] = dateFormat.format(timestamp);
+                        } else {
+                            datos[i] = rs.getString(columnasBD[i]);
+                        }
                     }
                     modelo.addRow(datos);
                 }
                 tbMostrarCalculos.setModel(modelo);
-                
+
                 // Establecer el ancho deseado para cada columna
-                tbMostrarCalculos.getColumnModel().getColumn(0).setPreferredWidth(70); // Numero
-                tbMostrarCalculos.getColumnModel().getColumn(1).setPreferredWidth(100); // Fecha
-                tbMostrarCalculos.getColumnModel().getColumn(2).setPreferredWidth(100); // Detalle
-                tbMostrarCalculos.getColumnModel().getColumn(3).setPreferredWidth(50); // Importe
+                tbMostrarCalculos.getColumnModel().getColumn(0).setPreferredWidth(20); // Numero
+                tbMostrarCalculos.getColumnModel().getColumn(1).setPreferredWidth(80); // Fecha
+                tbMostrarCalculos.getColumnModel().getColumn(2).setPreferredWidth(200); // Detalle
+                tbMostrarCalculos.getColumnModel().getColumn(3).setPreferredWidth(20); // Importe
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error al mostrar los registros de amortización: " + e.toString());

@@ -236,7 +236,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
         );
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel12.setText("Nacmnto :");
+        jLabel12.setText("Nacmiento :");
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel13.setText("Ingreso :");
@@ -430,7 +430,7 @@ public class RegistroDatosClientes extends javax.swing.JFrame {
                                     .addComponent(txtCiudad, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                                     .addComponent(txtConyuge)))
                             .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))

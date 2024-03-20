@@ -341,13 +341,13 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         tbMostrarCalculos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Numero", "Fecha", "Detalle", "Importe"
+
             }
         ));
         jScrollPane2.setViewportView(tbMostrarCalculos);
