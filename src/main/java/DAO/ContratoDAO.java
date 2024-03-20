@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -179,7 +181,6 @@ public class ContratoDAO {
                             txtDniPropietario.setText(resultSet.getString("dni_propietario"));
                             txtTelePropietario.setText(resultSet.getString("celular"));
                             txtMensualidad.setText(resultSet.getString("mensual"));
-                            txtFecha.setText(resultSet.getString("fecha"));
                             txtNombrePiso.setText(resultSet.getString("nombre_piso"));
                             txtNombreCuarto.setText(resultSet.getString("nombre_cuarto"));
                             txtGarantia.setText(resultSet.getString("garantia"));
@@ -191,8 +192,17 @@ public class ContratoDAO {
                             txtProvincia.setText(resultSet.getString("provincia"));
                             txtDepartamento.setText(resultSet.getString("departamento"));
                             txtDistrito.setText(resultSet.getString("distrito"));
-                            txtFechaFinal.setText(resultSet.getString("fechafinal"));
                             txtEstadoCivil.setText(resultSet.getString("estado_civil"));
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                            Date fecha = resultSet.getDate("fecha");
+                            if (fecha != null) {
+                                txtFecha.setText(sdf.format(fecha));
+                            }
+
+                            Date fechaFinal = resultSet.getDate("fechafinal");
+                            if (fechaFinal != null) {
+                                txtFechaFinal.setText(sdf.format(fechaFinal));
+                            }
                         }
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(null, "Error al obtener detalles del arrendatario: " + ex.toString());

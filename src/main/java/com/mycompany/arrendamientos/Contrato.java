@@ -758,14 +758,6 @@ public void exportarAWord() {
         run1.setUnderline(UnderlinePatterns.SINGLE);
         run1.setFontSize(13);
 
-        XWPFParagraph parrafo2 = documento.createParagraph();
-        parrafo2.setAlignment(ParagraphAlignment.LEFT);
-        parrafo2.setSpacingAfter(0);
-
-        XWPFRun run2 = parrafo2.createRun();
-        parrafo2.setSpacingBetween(1.0);
-        run2.setText("Conste por el presente documento, el CONTRATO DE ARRENDAMIENTO, que celebran de una parte, el Sr. ");
-        run2.setFontSize(9);
 
         Object arrendadorSeleccionado = cbArrendador.getSelectedItem();
         String dniArrendador = txtDniArrendador.getText(); 
@@ -793,6 +785,20 @@ public void exportarAWord() {
 
         
         if (arrendadorSeleccionado != null) {
+            XWPFParagraph parrafo = documento.createParagraph();
+            parrafo.setAlignment(ParagraphAlignment.LEFT);
+            parrafo.setSpacingAfter(0);
+            parrafo.setSpacingBetween(1.0);
+
+            XWPFRun runNegrita = parrafo.createRun();
+            runNegrita.setText("Conste por el presente ");
+            runNegrita.setBold(true);
+            runNegrita.setFontSize(9);
+
+            XWPFRun run2 = parrafo.createRun();
+            run2.setText("documento, el CONTRATO DE ARRENDAMIENTO, que celebran de una parte, el Sr. ");
+            run2.setFontSize(9);
+            
             run2.setText(contenidoArrendador + " identificado con DNI N.° " + dniArrendador + ", con domicilio en " + direccionArrendador + " , " + provinciaArrendador + " , el cual de aquí en adelante se le denominará EL ARRENDADOR y "
                     + "por otra parte el Sr. (a)(ta) " + contenidoArrendatario + " , identificado con " + dniArrendatario +  " , con domicilio en " + direccionArrendatario + " , " + provinciaArrendatario + " , con estado civil " + estadocivilArrendatario+
                     " , quien en adelante se le denominará EL ARRENDATARIO en los términos y condiciones siguientes: ");
@@ -802,7 +808,7 @@ public void exportarAWord() {
             run2.addBreak();
             run2.addBreak();
             run2.setText("SEGUNDO.- Por el presente contrato EL ARRENDADOR da en calidad de Arrendamiento a EL ARRENDATARIO, una parte del local del "
-                    + nombrePiso + " , indicado en la cláusula anterior, Primero, " + direccionArrendador + " , que consta de un área de " + nombreArea + ". Con una entrada quedando en el interior de la vivienda, para ser utilizado como Dormitorio y vivienda. Del mismo que EL ARRENDATARIO, declara y conocer y recibir en perfecto estado, siendo la toma del ambiente, es prueba de aceptación de las referidas condiciones y correcto funcionamiento de los servicios, Así mismo ambas partes convienen en que los servicios de Agua y Desagüe, así como de Energía Eléctrica serán cancelados por parte del Arrendatario, muy aparte de la Mereced Conductiva,  de acuerdo a su consumo, mensual, quedamos tajantemente prohibido la crianza de todo tipo de animales. ");
+                    + nombrePiso + " , indicado en la cláusula anterior, Primero, " + direccionArrendador + " , que consta de un área de " + nombreArea + ". (CUARTO # "+nombreCuarto+")"+" Con una entrada quedando en el interior de la vivienda, para ser utilizado como Dormitorio y vivienda. Del mismo que EL ARRENDATARIO, declara y conocer y recibir en perfecto estado, siendo la toma del ambiente, es prueba de aceptación de las referidas condiciones y correcto funcionamiento de los servicios, Así mismo ambas partes convienen en que los servicios de Agua y Desagüe, así como de Energía Eléctrica serán cancelados por parte del Arrendatario, muy aparte de la Mereced Conductiva, de acuerdo a su consumo, mensual, quedamos tajantemente prohibido la crianza de todo tipo de animales. ");
             run2.addBreak();
             run2.addBreak();
             run2.setText("TERCERO.- La Merced Conductiva mensual, convenida de mutuo y común acuerdo entre las partes contratantes para el local y sus servicios cuyo objeto de este contrato es de S/ "+mensualidad+ " Soles mensuales, monto que El ARRENDATARIO los abonará con toda puntualidad por adelantado, en el caso de incumplimiento el pago de 1 mensualidad ocasionará RESCISIÓN del presente contrato comprometiéndose EL ARRENDATARIO a devolver el local y sus servicios, en perfecto estado conforme los entrego al momento del ambiente. ");
@@ -824,7 +830,7 @@ public void exportarAWord() {
             run2.addBreak();
             run2.addBreak();
             run2.setText("NOVENO.- Que, ambas partes convienen de mutuo acuerdo para celebrar del Local y sus servicios cuyos objetos de este contrato de arrendamiento, que el Arrendatario "
-                    + "debe responder por tres meses de la merced conductiva del contrato por alguna excepción quiere retirarse del ambiente antes de 03 meses, para las prevalencias del caso. Y cuando falla  del pagos, será causal automático de  nulidad de puro derecho del presente Contrato, la falta de pago de 1 mes, con plazo de 15 días o la mala conducta de EL ARRENDATARIO, el ARRENDADOR procederá a desalojar en caso de resistencia, se procederá con todas las de Ley. ");
+                    + "debe responder por tres meses de la merced conductiva del contrato por alguna excepción quiere retirarse del ambiente antes de 03 meses, para las prevalencias del caso. Y cuando falla de los pagos, será causal automático de nulidad de puro derecho del presente Contrato, la falta de pago de 1 mes, con plazo de 15 días o la mala conducta de EL ARRENDATARIO, el ARRENDADOR procederá a desalojar en caso de resistencia, se procederá con todas las de Ley. ");
             run2.addBreak();
             run2.addBreak();
             run2.setText("DECIMO.- Quedando de acuerdo con el arrendatario, que ocuparan "+ persona + " personas dicho cuarto, en caso de exceder más personas a lo tratado, se procederá a incrementar el precio del alquiler del cuarto.");
