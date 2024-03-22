@@ -122,6 +122,8 @@ public class CrearCuarto extends javax.swing.JFrame {
         btnLimpiar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         btnReporte = new javax.swing.JButton();
+        txtPrecio = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbTotalCuartos = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
@@ -660,10 +662,23 @@ public class CrearCuarto extends javax.swing.JFrame {
 
         btnReporte.setText("Reporte");
 
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel18.setText("Precio :");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnModificar, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnReporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(17, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -676,24 +691,17 @@ public class CrearCuarto extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel18))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtPrecio)
                     .addComponent(cbpiso, 0, 158, Short.MAX_VALUE)
                     .addComponent(txtId)
                     .addComponent(txtCuarto)
                     .addComponent(txtMetraje))
                 .addGap(33, 33, 33))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(41, 41, 41)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnModificar, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnReporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -714,7 +722,11 @@ public class CrearCuarto extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtMetraje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
+                .addGap(20, 20, 20)
                 .addComponent(btnGuardar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnModificar)
@@ -832,18 +844,18 @@ public class CrearCuarto extends javax.swing.JFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         CuartoDAO objetoCuartos = new CuartoDAO();
-        objetoCuartos.InsertarCuarto(cbpiso, txtCuarto, txtMetraje,archivoseleccionado);
+        objetoCuartos.InsertarCuarto(cbpiso, txtCuarto, txtMetraje,archivoseleccionado,txtPrecio);
         objetoCuartos.MostrarCuartos(tbTotalCuartos);
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void tbTotalCuartosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTotalCuartosMouseClicked
         CuartoDAO objetoCuartos = new CuartoDAO();
-        objetoCuartos.SeleccionarCuartos(tbTotalCuartos, txtId, cbpiso, txtCuarto, txtMetraje,lblimagen);
+        objetoCuartos.SeleccionarCuartos(tbTotalCuartos, txtId, cbpiso, txtCuarto, txtMetraje,txtPrecio,lblimagen);
     }//GEN-LAST:event_tbTotalCuartosMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
        CuartoDAO objetoCuartos = new CuartoDAO();
-       objetoCuartos.ModificarCuartos(tbTotalCuartos, txtId, cbpiso, txtCuarto, txtMetraje,archivoseleccionado);
+       objetoCuartos.ModificarCuartos(tbTotalCuartos, txtId, cbpiso, txtCuarto, txtMetraje,archivoseleccionado,txtPrecio);
        objetoCuartos.MostrarCuartos(tbTotalCuartos);
     }//GEN-LAST:event_btnModificarActionPerformed
 
@@ -909,7 +921,8 @@ public class CrearCuarto extends javax.swing.JFrame {
 "    cuarto.id AS cuarto_id, \n" +
 "    piso.piso AS nombre_piso,\n" +
 "    cuarto.numcuarto,\n" +
-"    IFNULL(datos_cli_prov.nombre, 'Desocupado') AS cliente_nombre\n" +
+"    IFNULL(datos_cli_prov.nombre, 'Desocupado') AS cliente_nombre,\n" +
+"    cuarto.precio\n" +
 "FROM \n" +
 "    cuarto\n" +
 "LEFT JOIN \n" +
@@ -940,6 +953,8 @@ public class CrearCuarto extends javax.swing.JFrame {
             estiloHeadersRow.setAlignment(HorizontalAlignment.CENTER);
             estiloHeadersRow.setBorderBottom(BorderStyle.THIN);
             estiloHeadersRow.setBorderTop(BorderStyle.THIN);
+            estiloHeadersRow.setBorderLeft(BorderStyle.THIN);
+            estiloHeadersRow.setBorderRight(BorderStyle.THIN);
             
             XSSFFont fontHeader = workbook.createFont();
             fontHeader.setFontHeightInPoints((short) 14);
@@ -959,14 +974,12 @@ public class CrearCuarto extends javax.swing.JFrame {
             headersRow.createCell(1).setCellValue("Piso");
             headersRow.createCell(2).setCellValue("Cuarto");
             headersRow.createCell(3).setCellValue("Cliente");
+            headersRow.createCell(4).setCellValue("Precio");
             for (Cell cell : headersRow) {
             cell.setCellStyle(estiloHeadersRow);
             estiloHeadersRow.setFont(fontHeader);
 
             }
-            
-            
-            
             
             int rowNum = 3; // Comenzamos a escribir los datos desde la fila 3
             while (resultSet.next()) {
@@ -979,7 +992,8 @@ public class CrearCuarto extends javax.swing.JFrame {
                 row.createCell(2).setCellValue(textoCompleto);
                 String estadoCuarto = resultSet.getString("cliente_nombre"); // Utilizamos cliente_nombre como estado_cuarto
                 row.createCell(3).setCellValue(estadoCuarto); // Mostrar el estado del cuarto en lugar del nombre del cliente
-                // Aplicamos el estilo a cada celda creada
+                String precioCuarto = resultSet.getString("precio");
+                row.createCell(4).setCellValue(precioCuarto);
                 for (int i = 0; i < row.getLastCellNum(); i++) {
                     Cell cell = row.getCell(i);
                     if (cell != null) {
@@ -1029,6 +1043,7 @@ public class CrearCuarto extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1079,6 +1094,7 @@ public class CrearCuarto extends javax.swing.JFrame {
     private javax.swing.JTextField txtCuarto;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtMetraje;
+    private javax.swing.JTextField txtPrecio;
     private javax.swing.JTextField txtrutaimagen;
     // End of variables declaration//GEN-END:variables
 
@@ -1089,5 +1105,6 @@ public class CrearCuarto extends javax.swing.JFrame {
         txtMetraje.setText("");
         txtrutaimagen.setText("");
         lblimagen.setIcon(null);
+        txtPrecio.setText("");
     }
 }

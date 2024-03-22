@@ -40,6 +40,7 @@ CREATE TABLE cuarto (
     numcuarto VARCHAR(100) UNIQUE,
     metraje VARCHAR(100),
     foto LONGBLOB,
+    precio DECIMAL(10,2),
     ocupado BOOLEAN DEFAULT false,
     FOREIGN KEY (piso_id) REFERENCES piso(id)
 );

@@ -49,10 +49,10 @@ public class CuartoDAO {
             } 
         }
         
-         public void InsertarCuarto(JComboBox comboPiso, JTextField numcuarto, JTextField metraje, File foto) {
+         public void InsertarCuarto(JComboBox comboPiso, JTextField numcuarto, JTextField metraje, File foto, JTextField precio) {
     CConexion objetoConexion = new CConexion();
 
-    String consulta = "INSERT INTO cuarto (piso_id, numcuarto, metraje, foto) VALUES (?, ?, ?, ?)";
+    String consulta = "INSERT INTO cuarto (piso_id, numcuarto, metraje, foto, precio) VALUES (?, ?, ?, ?,?)";
 
     try {
         CallableStatement cs = objetoConexion.estableceConexion().prepareCall(consulta);
@@ -71,6 +71,7 @@ public class CuartoDAO {
             } else {
                 cs.setNull(4, Types.BLOB); 
             }
+            cs.setDouble(5, Double.parseDouble(precio.getText()));
             
             cs.execute();
 
@@ -97,10 +98,11 @@ public class CuartoDAO {
         modelo.addColumn("Cuarto");
         modelo.addColumn("Metraje");
         modelo.addColumn("Foto");
+        modelo.addColumn("Precio");
 
         tbTotalCuartos.setModel(modelo);
 
-        sql = "SELECT cuarto.id, piso.piso as nombre_piso, numcuarto, metraje , foto FROM cuarto INNER JOIN piso ON cuarto.piso_id = piso.id";
+        sql = "SELECT cuarto.id, piso.piso as nombre_piso, numcuarto, metraje , foto,precio FROM cuarto INNER JOIN piso ON cuarto.piso_id = piso.id";
 
         try {
             Statement st = objetoConexion.estableceConexion().createStatement();
@@ -124,8 +126,8 @@ public class CuartoDAO {
 
                     }
                 }
-
-                modelo.addRow(new Object[]{id, nombre_piso, numcuarto, metraje , foto});
+                double precio = rs.getDouble("precio");
+                modelo.addRow(new Object[]{id, nombre_piso, numcuarto, metraje , foto,precio});
             }
 
             tbTotalCuartos.setModel(modelo);
@@ -134,33 +136,36 @@ public class CuartoDAO {
         }
     }
 
-         public void SeleccionarCuartos(JTable tbTotalCuartos, JTextField id, JComboBox comboPiso, JTextField numcuarto, JTextField metraje, JLabel foto){
-                  int fila=  tbTotalCuartos.getSelectedRow();
-                  
-                  if (fila>=0) {
-                        id.setText(tbTotalCuartos.getValueAt(fila,0).toString());
-                         comboPiso.setSelectedItem(tbTotalCuartos.getValueAt(fila, 1).toString());
-                        numcuarto.setText(tbTotalCuartos.getValueAt(fila,2).toString());
-                        metraje.setText(tbTotalCuartos.getValueAt(fila,3).toString());
-                        Image imagen = (Image) tbTotalCuartos.getValueAt(fila, 4);
-                        ImageIcon originalIcon = new ImageIcon(imagen);
-                        int lblanchura = foto.getWidth();
-                        int lblaltura = foto.getHeight();
-                        
-                        Image ImagenEscalada= originalIcon.getImage().getScaledInstance(lblanchura, lblaltura, Image.SCALE_SMOOTH);
-                        foto.setIcon(new ImageIcon(ImagenEscalada));
-                  }
-                  
-                  try {
-                      
-                  } catch (Exception e) {
-                  JOptionPane.showMessageDialog(null,"Error al seleccionar, error "+ e.toString());
-                  }
-         }
+         public void SeleccionarCuartos(JTable tbTotalCuartos, JTextField id, JComboBox comboPiso, JTextField numcuarto, JTextField metraje, JTextField precio, JLabel foto) {
+    int fila = tbTotalCuartos.getSelectedRow();
+
+    if (fila >= 0) {
+        id.setText(tbTotalCuartos.getValueAt(fila, 0).toString());
+        comboPiso.setSelectedItem(tbTotalCuartos.getValueAt(fila, 1).toString());
+        numcuarto.setText(tbTotalCuartos.getValueAt(fila, 2).toString());
+        metraje.setText(tbTotalCuartos.getValueAt(fila, 3).toString());
+        // Setear el precio
+        precio.setText(tbTotalCuartos.getValueAt(fila, 5).toString());
+        Image imagen = (Image) tbTotalCuartos.getValueAt(fila, 4);
+        ImageIcon originalIcon = new ImageIcon(imagen);
+        int lblanchura = foto.getWidth();
+        int lblaltura = foto.getHeight();
+
+        Image ImagenEscalada = originalIcon.getImage().getScaledInstance(lblanchura, lblaltura, Image.SCALE_SMOOTH);
+        foto.setIcon(new ImageIcon(ImagenEscalada));
+    }
+
+    try {
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al seleccionar, error " + e.toString());
+    }
+}
+
          
-         public void ModificarCuartos(JTable tbTotalCuartos, JTextField id, JComboBox comboPiso, JTextField numcuarto, JTextField metraje, File foto) {
+         public void ModificarCuartos(JTable tbTotalCuartos, JTextField id, JComboBox comboPiso, JTextField numcuarto, JTextField metraje, File foto,JTextField precio) {
             CConexion objetoConexion = new CConexion();
-            String consulta = "UPDATE cuarto SET piso_id=?, numcuarto=?, metraje=?, foto=? WHERE id=?";
+            String consulta = "UPDATE cuarto SET piso_id=?, numcuarto=?, metraje=?, foto=?, precio=? WHERE id=?";
 
             try {
                 FileInputStream fis = new FileInputStream(foto);
@@ -174,8 +179,8 @@ public class CuartoDAO {
                     cs.setString(2, numcuarto.getText());
                     cs.setString(3, metraje.getText());
                     cs.setBinaryStream(4, fis, (int) foto.length());
-                    cs.setInt(5, Integer.parseInt(id.getText()));
-                        
+                    cs.setDouble(5, Double.parseDouble(precio.getText()));    
+                    cs.setInt(6, Integer.parseInt(id.getText()));
                     cs.execute();
 
                     JOptionPane.showMessageDialog(null, "Se modificó correctamente");
