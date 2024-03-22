@@ -917,20 +917,22 @@ public class CrearCuarto extends javax.swing.JFrame {
         
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/arrendamientos", "root", "");
         Statement statement = connection.createStatement();
-         ResultSet resultSet = statement.executeQuery("SELECT \n" +
-"    cuarto.id AS cuarto_id, \n" +
-"    piso.piso AS nombre_piso,\n" +
-"    cuarto.numcuarto,\n" +
-"    IFNULL(datos_cli_prov.nombre, 'Desocupado') AS cliente_nombre,\n" +
-"    cuarto.precio\n" +
-"FROM \n" +
-"    cuarto\n" +
-"LEFT JOIN \n" +
-"    rent_calculation ON cuarto.id = rent_calculation.room_id\n" +
-"LEFT JOIN \n" +
-"    datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id\n" +
-"LEFT JOIN \n" +
-"    piso ON cuarto.piso_id = piso.id;");
+        ResultSet resultSet = statement.executeQuery("SELECT \n" +
+        "    cuarto.id AS cuarto_id, \n" +
+        "    piso.piso AS nombre_piso,\n" +
+        "    cuarto.numcuarto,\n" +
+        "    IFNULL(datos_cli_prov.nombre, 'Desocupado') AS cliente_nombre,\n" +
+        "    cuarto.precio,\n" +  // Coma añadida para separar la columna 'precio' de 'metraje'
+        "    cuarto.metraje\n" +                 
+        "FROM \n" +
+        "    cuarto\n" +
+        "LEFT JOIN \n" +
+        "    rent_calculation ON cuarto.id = rent_calculation.room_id\n" +
+        "LEFT JOIN \n" +
+        "    datos_cli_prov ON rent_calculation.client_id = datos_cli_prov.id\n" +
+        "LEFT JOIN \n" +
+        "    piso ON cuarto.piso_id = piso.id;");
+
         
         XSSFWorkbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Reporte de Cuartos");
@@ -974,7 +976,9 @@ public class CrearCuarto extends javax.swing.JFrame {
             headersRow.createCell(1).setCellValue("Piso");
             headersRow.createCell(2).setCellValue("Cuarto");
             headersRow.createCell(3).setCellValue("Cliente");
-            headersRow.createCell(4).setCellValue("Precio");
+            headersRow.createCell(4).setCellValue("Metraje");
+            headersRow.createCell(5).setCellValue("Precio");
+            
             for (Cell cell : headersRow) {
             cell.setCellStyle(estiloHeadersRow);
             estiloHeadersRow.setFont(fontHeader);
@@ -992,8 +996,10 @@ public class CrearCuarto extends javax.swing.JFrame {
                 row.createCell(2).setCellValue(textoCompleto);
                 String estadoCuarto = resultSet.getString("cliente_nombre"); // Utilizamos cliente_nombre como estado_cuarto
                 row.createCell(3).setCellValue(estadoCuarto); // Mostrar el estado del cuarto en lugar del nombre del cliente
+                String metrajeCuarto = resultSet.getString("metraje");
+                row.createCell(4).setCellValue(metrajeCuarto);
                 String precioCuarto = resultSet.getString("precio");
-                row.createCell(4).setCellValue(precioCuarto);
+                row.createCell(5).setCellValue(precioCuarto);
                 for (int i = 0; i < row.getLastCellNum(); i++) {
                     Cell cell = row.getCell(i);
                     if (cell != null) {
