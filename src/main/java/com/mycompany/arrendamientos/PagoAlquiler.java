@@ -465,6 +465,11 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         btnDatosCredito.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnDatosCredito.setText("Datos del Credito");
+        btnDatosCredito.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDatosCreditoActionPerformed(evt);
+            }
+        });
 
         btnObservacion.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnObservacion.setText("Observación");
@@ -804,6 +809,12 @@ public class PagoAlquiler extends javax.swing.JFrame {
         asignar_Internet.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnAsignarInternetActionPerformed
+
+    private void btnDatosCreditoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatosCreditoActionPerformed
+        DatosCredito v2 = new DatosCredito();
+        v2.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnDatosCreditoActionPerformed
 
     private void applyCellRenderer(JTable table) {
         

@@ -673,6 +673,9 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Datos del Credito"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDatosCreditoActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnObservacion">
           <Properties>
