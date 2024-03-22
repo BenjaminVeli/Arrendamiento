@@ -164,14 +164,15 @@ public class PagoAlquiler extends javax.swing.JFrame {
         btnAsignarInternet = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbImporteLuz = new javax.swing.JTable();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tbImporteInternet = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Pago Alquiler");
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -501,6 +502,11 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         btnAsignarInternet.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnAsignarInternet.setText("Asignar Internet");
+        btnAsignarInternet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAsignarInternetActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -560,7 +566,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbImporteLuz.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -568,10 +574,10 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "Fecha Actual", "Fecha Por Pagar", "Importe"
+                "Fecha Anterior", "Fecha Actual", "Importe"
             }
         ));
-        jScrollPane4.setViewportView(jTable1);
+        jScrollPane4.setViewportView(tbImporteLuz);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -592,7 +598,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tbImporteInternet.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -600,10 +606,10 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "Fecha Actual", "Fecha Por Pagar", "Importe"
+                "Fecha Anterior", "Fecha Actual", "Importe"
             }
         ));
-        jScrollPane5.setViewportView(jTable2);
+        jScrollPane5.setViewportView(tbImporteInternet);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -792,6 +798,12 @@ public class PagoAlquiler extends javax.swing.JFrame {
         cargarNombresClientesActivos();
         pa_dao.MostrarAlquiler(tbMostrarAlquileres, nombreSeleccionado);
     }//GEN-LAST:event_btnLessActionPerformed
+
+    private void btnAsignarInternetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsignarInternetActionPerformed
+        Asignar_Internet asignar_Internet = new Asignar_Internet();
+        asignar_Internet.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnAsignarInternetActionPerformed
 
     private void applyCellRenderer(JTable table) {
         
@@ -1310,8 +1322,8 @@ public class PagoAlquiler extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable tbImporteInternet;
+    private javax.swing.JTable tbImporteLuz;
     private javax.swing.JTable tbImporteVariado;
     private javax.swing.JTable tbMostrarAlquileres;
     private javax.swing.JTable tbMostrarCalculos;

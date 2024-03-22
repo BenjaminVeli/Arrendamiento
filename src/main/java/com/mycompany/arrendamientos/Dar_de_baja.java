@@ -89,7 +89,6 @@ public class Dar_de_baja extends javax.swing.JFrame {
 
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
         PagoAlquiler pa = new PagoAlquiler();
-        
         pa.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_cancelarBtnActionPerformed
