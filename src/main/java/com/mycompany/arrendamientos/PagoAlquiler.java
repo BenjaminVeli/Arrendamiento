@@ -605,13 +605,13 @@ public class PagoAlquiler extends javax.swing.JFrame {
 
         tbImporteInternet.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Fecha Anterior", "Fecha Actual", "Importe"
+
             }
         ));
         jScrollPane5.setViewportView(tbImporteInternet);
@@ -758,7 +758,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
            String nombreArrendador = paDAO.obtenerArrendador(clientId);
             
             // Abre el JFrame "Amortizaciones" y pasa los parámetro que se necesitan
-            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes , pagos, nombreArrendador, fechaAnterior, fechaActual);
+            Amortizaciones amortizaciones = new Amortizaciones(idSeleccionado, room_id_actual, numeroCuarto, saldos, nombreCliente, importes , pagos, nombreArrendador, fechaAnterior, fechaActual, tbMostrarAlquileres);
             amortizaciones.setVisible(true);
             this.setVisible(false);
         } else {
@@ -805,7 +805,8 @@ public class PagoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLessActionPerformed
 
     private void btnAsignarInternetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsignarInternetActionPerformed
-        Asignar_Internet asignar_Internet = new Asignar_Internet();
+        Asignar_Internet asignar_Internet = new Asignar_Internet(tbMostrarAlquileres);
+        
         asignar_Internet.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnAsignarInternetActionPerformed

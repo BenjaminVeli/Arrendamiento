@@ -1,10 +1,33 @@
 package com.mycompany.arrendamientos;
 
+import DAO.PagoAlquilerDAO;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import javax.swing.JTable;
+import javax.swing.text.DateFormatter;
+
 public class Asignar_Internet extends javax.swing.JFrame {
 
-    public Asignar_Internet() {
+    private JTable tbMostrarAlquileres;
+    
+    public Asignar_Internet(JTable tbMostrarAlquileres) {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.tbMostrarAlquileres = tbMostrarAlquileres;
+
+        // Obtener la fecha actual
+        java.util.Date fechaActual = new java.util.Date();
+
+        try {
+            fecha_internetTxt.setDate(fechaActual);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Asignar_Internet() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @SuppressWarnings("unchecked")
@@ -49,7 +72,7 @@ public class Asignar_Internet extends javax.swing.JFrame {
 
         precio_internetTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        fecha_internetTxt.setDateFormatString("dd/MM/yyyy hh:mm:ss");
+        fecha_internetTxt.setDateFormatString("dd/MM/yyyy");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -114,6 +137,16 @@ public class Asignar_Internet extends javax.swing.JFrame {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         PagoAlquiler pa = new PagoAlquiler();
+        PagoAlquilerDAO pa_DAO = new PagoAlquilerDAO();
+        
+        double importe = Double.parseDouble(precio_internetTxt.getText());
+        java.util.Date fecha = fecha_internetTxt.getDate();
+        
+        // Convertir de java.util.Date a java.sql.Timestamp
+        java.sql.Date fechaSQL = new java.sql.Date(fecha.getTime());
+        
+        pa_DAO.InsertarInternetpor6meses(tbMostrarAlquileres, importe, fechaSQL);
+        
         pa.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnAceptarActionPerformed

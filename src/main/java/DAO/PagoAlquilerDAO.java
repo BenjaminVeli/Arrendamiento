@@ -26,6 +26,16 @@ import java.util.Calendar;
 
 public class PagoAlquilerDAO {
     
+    private String obtenerIdSeleccionado(JTable tbMostrarAlquileres) {
+        int fila = tbMostrarAlquileres.getSelectedRow();
+        if (fila >= 0) {
+            return tbMostrarAlquileres.getValueAt(fila, 0).toString();
+        } else {
+            JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+            return null; // O podrías lanzar una excepción aquí si prefieres manejar el error de otra forma
+        }
+    }
+    
     public ArrayList<String> obtenerTodosNombresClientes() {
         ArrayList<String> clientes = new ArrayList<>();
         CConexion objetoConexion = new CConexion();
@@ -171,10 +181,9 @@ public class PagoAlquilerDAO {
         
     public void SeleccionaryMostrarImporteVariado(JTable tbMostrarAlquileres, JTable tbImporteVariado) {
         try {
-            int fila = tbMostrarAlquileres.getSelectedRow();
+            String idSeleccionado = obtenerIdSeleccionado(tbMostrarAlquileres);
 
-            if (fila >= 0) {
-                String idSeleccionado = tbMostrarAlquileres.getValueAt(fila, 0).toString();
+            if (idSeleccionado != null) {
                 CConexion objetoConexion = new CConexion();
 
                 String sql = "SELECT id, ord, fecha, importe, pago, saldos, estado FROM importe_variado WHERE rent_calculation_id = ?";
@@ -292,6 +301,78 @@ public class PagoAlquilerDAO {
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error SQL al insertar el registro en la tabla registro_amortizaciones: " + e.toString());
+        }
+    }
+    
+    public void AsignarMontoInternet(JTable tbMostrarAlquileres, JTextField MontoPagarInternetTxt){
+        
+        try {
+            String idSeleccionado = obtenerIdSeleccionado(tbMostrarAlquileres);
+            
+            if (idSeleccionado != null) {
+                CConexion objetoConexion = new CConexion();
+                
+                String sql = "SELECT SUM(importe_internet) AS total FROM importe_internet " +
+                             "INNER JOIN rent_calculation ON importe_internet.rent_calculation_id = rent_calculation.id " +
+                             "WHERE rent_calculation.client_id = ? AND importe_internet.estado_internet = true";
+
+                PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                pst.setString(1, idSeleccionado);
+
+                ResultSet rs = pst.executeQuery();
+                
+                if (rs.next()) {
+                    double totalImporteInternet = rs.getDouble("total");
+                    MontoPagarInternetTxt.setText(String.format("%.2f", totalImporteInternet));
+                } else {
+                    MontoPagarInternetTxt.setText("0.00");
+                }
+                
+                System.out.println("EL ID DEL CLIENTE SELECCIONADO ES: " + idSeleccionado);
+            }else {
+                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+            }
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al asignar el monto de internet: " + e.toString());
+        }
+    }
+    
+    public void InsertarInternetpor6meses(JTable tbMostrarAlquileres, double importe, Date fechaSQL){
+        try {
+            String idSeleccionado = obtenerIdSeleccionado(tbMostrarAlquileres);
+            
+            if (idSeleccionado != null) {
+                CConexion objetoConexion = new CConexion();
+                
+                try {
+                    // Consulta SQL para insertar en la tabla importe_internet
+                    String sql = "INSERT INTO importe_internet (rent_calculation_id, fecha_anterior, fecha_actual, importe_internet) VALUES (?, ?, ?, ?, ?)";
+                    
+                    PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                    
+                    // Establecer los valores comunes para cada inserción
+                    pst.setString(1, idSeleccionado);
+                    pst.setDouble(4, importe);
+
+                    // Realizar seis inserciones, una por cada mes
+                    for (int i = 0; i <= 6; i++) {
+                        // Establecer las fechas de acuerdo al mes actual y al mes siguiente
+                        pst.setDate(2, fechaSQL); // fecha_anterior
+                        pst.setDate(3, fechaSQL); // fecha_actual
+                        fechaSQL.setMonth(fechaSQL.getMonth() + 1); // Avanzar al siguiente mes
+
+                        // Ejecutar la inserción
+                        pst.executeUpdate();
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al ejecutar la inserción: " + ex.toString());
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún cliente.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al asignar el monto de internet: " + e.toString());
         }
     }
     
@@ -557,7 +638,7 @@ public class PagoAlquilerDAO {
             JOptionPane.showMessageDialog(null, "Error al actualizar datos de alquiler: " + e.toString());
         }
     }
-    
+     
    /* public ArrayList<String> obtenerPosicionesDisponibles(String rentCalculationId) {
         ArrayList<String> posiciones = new ArrayList<>();
         CConexion objetoConexion = new CConexion();

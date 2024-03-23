@@ -113,6 +113,16 @@ CREATE TABLE importe_variado (
   FOREIGN KEY (piso_id) REFERENCES piso(id)
 );
 
+CREATE TABLE importe_internet (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  rent_calculation_id INT,
+  FOREIGN KEY (rent_calculation_id) REFERENCES rent_calculation(id) ON DELETE CASCADE,
+  fecha_anterior DATE,
+  fecha_actual DATE,
+  importe_internet DECIMAL(10,2) DEFAULT 0.0,
+  estado_internet BOOLEAN DEFAULT false
+);
+
 CREATE TABLE mantenimiento (
 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 nombre VARCHAR(100),

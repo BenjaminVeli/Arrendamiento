@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -35,9 +36,11 @@ public class Amortizaciones extends javax.swing.JFrame {
     private double pagos;
     private String fechaAnterior;
     private String fechaActual;
+    private JTable tbMostrarAlquileres;
     
-    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, double pagos, String nombreArrendador, String fechaAnterior, String fechaActual) {
+    public Amortizaciones(String idSeleccionado, int room_id_actual, String numeroCuarto, double saldos, String nombreCliente, double importes, double pagos, String nombreArrendador, String fechaAnterior, String fechaActual, JTable tbMostrarAlquileres) {
         initComponents();
+        PagoAlquilerDAO paDAO = new PagoAlquilerDAO();
        btnImprimir.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
             String contenidoCliente = Clientetxt.getText();
@@ -55,6 +58,8 @@ public class Amortizaciones extends javax.swing.JFrame {
     });
         
         this.setLocationRelativeTo(null);
+        MontoPagarInternetTxt.setEnabled(false);
+        MontoPagarLuzTxt.setEnabled(false);
         this.idSeleccionado = idSeleccionado;
         this.room_id_actual = room_id_actual;
         this.numeroCuarto = numeroCuarto;
@@ -63,6 +68,7 @@ public class Amortizaciones extends javax.swing.JFrame {
         this.pagos = pagos;
         this.fechaAnterior = fechaAnterior;
         this.fechaActual = fechaActual;
+        this.tbMostrarAlquileres = tbMostrarAlquileres;
         
         // Configurar el formato deseado para la fecha y hora
         LocalDateTime fechaHoraActual = LocalDateTime.now();
@@ -89,6 +95,7 @@ public class Amortizaciones extends javax.swing.JFrame {
         
         // Obtener y mostrar el último número de amortización
         obtenerUltimoNumeroAmortizacion();
+        paDAO.AsignarMontoInternet(tbMostrarAlquileres, MontoPagarInternetTxt);
     }
     
     private void obtenerUltimoNumeroAmortizacion() {
@@ -202,7 +209,7 @@ public class Amortizaciones extends javax.swing.JFrame {
         Cuarto.setText("Cuarto:");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Docume:");
+        jLabel2.setText("Documento:");
 
         DocumentoJCBOX.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         DocumentoJCBOX.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Vouchers" }));
@@ -259,10 +266,8 @@ public class Amortizaciones extends javax.swing.JFrame {
 
         ImporteInternetTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        MontoPagarInternetTxt.setBackground(new java.awt.Color(204, 204, 204));
         MontoPagarInternetTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        MontoPagarLuzTxt.setBackground(new java.awt.Color(204, 204, 204));
         MontoPagarLuzTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -280,17 +285,12 @@ public class Amortizaciones extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                            .addComponent(jLabel3)
-                                            .addGap(36, 36, 36))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                            .addComponent(jLabel2)
-                                            .addGap(20, 20, 20)))
+                                    .addComponent(jLabel2)
                                     .addComponent(jLabel1)
                                     .addComponent(jLabel6)
-                                    .addComponent(jLabel4))
-                                .addGap(15, 15, 15)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel3))
+                                .addGap(18, 18, 18)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -407,7 +407,7 @@ public class Amortizaciones extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
