@@ -120,7 +120,8 @@ CREATE TABLE importe_internet (
   fecha_anterior DATE,
   fecha_actual DATE,
   importe_internet DECIMAL(10,2) DEFAULT 0.0,
-  estado_internet BOOLEAN DEFAULT false
+  estado_internet BOOLEAN DEFAULT false,
+  cancelado_internet BOOLEAN DEFAULT false
 );
 
 CREATE TABLE mantenimiento (
@@ -145,3 +146,36 @@ CREATE TABLE contrato (
     FOREIGN KEY (id_mantenimiento_arrendador) REFERENCES mantenimiento(id),
     FOREIGN KEY (id_mantenimiento_garante) REFERENCES mantenimiento(id)
 );
+
+DELIMITER //
+CREATE TRIGGER actualizar_cancelado_internet
+BEFORE UPDATE ON importe_internet
+FOR EACH ROW
+BEGIN
+    IF NEW.importe_internet = 0 THEN
+        SET NEW.cancelado_internet = 1;
+    END IF;
+END;
+//
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER actualizar_estado_internet
+BEFORE INSERT ON importe_internet
+FOR EACH ROW
+BEGIN
+    DECLARE fecha_hoy DATE;
+    DECLARE estado BOOLEAN;
+
+    SET fecha_hoy = CURDATE();
+    SET estado = FALSE;
+
+    IF NEW.fecha_anterior <= fecha_hoy AND NEW.fecha_actual >= fecha_hoy THEN
+        SET estado = TRUE;
+    END IF;
+
+    SET NEW.estado_internet = estado;
+END;
+//
+DELIMITER ;

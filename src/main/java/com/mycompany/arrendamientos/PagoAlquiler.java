@@ -38,9 +38,8 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class PagoAlquiler extends javax.swing.JFrame {
     
     ReporteCredito v2 = new ReporteCredito();
-
     
-    public PagoAlquiler() {
+ public PagoAlquiler() {
         initComponents();
         PagoAlquilerDAO pa_dao = new PagoAlquilerDAO();
                 
@@ -50,6 +49,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
         
         // Aplicar el renderizador de celdas para cambiar el color de fondo según el valor de la columna "Pago"
         applyCellRenderer(tbImporteVariado);
+        aplicarColorTbImporteInternet(tbImporteInternet);
         
         btnGeneral.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent evt) {
@@ -71,7 +71,6 @@ public class PagoAlquiler extends javax.swing.JFrame {
                 exportarAExcelMorosos();
             }
         });
-        
     }
     
     private void cargarNombresClientesActivos() {
@@ -711,6 +710,7 @@ public class PagoAlquiler extends javax.swing.JFrame {
     // Llama al método para mostrar el importe variado cuando se hace clic en una fila de la tabla tbMostrarAlquileres
     PagoAlquilerDAO pa_dao = new PagoAlquilerDAO();
     pa_dao.SeleccionaryMostrarImporteVariado(tbMostrarAlquileres, tbImporteVariado);
+    pa_dao.MostrarImporteInternet(tbMostrarAlquileres, tbImporteInternet);
     }//GEN-LAST:event_tbMostrarAlquileresMouseClicked
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
@@ -891,6 +891,37 @@ public class PagoAlquiler extends javax.swing.JFrame {
         });
     }
 
+    private void aplicarColorTbImporteInternet(JTable table) {
+        Color rojo = new Color(255, 117, 112); // Color rojo
+        Color verde = new Color(119, 221, 119); // Color verde
+
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                // Obtener los valores de las columnas "Estado" y "Cancelado" de la fila actual
+                String estadoInternetStr = (String) table.getValueAt(row, table.getColumn("Estado").getModelIndex());
+                String canceladoInternetStr = (String) table.getValueAt(row, table.getColumn("Cancelado").getModelIndex());
+
+                // Convertir las cadenas de texto a booleanos
+                boolean estadoInternet = estadoInternetStr.equals("Pagar");
+                boolean canceladoInternet = canceladoInternetStr.equals("Cancelado");
+
+                // Aplicar el color adecuado según los valores de las columnas
+                if (estadoInternet && !canceladoInternet) {
+                    c.setBackground(rojo); // Si estado_internet es verdadero y cancelado_internet es falso, aplicar color rojo
+                } else if (estadoInternet && canceladoInternet) {
+                    c.setBackground(verde); // Si estado_internet es verdadero y cancelado_internet es verdadero, aplicar color verde
+                } else {
+                    c.setBackground(table.getBackground()); // De lo contrario, mantener el color de fondo predeterminado
+                }
+
+                return c;
+            }
+        });
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

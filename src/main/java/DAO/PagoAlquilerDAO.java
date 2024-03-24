@@ -339,40 +339,113 @@ public class PagoAlquilerDAO {
     }
     
     public void InsertarInternetpor6meses(JTable tbMostrarAlquileres, double importe, Date fechaSQL){
+        CConexion objetoConexion = new CConexion();
+        try {
+            String idSeleccionado = obtenerIdSeleccionado(tbMostrarAlquileres);
+            
+            if (idSeleccionado != null) {
+                // Obtener el id de rent_calculation
+                int id_cliente = Integer.parseInt(idSeleccionado);
+                double importe_internet = importe;
+
+                // Realizar seis inserciones, una por cada mes
+                for (int i = 0; i < 6; i++) {
+
+                    Calendar fechaAnterior = Calendar.getInstance();
+                    Calendar fechaActual = Calendar.getInstance();
+                    
+                    fechaAnterior.setTime(fechaSQL);
+                    fechaActual.setTime(fechaSQL);
+
+                    //Esto avanza al mes siguiente la fecha
+                    fechaAnterior.add(Calendar.MONTH, i);
+                    
+                    fechaActual.add(Calendar.MONTH, i+1);
+
+                    // Esto ajustar el día al último día del mes
+                    int ultimoDiaMes = fechaAnterior.getActualMaximum(Calendar.DAY_OF_MONTH);
+                    int diaSeleccionado = fechaAnterior.get(Calendar.DAY_OF_MONTH);
+                    int diaAjustado = Math.min(ultimoDiaMes, diaSeleccionado);
+                    fechaAnterior.set(Calendar.DAY_OF_MONTH, diaAjustado);
+                    
+                    // Esto ajustar el día al último día del mes
+                    int ultimoDiaMes1 = fechaActual.getActualMaximum(Calendar.DAY_OF_MONTH);
+                    int diaSeleccionado1 = fechaActual.get(Calendar.DAY_OF_MONTH);
+                    int diaAjustado1 = Math.min(ultimoDiaMes1, diaSeleccionado1);
+                    fechaActual.set(Calendar.DAY_OF_MONTH, diaAjustado1);
+
+                    // Obtener la fecha como java.sql.Date
+                    java.sql.Date fecha_anterior = new java.sql.Date(fechaAnterior.getTimeInMillis());
+                    java.sql.Date fecha_actual = new java.sql.Date(fechaActual.getTimeInMillis());
+
+                     // Insertar a la base de datos
+                     String sql = "INSERT INTO importe_internet (rent_calculation_id, fecha_anterior, fecha_actual, importe_internet) VALUES (?, ?, ?, ?)";
+                         
+                     try {
+                        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                        
+                        pst.setInt(1, id_cliente);
+                        pst.setDate(2, fecha_anterior); // fecha_anterior
+                        pst.setDate(3, fecha_actual); // fecha_actual
+                        pst.setDouble(4, importe_internet);
+                        
+                        pst.executeUpdate(); // Ejecutar la inserción
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "Error al ejecutar la inserción: " + e.toString());
+                    }
+                }
+                    
+            } else {
+                JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún cliente.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al asignar el monto de internet: " + e.toString());
+        }
+    }
+    
+    public void MostrarImporteInternet(JTable tbMostrarAlquileres, JTable tbImporteInternet ){
         try {
             String idSeleccionado = obtenerIdSeleccionado(tbMostrarAlquileres);
             
             if (idSeleccionado != null) {
                 CConexion objetoConexion = new CConexion();
                 
-                try {
-                    // Consulta SQL para insertar en la tabla importe_internet
-                    String sql = "INSERT INTO importe_internet (rent_calculation_id, fecha_anterior, fecha_actual, importe_internet) VALUES (?, ?, ?, ?, ?)";
-                    
-                    PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
-                    
-                    // Establecer los valores comunes para cada inserción
-                    pst.setString(1, idSeleccionado);
-                    pst.setDouble(4, importe);
+                String sql = "SELECT fecha_anterior, fecha_actual, importe_internet, estado_internet, cancelado_internet FROM importe_internet WHERE rent_calculation_id = ?";
+                
+                PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+                
+                pst.setString(1, idSeleccionado);
 
-                    // Realizar seis inserciones, una por cada mes
-                    for (int i = 0; i <= 6; i++) {
-                        // Establecer las fechas de acuerdo al mes actual y al mes siguiente
-                        pst.setDate(2, fechaSQL); // fecha_anterior
-                        pst.setDate(3, fechaSQL); // fecha_actual
-                        fechaSQL.setMonth(fechaSQL.getMonth() + 1); // Avanzar al siguiente mes
-
-                        // Ejecutar la inserción
-                        pst.executeUpdate();
-                    }
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error al ejecutar la inserción: " + ex.toString());
+                ResultSet rs = pst.executeQuery();
+                
+                DefaultTableModel modelo = new DefaultTableModel();
+                modelo.addColumn("Fecha Anterior");
+                modelo.addColumn("Fecha Actual");
+                modelo.addColumn("Importe");
+                modelo.addColumn("Estado");
+                modelo.addColumn("Cancelado");
+                
+                // Definir el formato de fecha que deseas mostrar visualmente
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                
+                while (rs.next()) {
+                    Object[] filaDatos = {
+                        // Convertir la fecha al formato deseado para visualización
+                        dateFormat.format(rs.getDate("fecha_anterior")),
+                        dateFormat.format(rs.getDate("fecha_actual")),
+                        rs.getString("importe_internet"),
+                        rs.getBoolean("estado_internet") ? "Pagar" : "Aun no Pagar", // Modificación aquí
+                        rs.getBoolean("cancelado_internet") ? "Cancelado" : "No Cancelado" // Modificación aquí
+                    };
+                    modelo.addRow(filaDatos);
                 }
+                
+                tbImporteInternet.setModel(modelo);
             } else {
-                JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún cliente.");
+                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al asignar el monto de internet: " + e.toString());
+            JOptionPane.showMessageDialog(null, "No se puede mostrar los registros de importe de internet del cliente, error: " + e.toString());
         }
     }
     
