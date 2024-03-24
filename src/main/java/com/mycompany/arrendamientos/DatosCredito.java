@@ -6,14 +6,14 @@ package com.mycompany.arrendamientos;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.swing.JFrame;
 import javax.swing.JTextField;
 
-/**
- *
- * @author USER
- */
-public class DatosCredito extends javax.swing.JFrame {
 
+public class DatosCredito extends javax.swing.JFrame {
+    
+    private PagoAlquiler v1;
+    
     private String idSeleccionado;
     private int room_id_actual;
     private String numeroCuarto;
@@ -33,6 +33,10 @@ public class DatosCredito extends javax.swing.JFrame {
     public DatosCredito(String idSeleccionado, int room_id_actual, String numeroCuarto, BigDecimal garantia , BigDecimal rent, BigDecimal interesImporteMensual, BigDecimal total,  String nombrePiso, BigDecimal cuotas,BigDecimal mensual,Date fecha, Date fechaIngreso,String tipoPago,BigDecimal pagoDiario, BigDecimal pagoSem, BigDecimal quincenal) {
         
         initComponents();
+        
+        // Deshabilitar el botón de cerrar (X) y la maximización
+        setResizable(false); // Deshabilitar la maximización
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
         alquiltertxt.setHorizontalAlignment(JTextField.RIGHT);
         cuartostxt.setHorizontalAlignment(JTextField.RIGHT);
@@ -507,11 +511,17 @@ public class DatosCredito extends javax.swing.JFrame {
     private void mensualtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mensualtxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_mensualtxtActionPerformed
+    
+    
+    public void  setV1(PagoAlquiler v1){
+        this.v1 = v1;
+    }
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        PagoAlquiler v1 = new PagoAlquiler();
+
         v1.setVisible(true);
         this.setVisible(false);
+
     }//GEN-LAST:event_btnSalirActionPerformed
 
     /**

@@ -38,6 +38,7 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class PagoAlquiler extends javax.swing.JFrame {
     
     ReporteCredito v2 = new ReporteCredito();
+
     
     public PagoAlquiler() {
         initComponents();
@@ -853,9 +854,11 @@ public class PagoAlquiler extends javax.swing.JFrame {
         
             BigDecimal quincenal = paDAO.obtenerQuincenal(Integer.parseInt(idSeleccionado));
             
-            DatosCredito v2 = new DatosCredito(idSeleccionado, room_id_actual, numeroCuarto, garantia, rent, interesImporteMensual, total, nombrePiso, cuotas, mensual, fecha, fechaIngreso, tipoPago, pagoDiario, pagoSem, quincenal);
-            v2.setVisible(true);
-            this.setVisible(false);
+            DatosCredito v3 = new DatosCredito(idSeleccionado, room_id_actual, numeroCuarto, garantia, rent, interesImporteMensual, total, nombrePiso, cuotas, mensual, fecha, fechaIngreso, tipoPago, pagoDiario, pagoSem, quincenal);
+            v3.setV1(this);
+            v3.setVisible(true);
+            this.setVisible(true);
+            v3.toFront();
         } else {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila primero.");
         }
