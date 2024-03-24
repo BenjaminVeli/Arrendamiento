@@ -1351,7 +1351,15 @@ private void exportarAExcel() {
 
         Cell searchContentCell = searchRow.createCell(1);
         searchContentCell.setCellValue(search.getSelectedItem().toString()); 
-        searchContentCell.setCellStyle(estiloSinBordes); 
+        searchContentCell.setCellStyle(estiloSinBordes);
+
+        // Combina las celdas 1, 2 y 3
+        sheet.addMergedRegion(new CellRangeAddress(
+            searchRow.getRowNum(), // Desde la fila actual
+            searchRow.getRowNum(), // Hasta la misma fila
+            1, // Desde la columna 1 (celda 1)
+            3  // Hasta la columna 3 (celda 3)
+        ));
         
         Cell rucLabelCell = searchRow.createCell(4); 
         rucLabelCell.setCellValue("RUC :");
@@ -1370,6 +1378,14 @@ private void exportarAExcel() {
         Cell direccionContentCell = direccionRow.createCell(1);
         direccionContentCell.setCellValue(direcciontxt.getText());
         direccionContentCell.setCellStyle(estiloSinBordes);
+        
+        sheet.addMergedRegion(new CellRangeAddress(
+            direccionRow.getRowNum(), // Desde la fila actual
+            direccionRow.getRowNum(), // Hasta la misma fila
+            1, // Desde la columna 1 (celda 1)
+            3  // Hasta la columna 3 (celda 3)
+        ));
+        
         
         // Etiqueta para el DNI
         Cell dniLabelCell = direccionRow.createCell(4); 

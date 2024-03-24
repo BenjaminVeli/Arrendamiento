@@ -441,114 +441,122 @@ public class CalcularAlquilerDAO {
         }
     }
   
-    public DefaultTableModel  MostrarCalculos(JDateChooser fecha_finaltxt, JTextField txtSumCapital, JTextField txtSumInteres, 
-                                                                             JTextField txtSumMensual, int cuotas, Date fecha, double total_rent, double interes){
+   public DefaultTableModel MostrarCalculos(JDateChooser fecha_finaltxt, JTextField txtSumCapital, JTextField txtSumInteres, 
+                                         JTextField txtSumMensual, int cuotas, Date fecha, double total_rent, double interes){
+    
+    DefaultTableModel modelo = new DefaultTableModel();
+    
+    modelo.addColumn("Ord");
+    modelo.addColumn("Fecha Vcto.");
+    modelo.addColumn("Saldo");
+    modelo.addColumn("Capital");
+    modelo.addColumn("Interes");
+    modelo.addColumn("Por Pagar");
+    modelo.addColumn("Fecha Inicio");
+    
+    
+    java.util.Date ultimaFecha = null; // Variable para almacenar la última fecha
+    
+    for (int i = 1; i <= cuotas; i++) {
         
-        DefaultTableModel modelo = new DefaultTableModel();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fecha);
         
-        modelo.addColumn("Ord");
-        modelo.addColumn("Fecha");
-        modelo.addColumn("Saldo");
-        modelo.addColumn("Capital");
-        modelo.addColumn("Interes");
-        modelo.addColumn("Por Pagar");
+        //Esto avanza al mes siguiente la fecha
+        calendar.add(Calendar.MONTH, i);
         
-        java.util.Date ultimaFecha = null; // Variable para almacenar la última fecha
+        // Esto ajustar el día al último día del mes
+        int ultimoDiaMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int diaSeleccionado = calendar.get(Calendar.DAY_OF_MONTH);
+        int diaAjustado = Math.min(ultimoDiaMes, diaSeleccionado);
+        calendar.set(Calendar.DAY_OF_MONTH, diaAjustado);
         
-        for (int i = 1; i <= cuotas; i++) {
-            
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(fecha);
-            
-            //Esto avanza al mes siguiente la fecha
-            calendar.add(Calendar.MONTH, i);
-            
-            // Esto ajustar el día al último día del mes
-            int ultimoDiaMes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-            int diaSeleccionado = calendar.get(Calendar.DAY_OF_MONTH);
-            int diaAjustado = Math.min(ultimoDiaMes, diaSeleccionado);
-            calendar.set(Calendar.DAY_OF_MONTH, diaAjustado);
-            
-            // Establecer la última fecha en cada iteración
-            ultimaFecha = calendar.getTime();
-            
-            double cociente = (total_rent / cuotas) * (i - 1);
-            double cocienteRedondeado = Math.round(cociente * 100.0) / 100.0;
-            
-            // Calcular el monto restante por pagar en cada cuota
-            double saldo = total_rent - cocienteRedondeado;
-            double saldoRedondeado = Math.round(saldo * 100.0) / 100.0;
-            
-            // Calcular el Interes multiplicando el saldo por el Interes (dividido por 100)
-            double interesCalculado = saldoRedondeado * (interes / 100);
-            double interesCalculadoRedondeado = Math.round(interesCalculado * 100.0) / 100.0;
-            
-            sumaInteresAcumulativa += interesCalculadoRedondeado;
-            sumaInteresAcumulativa = Math.round(sumaInteresAcumulativa * 100.0) / 100.0;
-            
-            //Formatear la fecha en dia mes año
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            
-            modelo.addRow(new Object[] { 
-                i, 
-                dateFormat.format(calendar.getTime()), 
-                saldoRedondeado, 
-                "",
-                interesCalculadoRedondeado, 
-                ""
-            });
-        }
+        // Establecer la última fecha en cada iteración
+        ultimaFecha = calendar.getTime();
         
-        double porPagar = calcularPorPagar(total_rent, cuotas);
-        porPagar = Math.round(porPagar * 100.0) / 100.0;
+        double cociente = (total_rent / cuotas) * (i - 1);
+        double cocienteRedondeado = Math.round(cociente * 100.0) / 100.0;
         
-        // Actualizar la columna "Por Pagar" en cada fila
-        for (int i = 0; i < modelo.getRowCount(); i++) {
-            modelo.setValueAt(porPagar, i, 5); // 5 es el índice de la columna "Por Pagar"
-        }
+        // Calcular el monto restante por pagar en cada cuota
+        double saldo = total_rent - cocienteRedondeado;
+        double saldoRedondeado = Math.round(saldo * 100.0) / 100.0;
         
-        // Bucle para calcular y actualizar la columna "Capital"
-        for (int i = 0; i < modelo.getRowCount(); i++) {
-            
-            double porPagarActual = (double) modelo.getValueAt(i, 5); // 5 es el índice de la columna "Por Pagar"
-            double interesActual = (double) modelo.getValueAt(i, 4); // 4 es el índice de la columna "Interes"
+        // Calcular el Interes multiplicando el saldo por el Interes (dividido por 100)
+        double interesCalculado = saldoRedondeado * (interes / 100);
+        double interesCalculadoRedondeado = Math.round(interesCalculado * 100.0) / 100.0;
+        
+        sumaInteresAcumulativa += interesCalculadoRedondeado;
+        sumaInteresAcumulativa = Math.round(sumaInteresAcumulativa * 100.0) / 100.0;
+        
+        //Formatear la fecha en dia mes año
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-            // Calcular el valor de la columna "Capital"
-            double capital = porPagarActual - interesActual;
-            capital = Math.round(capital * 100.0) / 100.0;
-            sumaCapitalAcumulativa += capital;
-            sumaCapitalAcumulativa = Math.round(sumaCapitalAcumulativa * 100.0) / 100.0;
-            
-            modelo.setValueAt(capital, i, 3); // 3 es el índice de la columna "Capital"
-        }
-        
-        // Asignar valores a los campos del formulario
-        double interesAcumulativa = obtenerSumaInteresAcumulativa();
-        interesAcumulativa = Math.round(interesAcumulativa * 100.0) / 100.0;
-        txtSumInteres.setText(String.valueOf(interesAcumulativa));
+        Calendar fechaInicio = Calendar.getInstance();
+        fechaInicio.setTime(fecha);
+        fechaInicio.set(Calendar.DAY_OF_MONTH, 1); // Establecer el primer día del mes
+        fechaInicio.add(Calendar.MONTH, i - 1); // Avanzar la misma cantidad de meses que la iteración actual
 
-        double sumaMensual = calcularSumaMensual(porPagar, cuotas);
-        sumaMensual = Math.round(sumaMensual * 100.0) / 100.0;
-        txtSumMensual.setText(String.valueOf(sumaMensual));
-
-        double sumaCapital = obtenerSumaCapitalAcumulativa();
-        sumaCapital = Math.round(sumaCapital * 100.0) / 100.0;
-        txtSumCapital.setText(String.valueOf(sumaCapital));
-        
-        // Devolver la última fecha
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
-   
-        String fechaFormateada = dateFormat.format(ultimaFecha);
-        java.util.Date fechaUtil = null;
-        try {
-            fechaUtil = dateFormat.parse(fechaFormateada);
-        } catch (ParseException e) {
-            e.printStackTrace(); // Otra acción para manejar la excepción, como mostrar un mensaje de error
-        }
-        fecha_finaltxt.setDate(fechaUtil);
-
-        return  modelo;
+        modelo.addRow(new Object[] { 
+            i,
+            dateFormat.format(calendar.getTime()), 
+            saldoRedondeado, 
+            "",
+            interesCalculadoRedondeado, 
+            "",
+            dateFormat.format(fechaInicio.getTime()),
+        });
     }
+    
+    double porPagar = calcularPorPagar(total_rent, cuotas);
+    porPagar = Math.round(porPagar * 100.0) / 100.0;
+    
+    // Actualizar la columna "Por Pagar" en cada fila
+    for (int i = 0; i < modelo.getRowCount(); i++) {
+        modelo.setValueAt(porPagar, i, 5); // 5 es el índice de la columna "Por Pagar"
+    }
+    
+    // Bucle para calcular y actualizar la columna "Capital"
+    for (int i = 0; i < modelo.getRowCount(); i++) {
+        
+        double porPagarActual = (double) modelo.getValueAt(i, 5); // 5 es el índice de la columna "Por Pagar"
+        double interesActual = (double) modelo.getValueAt(i, 4); // 4 es el índice de la columna "Interes"
+
+        // Calcular el valor de la columna "Capital"
+        double capital = porPagarActual - interesActual;
+        capital = Math.round(capital * 100.0) / 100.0;
+        sumaCapitalAcumulativa += capital;
+        sumaCapitalAcumulativa = Math.round(sumaCapitalAcumulativa * 100.0) / 100.0;
+        
+        modelo.setValueAt(capital, i, 3); // 3 es el índice de la columna "Capital"
+    }
+    
+    // Asignar valores a los campos del formulario
+    double interesAcumulativa = obtenerSumaInteresAcumulativa();
+    interesAcumulativa = Math.round(interesAcumulativa * 100.0) / 100.0;
+    txtSumInteres.setText(String.valueOf(interesAcumulativa));
+
+    double sumaMensual = calcularSumaMensual(porPagar, cuotas);
+    sumaMensual = Math.round(sumaMensual * 100.0) / 100.0;
+    txtSumMensual.setText(String.valueOf(sumaMensual));
+
+    double sumaCapital = obtenerSumaCapitalAcumulativa();
+    sumaCapital = Math.round(sumaCapital * 100.0) / 100.0;
+    txtSumCapital.setText(String.valueOf(sumaCapital));
+    
+    // Devolver la última fecha
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+
+    String fechaFormateada = dateFormat.format(ultimaFecha);
+    java.util.Date fechaUtil = null;
+    try {
+        fechaUtil = dateFormat.parse(fechaFormateada);
+    } catch (ParseException e) {
+        e.printStackTrace(); // Otra acción para manejar la excepción, como mostrar un mensaje de error
+    }
+    fecha_finaltxt.setDate(fechaUtil);
+
+    return  modelo;
+}
 
     public DefaultTableModel MostrarImporteDiario(int cuotas, Date fecha, double total_rent, double sumaCapital, double sumaInteres) {
         
