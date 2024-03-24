@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -812,9 +813,43 @@ public class PagoAlquiler extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAsignarInternetActionPerformed
 
     private void btnDatosCreditoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatosCreditoActionPerformed
-        DatosCredito v2 = new DatosCredito();
-        v2.setVisible(true);
-        this.setVisible(false);
+        PagoAlquilerDAO paDAO = new PagoAlquilerDAO();
+        
+        int filaSeleccionada = tbMostrarAlquileres.getSelectedRow();
+
+        if (filaSeleccionada >= 0) {
+            String idSeleccionado = tbMostrarAlquileres.getValueAt(filaSeleccionada, 0).toString();
+
+            // Obtén el ID del cuarto actualmente ocupado
+            int room_id_actual = paDAO.obtenerCuartoIdDatos(Integer.parseInt(idSeleccionado));
+            
+            // Obtén el número de cuarto usando el ID del importe variado
+            String numeroCuarto = paDAO.obtenerNumeroCuartoDatos(Integer.parseInt(idSeleccionado));
+            
+            BigDecimal garantia = paDAO.obtenerGarantia(Integer.parseInt(idSeleccionado));
+        
+        // Obtén la rent
+            BigDecimal rent = paDAO.obtenerRent(Integer.parseInt(idSeleccionado));
+            
+            BigDecimal interesImporteMensual = paDAO.obtenerInteresImporteMensual(Integer.parseInt(idSeleccionado));
+            
+            BigDecimal total = paDAO.obtenerTotal(Integer.parseInt(idSeleccionado));
+        
+             String nombrePiso = paDAO.obtenerNombrePiso(Integer.parseInt(idSeleccionado));
+
+            BigDecimal cuotas = paDAO.obtenerCuotas(Integer.parseInt(idSeleccionado));
+            
+            BigDecimal mensual = paDAO.obtenerMensual(Integer.parseInt(idSeleccionado));
+
+        // Obtén la fecha
+        Date fecha = paDAO.obtenerFecha(Integer.parseInt(idSeleccionado));
+            
+            DatosCredito v2 = new DatosCredito(idSeleccionado, room_id_actual, numeroCuarto, garantia, rent, interesImporteMensual, total, nombrePiso, cuotas, mensual, fecha);
+            v2.setVisible(true);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila primero.");
+        }
     }//GEN-LAST:event_btnDatosCreditoActionPerformed
 
     private void applyCellRenderer(JTable table) {

@@ -4,18 +4,55 @@
  */
 package com.mycompany.arrendamientos;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  *
  * @author USER
  */
 public class DatosCredito extends javax.swing.JFrame {
 
-    /**
-     * Creates new form DatosCredito
-     */
-    public DatosCredito() {
+    private String idSeleccionado;
+    private int room_id_actual;
+    private String numeroCuarto;
+    private BigDecimal garantia;
+    private BigDecimal rent;
+    private BigDecimal interesImporteMensual;
+    private BigDecimal total;
+    private BigDecimal cuotas;
+    private String nombrePiso;
+    private BigDecimal mensual;
+    private Date fecha;
+    public DatosCredito(String idSeleccionado, int room_id_actual, String numeroCuarto, BigDecimal garantia , BigDecimal rent, BigDecimal interesImporteMensual, BigDecimal total,  String nombrePiso, BigDecimal cuotas,BigDecimal mensual,Date fecha) {
+        
         initComponents();
         this.setLocationRelativeTo(null);
+         this.idSeleccionado = idSeleccionado;
+        this.room_id_actual = room_id_actual;
+        this.numeroCuarto = numeroCuarto;
+        this.garantia = garantia;
+        this.rent = rent;
+        this.interesImporteMensual = interesImporteMensual;
+         this.nombrePiso = nombrePiso;
+         this.cuotas = cuotas;
+         this.total = total;
+         this.mensual = mensual;
+         this.fecha = fecha;
+        
+        interestxt.setText(interesImporteMensual.toString());
+        cuartostxt.setText(numeroCuarto);
+        alquiltertxt.setText(rent.toString()); 
+        garantiatxt.setText(garantia.toString()); 
+        cuotastxt.setText(cuotas.toString());
+        totaltxt.setText(total.toString());
+        pisotxt.setText(nombrePiso);
+        fechatxt.setText(fecha.toString());
+        mensualtxt.setText(mensual.toString());
+    }
+
+    private DatosCredito() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**

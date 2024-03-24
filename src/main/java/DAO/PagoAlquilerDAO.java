@@ -715,4 +715,230 @@ public class PagoAlquilerDAO {
         }
     }*/
     
+    public int obtenerCuartoIdDatos(int idImporteVariado) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT room_id FROM rent_calculation WHERE id=?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idImporteVariado);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt("room_id");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el ID del cuarto: " + e.toString());
+    }
+
+    return -1; // Retorno por defecto en caso de error
+}
+
+public String obtenerNumeroCuartoDatos(int idImporteVariado) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT cuarto.numcuarto FROM rent_calculation " +
+                 "INNER JOIN cuarto ON rent_calculation.room_id = cuarto.id " +
+                 "WHERE rent_calculation.id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idImporteVariado);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getString("numcuarto");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el número de cuarto: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+
+
+    public BigDecimal obtenerGarantia(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT garantia FROM rent_calculation WHERE id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBigDecimal("garantia");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener la garantía: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+
+public BigDecimal obtenerRent(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT rent FROM rent_calculation WHERE id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBigDecimal("rent");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener la renta: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}   
+
+public BigDecimal obtenerInteresImporteMensual(int idImporteMensual) {
+        CConexion objetoConexion = new CConexion();
+        String sql = "SELECT interes FROM rent_calculation WHERE id = ?";
+
+        try {
+            PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+            pst.setInt(1, idImporteMensual);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getBigDecimal("interes");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener el interés del importe mensual: " + e.toString());
+        }
+
+        return null; // Retorno por defecto en caso de error
+    }
+    
+
+    public BigDecimal obtenerCuotas(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT mensual FROM rent_calculation WHERE id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBigDecimal("mensual");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener las cuotas: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+
+public BigDecimal obtenerTotal(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT total_rent FROM rent_calculation WHERE id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBigDecimal("total_rent");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el total: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+
+public int obtenerPiso(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT floor_id FROM rent_calculation WHERE id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt("floor_id");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el piso: " + e.toString());
+    }
+
+    return -1; // Retorno por defecto en caso de error
+}
+
+public String obtenerNombrePiso(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT piso.piso FROM rent_calculation " +
+                 "INNER JOIN piso ON rent_calculation.floor_id = piso.id " +
+                 "WHERE rent_calculation.id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getString("piso");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el nombre del piso: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+
+public BigDecimal obtenerMensual(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT mensual FROM rent_calculation WHERE id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBigDecimal("mensual");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el valor mensual: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+
+public Date obtenerFecha(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT fecha FROM rent_calculation WHERE id = ?";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getDate("fecha");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener la fecha: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+    
 }
