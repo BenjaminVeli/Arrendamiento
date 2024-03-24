@@ -841,10 +841,19 @@ public class PagoAlquiler extends javax.swing.JFrame {
             
             BigDecimal mensual = paDAO.obtenerMensual(Integer.parseInt(idSeleccionado));
 
-        // Obtén la fecha
-        Date fecha = paDAO.obtenerFecha(Integer.parseInt(idSeleccionado));
+            Date fecha = paDAO.obtenerFecha(Integer.parseInt(idSeleccionado));
             
-            DatosCredito v2 = new DatosCredito(idSeleccionado, room_id_actual, numeroCuarto, garantia, rent, interesImporteMensual, total, nombrePiso, cuotas, mensual, fecha);
+            Date fechaIngreso = paDAO.obtenerFechaIngreso(Integer.parseInt(idSeleccionado));
+        
+            String tipoPago = paDAO.obtenerTipoPago(Integer.parseInt(idSeleccionado));
+
+            BigDecimal pagoDiario = paDAO.obtenerPagoDiario(Integer.parseInt(idSeleccionado));
+        
+            BigDecimal pagoSem = paDAO.obtenerPagoSem(Integer.parseInt(idSeleccionado));
+        
+            BigDecimal quincenal = paDAO.obtenerQuincenal(Integer.parseInt(idSeleccionado));
+            
+            DatosCredito v2 = new DatosCredito(idSeleccionado, room_id_actual, numeroCuarto, garantia, rent, interesImporteMensual, total, nombrePiso, cuotas, mensual, fecha, fechaIngreso, tipoPago, pagoDiario, pagoSem, quincenal);
             v2.setVisible(true);
             this.setVisible(false);
         } else {

@@ -24,7 +24,12 @@ public class DatosCredito extends javax.swing.JFrame {
     private String nombrePiso;
     private BigDecimal mensual;
     private Date fecha;
-    public DatosCredito(String idSeleccionado, int room_id_actual, String numeroCuarto, BigDecimal garantia , BigDecimal rent, BigDecimal interesImporteMensual, BigDecimal total,  String nombrePiso, BigDecimal cuotas,BigDecimal mensual,Date fecha) {
+    private Date fechaIngreso;
+    private String tipoPago;
+    private BigDecimal pagoDiario;
+    private BigDecimal pagoSem;
+    private BigDecimal quincenal;
+    public DatosCredito(String idSeleccionado, int room_id_actual, String numeroCuarto, BigDecimal garantia , BigDecimal rent, BigDecimal interesImporteMensual, BigDecimal total,  String nombrePiso, BigDecimal cuotas,BigDecimal mensual,Date fecha, Date fechaIngreso,String tipoPago,BigDecimal pagoDiario, BigDecimal pagoSem, BigDecimal quincenal) {
         
         initComponents();
         this.setLocationRelativeTo(null);
@@ -39,6 +44,11 @@ public class DatosCredito extends javax.swing.JFrame {
          this.total = total;
          this.mensual = mensual;
          this.fecha = fecha;
+         this.fechaIngreso = fechaIngreso;
+         this.tipoPago = tipoPago;
+         this.pagoDiario = pagoDiario;
+         this.pagoSem = pagoSem;
+         this.quincenal = quincenal;
         
         interestxt.setText(interesImporteMensual.toString());
         cuartostxt.setText(numeroCuarto);
@@ -49,6 +59,11 @@ public class DatosCredito extends javax.swing.JFrame {
         pisotxt.setText(nombrePiso);
         fechatxt.setText(fecha.toString());
         mensualtxt.setText(mensual.toString());
+        finiciotxt.setText(fechaIngreso.toString());
+        ptipotxt.setText(tipoPago);
+        pagodiariotxt.setText(pagoDiario.toString());
+        pagosemtxt.setText(pagoSem.toString());
+        semanaltxt.setText(quincenal.toString());
     }
 
     private DatosCredito() {
