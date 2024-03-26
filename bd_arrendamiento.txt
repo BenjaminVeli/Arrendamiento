@@ -119,7 +119,7 @@ CREATE TABLE importe_internet (
   FOREIGN KEY (rent_calculation_id) REFERENCES rent_calculation(id) ON DELETE CASCADE,
   fecha_anterior DATE,
   fecha_actual DATE,
-  importe_internet DECIMAL(10,2) DEFAULT 0.0,
+  precio_internet DECIMAL(10,2) DEFAULT 0.0,
   estado_internet BOOLEAN DEFAULT false,
   cancelado_internet BOOLEAN DEFAULT false
 );
@@ -152,7 +152,7 @@ CREATE TRIGGER actualizar_cancelado_internet
 BEFORE UPDATE ON importe_internet
 FOR EACH ROW
 BEGIN
-    IF NEW.importe_internet = 0 THEN
+    IF NEW.precio_internet = 0 THEN
         SET NEW.cancelado_internet = 1;
     END IF;
 END;

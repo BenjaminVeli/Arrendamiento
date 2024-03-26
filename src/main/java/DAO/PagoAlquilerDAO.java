@@ -36,6 +36,16 @@ public class PagoAlquilerDAO {
         }
     }
     
+    private String obtenerCuotaSeleccionada(JTable tbMostrarAlquileres) {
+        int fila = tbMostrarAlquileres.getSelectedRow();
+        if (fila >= 0) {
+            return tbMostrarAlquileres.getValueAt(fila, 4).toString();
+        } else {
+            JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+            return null;
+        }
+    }
+    
     public ArrayList<String> obtenerTodosNombresClientes() {
         ArrayList<String> clientes = new ArrayList<>();
         CConexion objetoConexion = new CConexion();
@@ -312,9 +322,10 @@ public class PagoAlquilerDAO {
             if (idSeleccionado != null) {
                 CConexion objetoConexion = new CConexion();
                 
-                String sql = "SELECT SUM(importe_internet) AS total FROM importe_internet " +
-                             "INNER JOIN rent_calculation ON importe_internet.rent_calculation_id = rent_calculation.id " +
-                             "WHERE rent_calculation.client_id = ? AND importe_internet.estado_internet = true";
+                String sql = "SELECT COALESCE(SUM(precio_internet), 0) AS total " +
+                    "FROM importe_internet " +
+                    "INNER JOIN rent_calculation ON importe_internet.rent_calculation_id = rent_calculation.id " +
+                    "WHERE rent_calculation.id = ? AND importe_internet.estado_internet = true";
 
                 PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
                 pst.setString(1, idSeleccionado);
@@ -338,18 +349,20 @@ public class PagoAlquilerDAO {
         }
     }
     
-    public void InsertarInternetpor6meses(JTable tbMostrarAlquileres, double importe, Date fechaSQL){
+     public void InsertarInternetpor6meses(JTable tbMostrarAlquileres, double importe, Date fechaSQL){
         CConexion objetoConexion = new CConexion();
         try {
             String idSeleccionado = obtenerIdSeleccionado(tbMostrarAlquileres);
+            String cuotaSeleccionada = obtenerCuotaSeleccionada(tbMostrarAlquileres);
             
             if (idSeleccionado != null) {
                 // Obtener el id de rent_calculation
                 int id_cliente = Integer.parseInt(idSeleccionado);
                 double importe_internet = importe;
+                int cantidad_cuotas = Integer.parseInt(cuotaSeleccionada);
 
                 // Realizar seis inserciones, una por cada mes
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i < cantidad_cuotas; i++) {
 
                     Calendar fechaAnterior = Calendar.getInstance();
                     Calendar fechaActual = Calendar.getInstance();
@@ -379,7 +392,7 @@ public class PagoAlquilerDAO {
                     java.sql.Date fecha_actual = new java.sql.Date(fechaActual.getTimeInMillis());
 
                      // Insertar a la base de datos
-                     String sql = "INSERT INTO importe_internet (rent_calculation_id, fecha_anterior, fecha_actual, importe_internet) VALUES (?, ?, ?, ?)";
+                     String sql = "INSERT INTO importe_internet (rent_calculation_id, fecha_anterior, fecha_actual, precio_internet) VALUES (?, ?, ?, ?)";
                          
                      try {
                         PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
@@ -410,7 +423,7 @@ public class PagoAlquilerDAO {
             if (idSeleccionado != null) {
                 CConexion objetoConexion = new CConexion();
                 
-                String sql = "SELECT fecha_anterior, fecha_actual, importe_internet, estado_internet, cancelado_internet FROM importe_internet WHERE rent_calculation_id = ?";
+                String sql = "SELECT fecha_anterior, fecha_actual, precio_internet, estado_internet, cancelado_internet FROM importe_internet WHERE rent_calculation_id = ?";
                 
                 PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
                 
@@ -433,7 +446,7 @@ public class PagoAlquilerDAO {
                         // Convertir la fecha al formato deseado para visualización
                         dateFormat.format(rs.getDate("fecha_anterior")),
                         dateFormat.format(rs.getDate("fecha_actual")),
-                        rs.getString("importe_internet"),
+                        rs.getString("precio_internet"),
                         rs.getBoolean("estado_internet") ? "Pagar" : "Aun no Pagar", // Modificación aquí
                         rs.getBoolean("cancelado_internet") ? "Cancelado" : "No Cancelado" // Modificación aquí
                     };
