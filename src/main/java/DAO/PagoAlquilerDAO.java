@@ -349,17 +349,16 @@ public class PagoAlquilerDAO {
         }
     }
     
-     public void InsertarInternetpor6meses(JTable tbMostrarAlquileres, double importe, Date fechaSQL){
+     public void InsertarInternetpor6meses(JTable tbMostrarAlquileres, double importe, Date fechaSQL, double meses){
         CConexion objetoConexion = new CConexion();
         try {
             String idSeleccionado = obtenerIdSeleccionado(tbMostrarAlquileres);
-            String cuotaSeleccionada = obtenerCuotaSeleccionada(tbMostrarAlquileres);
             
             if (idSeleccionado != null) {
                 // Obtener el id de rent_calculation
                 int id_cliente = Integer.parseInt(idSeleccionado);
                 double importe_internet = importe;
-                int cantidad_cuotas = Integer.parseInt(cuotaSeleccionada);
+                int cantidad_cuotas = (int) meses;
 
                 // Realizar seis inserciones, una por cada mes
                 for (int i = 0; i < cantidad_cuotas; i++) {
