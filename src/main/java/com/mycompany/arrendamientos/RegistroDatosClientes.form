@@ -46,7 +46,7 @@
                                   <Group type="102" attributes="0">
                                       <Component id="txtId" min="-2" pref="93" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="txtNombre" min="-2" pref="342" max="-2" attributes="0"/>
+                                      <Component id="txtNombre" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="1" attributes="0">
                                       <EmptySpace min="0" pref="211" max="32767" attributes="0"/>
@@ -89,11 +89,7 @@
                                   <Component id="txtConyuge" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <Group type="102" attributes="0">
-                              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="txtDepartamento" min="-2" pref="173" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -106,7 +102,8 @@
                                   <Component id="txtRuc" min="-2" pref="173" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="txtDireccion_propietario" max="32767" attributes="0"/>
-                                      <Group type="102" attributes="0">
+                                      <Component id="txtDepartamento" alignment="0" max="32767" attributes="0"/>
+                                      <Group type="102" alignment="1" attributes="0">
                                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                               <Group type="102" attributes="0">
                                                   <Component id="txtProvincia" min="-2" pref="182" max="-2" attributes="0"/>
@@ -132,7 +129,6 @@
                                               <Component id="txtDnipropietario" max="32767" attributes="0"/>
                                               <Component id="txtDistrito" max="32767" attributes="0"/>
                                           </Group>
-                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
