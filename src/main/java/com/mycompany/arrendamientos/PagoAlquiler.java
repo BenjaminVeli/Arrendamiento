@@ -854,7 +854,12 @@ public class PagoAlquiler extends javax.swing.JFrame {
         
             BigDecimal quincenal = paDAO.obtenerQuincenal(Integer.parseInt(idSeleccionado));
             
-            DatosCredito v3 = new DatosCredito(idSeleccionado, room_id_actual, numeroCuarto, garantia, rent, interesImporteMensual, total, nombrePiso, cuotas, mensual, fecha, fechaIngreso, tipoPago, pagoDiario, pagoSem, quincenal);
+            BigDecimal sumaCapital = paDAO.obtenerSumaCapital(Integer.parseInt(idSeleccionado));
+            BigDecimal sumaInteres = paDAO.obtenerSumaInteres(Integer.parseInt(idSeleccionado));
+            BigDecimal sumaPorPagar = paDAO.obtenerSumaPorPagar(Integer.parseInt(idSeleccionado));
+            BigDecimal sumaImporte = paDAO.obtenerSumaImporteVariado(Integer.parseInt(idSeleccionado));
+            
+            DatosCredito v3 = new DatosCredito(idSeleccionado, room_id_actual, numeroCuarto, garantia, rent, interesImporteMensual, total, nombrePiso, cuotas, mensual, fecha, fechaIngreso, tipoPago, pagoDiario, pagoSem, quincenal, sumaCapital, sumaInteres, sumaPorPagar,sumaImporte);
             v3.setV1(this);
             v3.setVisible(true);
             this.setVisible(true);

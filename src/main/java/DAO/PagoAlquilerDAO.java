@@ -1126,4 +1126,85 @@ public Date obtenerFechaIngreso(int idRentCalculation) {
         return null; // Retorno por defecto en caso de error
     }
     
+public BigDecimal obtenerSumaCapital(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT sum_capital FROM importe_mensual WHERE rent_calculation_id = ? LIMIT 1";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBigDecimal("sum_capital");
+        }
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el capital: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+    
+public BigDecimal obtenerSumaInteres(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT sum_interes FROM importe_mensual WHERE rent_calculation_id = ? LIMIT 1";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBigDecimal("sum_interes");
+        }
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el interés: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+    
+public BigDecimal obtenerSumaPorPagar(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT sum_porPagar FROM importe_mensual WHERE rent_calculation_id = ? LIMIT 1";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBigDecimal("sum_porPagar");
+        }
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener el monto por pagar: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+
+public BigDecimal obtenerSumaImporteVariado(int idRentCalculation) {
+    CConexion objetoConexion = new CConexion();
+    String sql = "SELECT sum_importe FROM importe_variado WHERE rent_calculation_id = ? LIMIT 1";
+
+    try {
+        PreparedStatement pst = objetoConexion.estableceConexion().prepareStatement(sql);
+        pst.setInt(1, idRentCalculation);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            return rs.getBigDecimal("sum_importe");
+        }
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error al obtener la suma de importe variado: " + e.toString());
+    }
+
+    return null; // Retorno por defecto en caso de error
+}
+
+    
 }

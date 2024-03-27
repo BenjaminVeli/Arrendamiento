@@ -31,7 +31,11 @@ public class DatosCredito extends javax.swing.JFrame {
     private BigDecimal pagoDiario;
     private BigDecimal pagoSem;
     private BigDecimal quincenal;
-    public DatosCredito(String idSeleccionado, int room_id_actual, String numeroCuarto, BigDecimal garantia , BigDecimal rent, BigDecimal interesImporteMensual, BigDecimal total,  String nombrePiso, BigDecimal cuotas,BigDecimal mensual,Date fecha, Date fechaIngreso,String tipoPago,BigDecimal pagoDiario, BigDecimal pagoSem, BigDecimal quincenal) {
+    private BigDecimal sumaCapital;
+    private BigDecimal sumaInteres;
+    private BigDecimal sumaPorPagar;
+    private BigDecimal sumaImporte;
+    public DatosCredito(String idSeleccionado, int room_id_actual, String numeroCuarto, BigDecimal garantia , BigDecimal rent, BigDecimal interesImporteMensual, BigDecimal total,  String nombrePiso, BigDecimal cuotas,BigDecimal mensual,Date fecha, Date fechaIngreso,String tipoPago,BigDecimal pagoDiario, BigDecimal pagoSem, BigDecimal quincenal, BigDecimal sumaCapital, BigDecimal sumaInteres, BigDecimal sumaPorPagar, BigDecimal sumaImporte) {
         
         initComponents();
         
@@ -54,7 +58,8 @@ public class DatosCredito extends javax.swing.JFrame {
          interestxt.setHorizontalAlignment(JTextField.RIGHT);
          pagosemtxt.setHorizontalAlignment(JTextField.RIGHT);
 
-      
+                 
+                 
         this.setLocationRelativeTo(null);
          this.idSeleccionado = idSeleccionado;
         this.room_id_actual = room_id_actual;
@@ -72,6 +77,10 @@ public class DatosCredito extends javax.swing.JFrame {
          this.pagoDiario = pagoDiario;
          this.pagoSem = pagoSem;
          this.quincenal = quincenal;
+         this.sumaCapital = sumaCapital;
+         this.sumaInteres = sumaInteres;
+         this.sumaPorPagar = sumaPorPagar;
+         this.sumaImporte = sumaImporte;
         
         interestxt.setText(interesImporteMensual.toString());
         cuartostxt.setText(numeroCuarto);
@@ -87,7 +96,10 @@ public class DatosCredito extends javax.swing.JFrame {
         pagodiariotxt.setText(pagoDiario.toString());
         pagosemtxt.setText(pagoSem.toString());
         semanaltxt.setText(quincenal.toString());
-        
+        txtSumCapital.setText(sumaCapital.toString());
+        txtSumInteres.setText(sumaInteres.toString());
+        txtSumMensual.setText(sumaPorPagar.toString());
+        txtSumImporte.setText(sumaImporte.toString());
         
         
         DatosCreditoDAO objetoCredito = new DatosCreditoDAO();
@@ -592,9 +604,9 @@ public class DatosCredito extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(98, 98, 98)
+                .addGap(20, 20, 20)
                 .addComponent(btnSalir)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
